@@ -16,6 +16,7 @@ Rails.application.routes.draw do
         resources :comments, only: %i[create]
         resources :checklist_items, only: %i[create update destroy]
       end
+      resource :kanban, only: %i[show], controller: :kanban
     end
   end
 

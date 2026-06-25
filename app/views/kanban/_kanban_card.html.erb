@@ -1,0 +1,19 @@
+<div class="kanban-card bg-white rounded-lg shadow-sm border border-gray-200 p-3 cursor-grab"
+     data-task-id="<%= task.id %>">
+  <div class="flex items-start justify-between mb-2">
+    <h4 class="text-sm font-medium text-gray-900"><%= task.title %></h4>
+    <span class="text-xs px-2 py-0.5 rounded-full <%= priority_badge_class(task.priority) %>">
+      <%= task.priority.titleize %>
+    </span>
+  </div>
+  <% if task.assignee %>
+    <div class="flex items-center gap-2 text-xs text-gray-500">
+      <span><%= task.assignee.name %></span>
+    </div>
+  <% end %>
+  <% if task.due_date %>
+    <div class="text-xs text-gray-400 mt-1">
+      <%= task.due_date.strftime("%b %d") %>
+    </div>
+  <% end %>
+</div>

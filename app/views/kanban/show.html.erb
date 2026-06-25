@@ -1,0 +1,19 @@
+<div data-controller="kanban" class="flex gap-4 overflow-x-auto pb-4">
+  <% Task.statuses.each do |status, _| %>
+    <div class="kanban-column flex-shrink-0 w-72 bg-gray-100 rounded-lg">
+      <div class="px-4 py-3 font-semibold text-sm text-gray-700 border-b border-gray-200">
+        <%= status.titleize %>
+        <span class="ml-2 text-xs text-gray-400">(<%= @grouped_tasks[status]&.count || 0 %>)</span>
+      </div>
+
+      <div class="kanban-column-body min-h-[200px] p-2 space-y-2"
+           data-kanban-target="column"
+           data-status="<%= status %>"
+           data-move-url="<%= move_organization_project_task_path(@organization, @project, ":id") %>">
+        <% (@grouped_tasks[status] || []).each do |task| %>
+          <%= render "kanban_card", task: task %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
