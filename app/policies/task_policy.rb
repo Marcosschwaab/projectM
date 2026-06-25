@@ -21,8 +21,8 @@ class TaskPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.joins(project: { organization: :organization_memberships })
-           .where(organization_memberships: { user_id: user.id })
+      scope.joins(project: { organization: :memberships })
+           .where(memberships: { user_id: user.id })
     end
   end
 end

@@ -21,8 +21,8 @@ class ProjectPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      scope.joins(organization: :organization_memberships)
-           .where(organization_memberships: { user_id: user.id })
+      scope.joins(organization: :memberships)
+           .where(memberships: { user_id: user.id })
     end
   end
 end
