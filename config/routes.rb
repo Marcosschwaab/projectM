@@ -9,6 +9,13 @@ Rails.application.routes.draw do
       member do
         patch :archive
       end
+      resources :tasks do
+        member do
+          patch :move
+        end
+        resources :comments, only: %i[create]
+        resources :checklist_items, only: %i[create update destroy]
+      end
     end
   end
 

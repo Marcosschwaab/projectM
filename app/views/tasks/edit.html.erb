@@ -1,0 +1,51 @@
+<h1>Edit task</h1>
+
+<%= form_with(model: [@organization, @project, @task]) do |f| %>
+  <% if @task.errors.any? %>
+    <div>
+      <h2><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h2>
+      <ul>
+        <% @task.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
+    <%= f.label :status %>
+    <%= f.select :status, Task.statuses.keys.map { |k| [k.humanize, k] } %>
+  </div>
+
+  <div>
+    <%= f.label :priority %>
+    <%= f.select :priority, Task.priorities.keys.map { |k| [k.humanize, k] } %>
+  </div>
+
+  <div>
+    <%= f.label :assignee_id %>
+    <%= f.collection_select :assignee_id, @organization.members, :id, :name, include_blank: "Unassigned" %>
+  </div>
+
+  <div>
+    <%= f.label :due_date %>
+    <%= f.date_field :due_date %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to "Show", [@organization, @project, @task] %> |
+<%= link_to "Back", organization_project_tasks_path(@organization, @project) %>
