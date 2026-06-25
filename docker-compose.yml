@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: project_m_postgres
+    restart: unless-stopped
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME:-project_m}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-project_m_password}
+      POSTGRES_DB: ${DATABASE_NAME:-project_m_development}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - project_m_network
+
+  app:
+    build: .
+    container_name: project_m_app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-project_m_development}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-project_m}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-project_m_password}
+      RAILS_ENV: ${RAILS_ENV:-development}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-}
+    volumes:
+      - .:/rails
+    networks:
+      - project_m_network
+    stdin_open: true
+    tty: true
+
+networks:
+  project_m_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
