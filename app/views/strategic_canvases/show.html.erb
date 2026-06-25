@@ -1,0 +1,60 @@
+<h1>Strategic Canvas</h1>
+<p class="text-sm text-gray-500 mb-6"><%= @project.name %></p>
+
+<%= form_with(model: [@organization, @project, @canvas], local: true) do |f| %>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Problem</h3>
+      <%= f.text_area :problem, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Goal</h3>
+      <%= f.text_area :goal, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Value Proposition</h3>
+      <%= f.text_area :value_proposition, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Stakeholders</h3>
+      <%= f.text_area :stakeholders, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Team</h3>
+      <%= f.text_area :team, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Metrics</h3>
+      <%= f.text_area :metrics, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Risks</h3>
+      <%= f.text_area :risks, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Resources</h3>
+      <%= f.text_area :resources, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Roadmap</h3>
+      <%= f.text_area :roadmap, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+
+    <div>
+      <h3 class="font-semibold text-sm mb-2">Next Steps</h3>
+      <%= f.text_area :next_steps, rows: 4, class: "w-full border rounded-lg p-2 text-sm" %>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <%= f.submit "Save Canvas", class: "px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm" %>
+  </div>
+<% end %>

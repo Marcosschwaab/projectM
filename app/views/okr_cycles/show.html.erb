@@ -1,0 +1,22 @@
+<h1><%= @cycle.title %></h1>
+
+<p><%= @cycle.start_date %> - <%= @cycle.end_date %></p>
+<p>Status: <%= @cycle.status %></p>
+
+<h2>Objectives</h2>
+<% @cycle.objectives.each do |objective| %>
+  <div>
+    <h3><%= objective.title %></h3>
+    <p>Progress: <%= objective.calculate_progress %>%</p>
+
+    <h4>Key Results</h4>
+    <% objective.key_results.each do |kr| %>
+      <div>
+        <%= kr.title %> - <%= kr.current_value %>/<%= kr.target_value %> <%= kr.unit %>
+        (Progress: <%= kr.calculate_progress %>%)
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= link_to "Back", organization_okr_cycles_path(@organization) %>

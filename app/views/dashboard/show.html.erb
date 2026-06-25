@@ -1,0 +1,53 @@
+<h1>Dashboard</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Active Projects</h3>
+    <p class="text-2xl font-bold"><%= @active_projects_count %></p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Completed Projects</h3>
+    <p class="text-2xl font-bold"><%= @completed_projects_count %></p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Open Tasks</h3>
+    <p class="text-2xl font-bold"><%= @open_tasks_count %></p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Overdue Tasks</h3>
+    <p class="text-2xl font-bold text-red-600"><%= @overdue_tasks.count %></p>
+  </div>
+</div>
+
+<h2 class="text-lg font-semibold mb-4">Upcoming Deadlines</h2>
+<% if @upcoming_tasks.any? %>
+  <ul class="space-y-2 mb-8">
+    <% @upcoming_tasks.each do |task| %>
+      <li class="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
+        <%= link_to task.title, [@organization, task.project, task], class: "text-sm font-medium text-gray-900" %>
+        <span class="text-xs text-gray-500 ml-2"><%= task.due_date %></span>
+        <span class="text-xs text-gray-500 ml-2"><%= task.project.name %></span>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-sm text-gray-500 mb-8">No upcoming deadlines this week.</p>
+<% end %>
+
+<h2 class="text-lg font-semibold mb-4">Recent Activity</h2>
+<% if @recent_activity.any? %>
+  <ul class="space-y-2">
+    <% @recent_activity.each do |activity| %>
+      <li class="text-sm text-gray-600">
+        <strong><%= activity.user.name %></strong>
+        <%= activity.action %>
+        <span class="text-xs text-gray-400"><%= time_ago_in_words(activity.created_at) %> ago</span>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-sm text-gray-500">No recent activity.</p>
+<% end %>

@@ -1,0 +1,13 @@
+<h1>OKR Cycles</h1>
+
+<%= link_to "New cycle", new_organization_okr_cycle_path(@organization) %>
+
+<ul>
+  <% @cycles.each do |cycle| %>
+    <li>
+      <%= link_to cycle.title, [@organization, cycle] %>
+      <span><%= cycle.status %></span>
+      <span><%= cycle.start_date %> - <%= cycle.end_date %></span>
+    </li>
+  <% end %>
+</ul>

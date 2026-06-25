@@ -2,6 +2,9 @@ class Project < ApplicationRecord
   belongs_to :organization
   belongs_to :assignee, class_name: "User", optional: true
 
+  has_many :tasks, dependent: :destroy
+  has_one :strategic_canvas, dependent: :destroy
+
   validates :name, presence: true
 
   enum :priority, { low: 0, medium: 1, high: 2, urgent: 3 }
