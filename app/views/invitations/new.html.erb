@@ -1,0 +1,30 @@
+<h1>Invite a member</h1>
+
+<%= form_with(model: [@organization, @invitation]) do |f| %>
+  <% if @invitation.errors.any? %>
+    <div>
+      <h2><%= pluralize(@invitation.errors.count, "error") %> prohibited this invitation from being saved:</h2>
+      <ul>
+        <% @invitation.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :email %>
+    <%= f.email_field :email %>
+  </div>
+
+  <div>
+    <%= f.label :role %>
+    <%= f.select :role, Invitation.roles.keys.map { |r| [r.humanize, r] } %>
+  </div>
+
+  <div>
+    <%= f.submit "Send invitation" %>
+  </div>
+<% end %>
+
+<%= link_to "Back", organization_invitations_path(@organization) %>

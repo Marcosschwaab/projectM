@@ -1,0 +1,13 @@
+<h1><%= @organization.name %></h1>
+
+<p><%= @organization.description %></p>
+
+<%= link_to "Edit", edit_organization_path(@organization) %> |
+<%= link_to "Back", organizations_path %>
+
+<h2>Members</h2>
+<ul>
+  <% @organization.members.each do |member| %>
+    <li><%= member.name %> (<%= member.role_in(@organization) %>)</li>
+  <% end %>
+</ul>

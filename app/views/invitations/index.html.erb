@@ -1,0 +1,9 @@
+<h1>Invitations</h1>
+
+<%= link_to "New invitation", new_organization_invitation_path(@organization) %>
+
+<ul>
+  <% @invitations.each do |invitation| %>
+    <li><%= invitation.email %> - <%= invitation.role %></li>
+  <% end %>
+</ul>

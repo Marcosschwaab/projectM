@@ -1,0 +1,36 @@
+<h1>Edit organization</h1>
+
+<%= form_with(model: @organization) do |f| %>
+  <% if @organization.errors.any? %>
+    <div>
+      <h2><%= pluralize(@organization.errors.count, "error") %> prohibited this organization from being saved:</h2>
+      <ul>
+        <% @organization.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
+    <%= f.label :allow_auto_join %>
+    <%= f.check_box :allow_auto_join %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to "Show", @organization %> |
+<%= link_to "Back", organizations_path %>

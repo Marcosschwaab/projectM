@@ -3,4 +3,16 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :name, presence: true
+
+  has_many :organization_memberships, dependent: :destroy
+  has_many :organizations, through: :organization_memberships
+  has_many :invitations, dependent: :nullify
+
+  def member_of?(organization)
+    organization_memberships.exists?(organization: organization)
+  end
+
+  def role_in(organization)
+    organization_memberships.find_by(organization: organization)&.role
+  end
 end
