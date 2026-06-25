@@ -4,7 +4,7 @@ services:
     container_name: project_m_postgres
     restart: unless-stopped
     ports:
-      - "${DATABASE_PORT:-5432}:5432"
+      - "${DATABASE_PORT:-5433}:5432"
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME:-project_m}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-project_m_password}

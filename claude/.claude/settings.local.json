@@ -1,0 +1,12 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(qmd update:*)",
+      "Bash(qmd embed:*)",
+      "Bash(fswatch -1 /tmp/devtui-content)"
+    ]
+  }
+}

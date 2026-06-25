@@ -1,6 +1,6 @@
 class Invitation < ApplicationRecord
   belongs_to :organization
-  belongs_to :user, optional: true
+  belongs_to :user
 
   enum :role, { member: 0, manager: 1, admin: 2 }
 
