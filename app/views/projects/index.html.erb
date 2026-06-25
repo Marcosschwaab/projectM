@@ -1,0 +1,13 @@
+<h1>Projects</h1>
+
+<%= link_to "New project", new_organization_project_path(@organization) %>
+
+<ul>
+  <% @projects.each do |project| %>
+    <li>
+      <%= link_to project.name, [@organization, project] %>
+      <span><%= project.status %></span>
+      <span><%= project.priority %></span>
+    </li>
+  <% end %>
+</ul>

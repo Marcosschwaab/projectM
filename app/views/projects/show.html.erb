@@ -1,0 +1,14 @@
+<h1><%= @project.name %></h1>
+
+<p><%= @project.description %></p>
+
+<p>
+  <strong>Status:</strong> <%= @project.status %><br>
+  <strong>Priority:</strong> <%= @project.priority %><br>
+  <strong>Assignee:</strong> <%= @project.assignee&.name || "Unassigned" %><br>
+  <strong>Progress:</strong> <%= @project.progress %>%
+</p>
+
+<%= link_to "Edit", edit_organization_project_path(@organization, @project) %> |
+<%= link_to "Archive", archive_organization_project_path(@organization, @project), data: { turbo_method: :patch } %> |
+<%= link_to "Back", organization_projects_path(@organization) %>
