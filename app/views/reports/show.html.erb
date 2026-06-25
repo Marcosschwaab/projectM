@@ -1,0 +1,48 @@
+<h1>Reports</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Projects</h3>
+    <p class="text-2xl font-bold"><%= @completed_projects %>/<%= @total_projects %></p>
+    <p class="text-xs text-gray-400">completed</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Tasks</h3>
+    <p class="text-2xl font-bold"><%= @completed_tasks %>/<%= @total_tasks %></p>
+    <p class="text-xs text-gray-400">completed</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <h3 class="text-sm text-gray-500">Productivity</h3>
+    <p class="text-2xl font-bold"><%= @productivity %>%</p>
+    <p class="text-xs text-gray-400">completion rate</p>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
+  <h2 class="text-lg font-semibold mb-4">Overdue Tasks</h2>
+  <p class="text-2xl font-bold text-red-600"><%= @overdue_tasks %></p>
+</div>
+
+<h2 class="text-lg font-semibold mb-4">Projects Overview</h2>
+<table class="w-full bg-white rounded-lg shadow-sm border border-gray-200">
+  <thead>
+    <tr class="border-b border-gray-200">
+      <th class="text-left p-3 text-sm font-medium">Name</th>
+      <th class="text-left p-3 text-sm font-medium">Status</th>
+      <th class="text-left p-3 text-sm font-medium">Tasks</th>
+      <th class="text-left p-3 text-sm font-medium">Assignee</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr class="border-b border-gray-100">
+        <td class="p-3 text-sm"><%= project.name %></td>
+        <td class="p-3 text-sm"><%= project.status %></td>
+        <td class="p-3 text-sm"><%= project.tasks.count %></td>
+        <td class="p-3 text-sm"><%= project.assignee&.name || "-" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -23,6 +23,8 @@ Rails.application.routes.draw do
   end
 
   resource :dashboard, only: %i[show], controller: :dashboard
+  resource :search, only: %i[show], controller: :searches
+  resource :report, only: %i[show], controller: :reports
 
   get "up" => "rails/health#show", as: :rails_health_check
 end
