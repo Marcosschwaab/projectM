@@ -9,6 +9,11 @@
       <%= t("nav.dashboard") %>
     <% end %>
 
+    <%= link_to my_tasks_path, class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium #{current_page?(my_tasks_path) ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50'}" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      <%= t("nav.my_tasks") %>
+    <% end %>
+
     <% if current_user.organizations.any? %>
       <% org = current_user.organizations.first %>
       <%= link_to organization_projects_path(org), class: "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium #{request.path.include?('/projects') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50'}" do %>

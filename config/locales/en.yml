@@ -29,6 +29,7 @@ en:
 
   nav:
     dashboard: "Dashboard"
+    my_tasks: "My Tasks"
     projects: "Projects"
     okrs: "OKRs"
     kpis: "KPIs"
@@ -541,6 +542,17 @@ en:
   activity:
     timeline: "Activity Timeline"
     no_activity: "No activity recorded yet. Start by creating tasks or adding comments."
+
+  my_tasks:
+    title: "My Tasks"
+    subtitle: "You have %{count} assigned tasks"
+    total: "Total"
+    done: "Done"
+    overdue: "Overdue"
+    project: "Project"
+    all_projects: "All Projects"
+    empty: "No tasks assigned to you yet"
+    empty_hint: "Tasks will appear here when someone assigns them to you"
 
   helpers:
     submit:

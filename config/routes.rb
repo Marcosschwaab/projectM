@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :my_tasks, only: %i[show], controller: :my_tasks
   resource :dashboard, only: %i[show], controller: :dashboard
   resource :search, only: %i[show], controller: :searches
   resource :report, only: %i[show], controller: :reports

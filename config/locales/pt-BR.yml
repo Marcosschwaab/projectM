@@ -29,6 +29,7 @@ pt-BR:
 
   nav:
     dashboard: "Dashboard"
+    my_tasks: "Minhas Tarefas"
     projects: "Projetos"
     okrs: "OKRs"
     kpis: "KPIs"
@@ -546,6 +547,17 @@ pt-BR:
   activity:
     timeline: "Linha do Tempo"
     no_activity: "Nenhuma atividade registrada ainda. Comece criando tarefas ou adicionando comentários."
+
+  my_tasks:
+    title: "Minhas Tarefas"
+    subtitle: "Você tem %{count} tarefas atribuídas"
+    total: "Total"
+    done: "Concluídas"
+    overdue: "Atrasadas"
+    project: "Projeto"
+    all_projects: "Todos os Projetos"
+    empty: "Nenhuma tarefa atribuída a você ainda"
+    empty_hint: "Tarefas aparecerão aqui quando alguém as atribuir a você"
 
   helpers:
     submit:
