@@ -46,7 +46,7 @@ class TasksController < ApplicationController
         )
       end
 
-      redirect_to [ @organization, @project, @task ], notice: t("flash.task.created")
+      redirect_to params[:return_to].presence || [ @organization, @project, @task ], notice: t("flash.task.created")
     else
       render :new, status: :unprocessable_content
     end

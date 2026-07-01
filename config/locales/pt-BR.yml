@@ -424,6 +424,7 @@ pt-BR:
     new_task: "Nova tarefa"
     no_tasks: "Nenhuma tarefa"
     add_one: "Adicionar"
+    quick_add_placeholder: "Título da tarefa..."
 
   searches:
     title: "Resultados da Busca"

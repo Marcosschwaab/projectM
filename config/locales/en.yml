@@ -424,6 +424,7 @@ en:
     new_task: "New task"
     no_tasks: "No tasks"
     add_one: "Add one"
+    quick_add_placeholder: "Task title..."
 
   searches:
     title: "Search Results"

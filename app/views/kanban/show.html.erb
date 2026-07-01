@@ -1,3 +1,36 @@
+<style>
+  .kanban-card {
+    transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .kanban-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .dark .kanban-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .kanban-card-inserted {
+    animation: slideIn 0.35s ease-out;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .kanban-column-body::-webkit-scrollbar {
+    width: 4px;
+  }
+  .kanban-column-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .kanban-column-body::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 4px;
+  }
+  .dark .kanban-column-body::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+  }
+</style>
+
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("kanban.title") %></h1>
@@ -8,7 +41,7 @@
   <% end %>
 </div>
 
-<div data-controller="kanban" data-kanban-project-id-value="<%= @project.id %>" class="flex gap-4 overflow-x-auto pb-4" style="min-height: calc(100vh - 12rem)">
+<div data-controller="kanban" data-kanban-project-id-value="<%= @project.id %>" class="flex gap-4 overflow-x-auto pb-6" style="min-height: calc(100vh - 12rem)">
   <% Task.statuses.each do |status, _| %>
     <% column_tasks = @grouped_tasks[status] || [] %>
     <div class="kanban-column flex-shrink-0 w-72 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col dark:border-gray-700 dark:bg-gray-800/50">
@@ -16,28 +49,44 @@
            style="background: linear-gradient(135deg, <%= column_color(status) %> 0%, <%= column_color(status) %>dd 100%)">
         <div class="flex items-center gap-2">
           <h3 class="text-sm font-semibold text-white"><%= status.humanize %></h3>
-          <span class="text-xs text-white/80 bg-white/20 rounded-full px-2 py-0.5"><%= column_tasks.count %></span>
+          <span class="kanban-count text-xs text-white/80 bg-white/20 rounded-full px-2 py-0.5 font-medium transition-all duration-200"><%= column_tasks.count %></span>
         </div>
-        <%= link_to new_organization_project_task_path(@organization, @project, task: { status: status }), class: "text-white/80 hover:text-white transition-colors" do %>
+        <button data-action="click->kanban#toggleQuickAdd" class="kanban-add-btn text-white/80 hover:text-white transition-colors cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        <% end %>
+        </button>
       </div>
 
-      <div class="kanban-column-body flex-1 min-h-[200px] p-2 space-y-2 overflow-y-auto"
+      <div class="kanban-column-body flex-1 min-h-[120px] p-2 space-y-1.5 overflow-y-auto"
            data-kanban-target="column"
            data-status="<%= status %>"
-           data-move-url="<%= move_organization_project_task_path(@organization, @project, ":id") %>">
+           data-move-url="<%= move_organization_project_task_path(@organization, @project, ":id") %>"
+           data-create-url="<%= organization_project_tasks_path(@organization, @project) %>">
         <% column_tasks.each do |task| %>
           <%= render "kanban_card", task: task %>
         <% end %>
 
         <% if column_tasks.empty? %>
-          <div class="flex flex-col items-center justify-center py-8 text-center">
-            <svg class="w-8 h-8 text-gray-300 mb-2 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            <p class="text-xs text-gray-400 mb-2 dark:text-gray-500"><%= t("kanban.no_tasks") %></p>
-            <%= link_to t("kanban.add_one"), new_organization_project_task_path(@organization, @project, task: { status: status }), class: "text-xs text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+          <div class="flex flex-col items-center justify-center py-6 text-center">
+            <svg class="w-6 h-6 text-gray-300 mb-1.5 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <p class="text-[11px] text-gray-400 dark:text-gray-500"><%= t("kanban.no_tasks") %></p>
           </div>
         <% end %>
+
+        <div class="kanban-quick-add hidden pt-1">
+          <%= form_with url: organization_project_tasks_path(@organization, @project), scope: :task, class: "flex flex-col gap-1.5", data: { action: "submit->kanban#submitQuickAdd" } do |f| %>
+            <%= f.hidden_field :status, value: status %>
+            <%= hidden_field_tag :return_to, organization_project_kanban_path(@organization, @project) %>
+            <%= f.text_field :title,
+                class: "kanban-quick-input w-full px-3 py-2 text-sm border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 dark:border-indigo-600 dark:text-gray-200 dark:focus:ring-indigo-400",
+                placeholder: t("kanban.quick_add_placeholder"),
+                data: { action: "keydown->kanban#cancelQuickAdd" },
+                autocomplete: "off" %>
+            <div class="flex items-center gap-2">
+              <%= f.submit t("actions.add"), class: "px-3 py-1 text-xs font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+              <button type="button" data-action="click->kanban#hideQuickAdd" class="px-3 py-1 text-xs text-gray-500 hover:text-gray-700 cursor-pointer dark:text-gray-400 dark:hover:text-gray-300"><%= t("actions.cancel") %></button>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
   <% end %>
