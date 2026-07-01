@@ -17,7 +17,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        html = render_to_string(template: "reports/show", layout: "pdf", formats: [:html])
+        html = render_to_string(template: "reports/show", layout: "pdf", formats: [ :html ])
         pdf = Grover.new(html).to_pdf
         send_data pdf, filename: "report.pdf", type: "application/pdf"
       end

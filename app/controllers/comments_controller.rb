@@ -41,7 +41,7 @@ class CommentsController < ApplicationController
   end
 
   def broadcast_comment
-    html = render_to_string(partial: "comments/comment", locals: { comment: @comment }, formats: [:html])
+    html = render_to_string(partial: "comments/comment", locals: { comment: @comment }, formats: [ :html ])
     ActionCable.server.broadcast(
       "comments_task_#{@task.id}",
       { html: html }

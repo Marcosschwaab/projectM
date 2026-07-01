@@ -35,5 +35,5 @@ Bundler.require(*Rails.groups)
                        request_specs: true
       g.fixture_replacement :factory_bot, dir: "spec/factories"
     end
+    end
   end
-end

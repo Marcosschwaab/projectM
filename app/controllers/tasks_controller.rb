@@ -120,7 +120,7 @@ class TasksController < ApplicationController
   end
 
   def broadcast_task_move
-    html = render_to_string(partial: "kanban/kanban_card", locals: { task: @task }, formats: [:html])
+    html = render_to_string(partial: "kanban/kanban_card", locals: { task: @task }, formats: [ :html ])
     ActionCable.server.broadcast(
       "tasks_project_#{@project.id}",
       { action: "move", task_id: @task.id, status: @task.status, html: html }

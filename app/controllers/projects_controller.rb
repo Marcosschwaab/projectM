@@ -16,11 +16,11 @@ class ProjectsController < ApplicationController
     authorize @project
     @gantt_tasks = @project.tasks.includes(:dependencies).order(:created_at).to_a
     now = Date.today
-    dates = @gantt_tasks.map { |t| [t.created_at, t.due_date] }
+    dates = @gantt_tasks.map { |t| [ t.created_at, t.due_date ] }
     @gantt_start = @project.start_date || dates.map { |c, _| c.to_date }.min || now
     @gantt_end = @project.end_date || dates.map { |_, d| d }.compact.max || now + 30
 
-    task_index = @gantt_tasks.each_with_index.to_h { |t, i| [t.id, i] }
+    task_index = @gantt_tasks.each_with_index.to_h { |t, i| [ t.id, i ] }
     @gantt_items = @gantt_tasks.map do |t|
       s = t.created_at.to_date
       e = t.due_date || s + 14

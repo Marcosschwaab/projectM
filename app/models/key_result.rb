@@ -14,6 +14,6 @@ class KeyResult < ApplicationRecord
 
   def remaining
     return 0 if target_value.blank?
-    [target_value - current_value.to_f, 0].max
+    [ target_value - current_value.to_f, 0 ].max
   end
 end

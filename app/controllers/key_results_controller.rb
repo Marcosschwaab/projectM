@@ -13,9 +13,9 @@ class KeyResultsController < ApplicationController
     authorize @key_result
     if @key_result.save
       @key_result.update_progress!
-      redirect_to [@organization, @cycle], notice: t("flash.key_result.added")
+      redirect_to [ @organization, @cycle ], notice: t("flash.key_result.added")
     else
-      redirect_to [@organization, @cycle], alert: t("flash.key_result.create_failed")
+      redirect_to [ @organization, @cycle ], alert: t("flash.key_result.create_failed")
     end
   end
 
@@ -23,7 +23,7 @@ class KeyResultsController < ApplicationController
     authorize @key_result
     if @key_result.update(key_result_params)
       @key_result.update_progress!
-      redirect_to [@organization, @cycle], notice: t("flash.key_result.updated")
+      redirect_to [ @organization, @cycle ], notice: t("flash.key_result.updated")
     else
       render :edit, status: :unprocessable_content
     end
@@ -32,7 +32,7 @@ class KeyResultsController < ApplicationController
   def destroy
     authorize @key_result
     @key_result.destroy!
-    redirect_to [@organization, @cycle], notice: t("flash.key_result.deleted")
+    redirect_to [ @organization, @cycle ], notice: t("flash.key_result.deleted")
   end
 
   private

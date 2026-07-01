@@ -12,9 +12,9 @@ class ObjectivesController < ApplicationController
     @objective = @cycle.objectives.build(objective_params)
     authorize @objective
     if @objective.save
-      redirect_to [@organization, @cycle], notice: t("flash.objective.added")
+      redirect_to [ @organization, @cycle ], notice: t("flash.objective.added")
     else
-      redirect_to [@organization, @cycle], alert: t("flash.objective.create_failed")
+      redirect_to [ @organization, @cycle ], alert: t("flash.objective.create_failed")
     end
   end
 
@@ -22,7 +22,7 @@ class ObjectivesController < ApplicationController
     authorize @objective
     if @objective.update(objective_params)
       @objective.update_progress!
-      redirect_to [@organization, @cycle], notice: t("flash.objective.updated")
+      redirect_to [ @organization, @cycle ], notice: t("flash.objective.updated")
     else
       render :edit, status: :unprocessable_content
     end
@@ -31,7 +31,7 @@ class ObjectivesController < ApplicationController
   def destroy
     authorize @objective
     @objective.destroy!
-    redirect_to [@organization, @cycle], notice: t("flash.objective.deleted")
+    redirect_to [ @organization, @cycle ], notice: t("flash.objective.deleted")
   end
 
   private

@@ -27,7 +27,7 @@ RSpec.describe "Webhooks", type: :request do
     it "creates a new webhook" do
       expect {
         post organization_webhooks_path(organization), params: {
-          webhook: { name: "My Hook", url: "https://example.com/hook", events: ["task.created"] }
+          webhook: { name: "My Hook", url: "https://example.com/hook", events: [ "task.created" ] }
         }
       }.to change(Webhook, :count).by(1)
     end

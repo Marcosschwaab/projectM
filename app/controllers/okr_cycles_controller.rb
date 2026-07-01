@@ -21,7 +21,7 @@ class OkrCyclesController < ApplicationController
     @cycle = @organization.okr_cycles.build(cycle_params)
     authorize @cycle
     if @cycle.save
-      redirect_to [@organization, @cycle], notice: t("flash.okr_cycle.created")
+      redirect_to [ @organization, @cycle ], notice: t("flash.okr_cycle.created")
     else
       render :new, status: :unprocessable_content
     end
@@ -34,7 +34,7 @@ class OkrCyclesController < ApplicationController
   def update
     authorize @cycle
     if @cycle.update(cycle_params)
-      redirect_to [@organization, @cycle], notice: t("flash.okr_cycle.updated")
+      redirect_to [ @organization, @cycle ], notice: t("flash.okr_cycle.updated")
     else
       render :edit, status: :unprocessable_content
     end
