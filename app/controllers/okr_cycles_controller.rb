@@ -4,7 +4,7 @@ class OkrCyclesController < ApplicationController
   before_action :set_cycle, only: %i[show edit update destroy]
 
   def index
-    @cycles = @organization.okr_cycles.order(start_date: :desc)
+    @cycles = policy_scope(@organization.okr_cycles).order(start_date: :desc)
     @active_cycle = @cycles.find_by(status: :active)
   end
 
