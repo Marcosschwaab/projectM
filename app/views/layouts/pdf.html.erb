@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title><%= t("reports.title") %></title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 12px; color: #111; padding: 20px; }
+      h1 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+      h2 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+      table { width: 100%; border-collapse: collapse; }
+      th { text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #666; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+      td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f3f4f6; }
+      .stats { display: flex; gap: 12px; margin-bottom: 20px; }
+      .stat-card { flex: 1; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
+      .stat-label { font-size: 10px; color: #666; }
+      .stat-value { font-size: 22px; font-weight: 700; margin-top: 4px; }
+      .stat-bar { height: 4px; background: #f3f4f6; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+      .stat-bar-fill { height: 100%; border-radius: 2px; }
+      .overdue-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+      .overdue-value { font-size: 24px; font-weight: 700; color: #dc2626; }
+      .overdue-label { font-size: 10px; color: #666; margin-top: 4px; }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>

@@ -1,13 +1,77 @@
-<h1>OKR Cycles</h1>
-
-<%= link_to "New cycle", new_organization_okr_cycle_path(@organization) %>
-
-<ul>
-  <% @cycles.each do |cycle| %>
-    <li>
-      <%= link_to cycle.title, [@organization, cycle] %>
-      <span><%= cycle.status %></span>
-      <span><%= cycle.start_date %> - <%= cycle.end_date %></span>
-    </li>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("okrs.title") %></h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= @organization.name %></p>
+  </div>
+  <%= link_to new_organization_okr_cycle_path(@organization), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("okrs.new") %>
   <% end %>
-</ul>
+</div>
+
+<% if @active_cycle %>
+  <div class="bg-white rounded-xl shadow-sm border border-indigo-200 p-5 mb-6 dark:bg-gray-800 dark:border-indigo-700">
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full dark:bg-green-900/30 dark:text-green-400"><%= t("okrs.statuses.active") %></span>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= @active_cycle.title %></h2>
+      </div>
+      <%= link_to [@organization, @active_cycle], class: "text-sm text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+        <%= t("actions.view_details") %> &rarr;
+      <% end %>
+    </div>
+    <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+      <span><%= l(@active_cycle.start_date, format: :short) %> &ndash; <%= l(@active_cycle.end_date, format: :default) %></span>
+      <span><%= t("okrs.objectives_count", count: @active_cycle.objectives.size) %></span>
+      <span><%= t("okrs.key_results_count", count: @active_cycle.kr_count) %></span>
+      <span><%= @active_cycle.objectives_completed %>/<%= @active_cycle.objectives.size %> <%= t("okrs.objectives_met") %></span>
+    </div>
+    <% progress = @active_cycle.overall_progress %>
+    <div class="mt-3">
+      <div class="flex items-center justify-between text-sm mb-1">
+        <span class="text-gray-600 font-medium dark:text-gray-400"><%= t("okrs.overall_progress") %></span>
+        <span class="<%= progress >= 100 ? 'text-green-600 dark:text-green-400' : progress >= 75 ? 'text-blue-600 dark:text-blue-400' : progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %> font-bold"><%= progress %>%</span>
+      </div>
+      <div class="w-full bg-gray-100 rounded-full h-2.5 dark:bg-gray-700">
+        <div class="h-2.5 rounded-full transition-all duration-500 <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if @cycles.empty? %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center dark:bg-gray-800 dark:border-gray-700">
+    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    <p class="text-gray-500 mb-4 dark:text-gray-400"><%= t("okrs.no_cycles_body") %></p>
+    <%= link_to t("okrs.create_first"), new_organization_okr_cycle_path(@organization), class: "text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" %>
+  </div>
+<% else %>
+  <div class="space-y-4">
+    <% @cycles.where.not(id: @active_cycle&.id).each do |cycle| %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-gray-900/40">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-3">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= cycle.title %></h3>
+            <span class="<%= cycle_status_badge_class(cycle.status) %>"><%= cycle.status.humanize %></span>
+          </div>
+          <%= link_to [@organization, cycle], class: "text-sm text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+            <%= t("actions.view") %> &rarr;
+          <% end %>
+        </div>
+        <div class="flex items-center gap-4 text-sm text-gray-500 mb-3 dark:text-gray-400">
+          <span><%= l(cycle.start_date, format: :short) %> &ndash; <%= l(cycle.end_date, format: :default) %></span>
+          <span><%= t("okrs.objectives_count", count: cycle.objectives.size) %></span>
+          <span><%= t("okrs.key_results_count", count: cycle.kr_count) %></span>
+        </div>
+        <% if cycle.objectives.any? %>
+          <% progress = cycle.overall_progress %>
+          <div class="flex items-center gap-3">
+            <div class="flex-1 bg-gray-100 rounded-full h-2 dark:bg-gray-700">
+              <div class="h-2 rounded-full transition-all duration-300 <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
+            </div>
+            <span class="text-sm font-medium <%= progress >= 100 ? 'text-green-600 dark:text-green-400' : progress >= 75 ? 'text-blue-600 dark:text-blue-400' : progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %>"><%= progress %>%</span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

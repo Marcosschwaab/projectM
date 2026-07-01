@@ -1,0 +1,17 @@
+<% if attachable.files.any? %>
+  <div class="flex flex-wrap gap-2">
+    <% attachable.files.each do |file| %>
+      <div class="group relative flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:border-indigo-300 transition-colors dark:bg-gray-700/50 dark:border-gray-600 dark:hover:border-indigo-500">
+        <% if file.previewable? && file.representable? %>
+          <%= image_tag file.representation(resize_to_limit: [24, 24]), class: "w-6 h-6 rounded object-cover" %>
+        <% else %>
+          <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        <% end %>
+        <%= link_to rails_blob_path(file, disposition: "attachment"), class: "text-xs text-gray-600 hover:text-indigo-600 truncate max-w-[120px] dark:text-gray-300 dark:hover:text-indigo-400" do %>
+          <%= file.filename %>
+        <% end %>
+        <span class="text-[10px] text-gray-400 flex-shrink-0"><%= number_to_human_size(file.byte_size) %></span>
+      </div>
+    <% end %>
+  </div>
+<% end %>

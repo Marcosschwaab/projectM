@@ -1,6 +1,6 @@
 class OkrCyclePolicy < ApplicationPolicy
   def index?
-    user.member_of?(record.organization)
+    user.member_of?(record)
   end
 
   def show?
@@ -8,17 +8,29 @@ class OkrCyclePolicy < ApplicationPolicy
   end
 
   def create?
-    user.member_of?(record.organization)
+    user.role_in(record.organization).in?(%w[admin manager])
+  end
+
+  def new?
+    create?
   end
 
   def update?
-    user.member_of?(record.organization)
+    user.role_in(record.organization).in?(%w[admin manager])
+  end
+
+  def edit?
+    update?
+  end
+
+  def destroy?
+    user.role_in(record.organization).in?(%w[admin])
   end
 
   class Scope < Scope
     def resolve
-      scope.joins(organization: :memberships)
-           .where(memberships: { user_id: user.id })
+      scope.joins(:organization)
+           .where(organizations: { id: user.organization_ids })
     end
   end
 end

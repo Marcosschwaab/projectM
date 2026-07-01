@@ -6,7 +6,7 @@ class SearchesController < ApplicationController
     @query = params[:q]
     return if @query.blank?
 
-    @projects = policy_scope(Project).where(organization: @organization).where("name ILIKE ?", "%#{@query}%")
+    @projects = policy_scope(Project).where(organization: @organization).where("projects.name ILIKE ?", "%#{@query}%")
     @tasks = policy_scope(Task).joins(:project).where(projects: { organization_id: @organization }).where("tasks.title ILIKE ?", "%#{@query}%")
     @users = @organization.members.where("name ILIKE ? OR email ILIKE ?", "%#{@query}%", "%#{@query}%")
 

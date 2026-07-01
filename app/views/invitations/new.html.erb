@@ -1,30 +1,30 @@
-<h1>Invite a member</h1>
+<h1 class="dark:text-gray-100"><%= t("invitations.invite_member") %></h1>
 
 <%= form_with(model: [@organization, @invitation]) do |f| %>
   <% if @invitation.errors.any? %>
     <div>
-      <h2><%= pluralize(@invitation.errors.count, "error") %> prohibited this invitation from being saved:</h2>
+      <h2 class="dark:text-gray-100"><%= pluralize(@invitation.errors.count, t("errors.error", count: @invitation.errors.count)) %> <%= t("errors.prohibited", model: t("invitations.title").downcase) %></h2>
       <ul>
         <% @invitation.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+          <li class="dark:text-gray-300"><%= error.full_message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
   <div>
-    <%= f.label :email %>
-    <%= f.email_field :email %>
+    <%= f.label :email, class: "dark:text-gray-300" %>
+    <%= f.email_field :email, class: "dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
   </div>
 
   <div>
-    <%= f.label :role %>
-    <%= f.select :role, Invitation.roles.keys.map { |r| [r.humanize, r] } %>
+    <%= f.label :role, class: "dark:text-gray-300" %>
+    <%= f.select :role, Invitation.roles.keys.map { |r| [r.humanize, r] }, {}, class: "dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
   </div>
 
   <div>
-    <%= f.submit "Send invitation" %>
+    <%= f.submit t("invitations.send"), class: "dark:bg-indigo-500" %>
   </div>
 <% end %>
 
-<%= link_to "Back", organization_invitations_path(@organization) %>
+<%= link_to t("actions.back"), organization_invitations_path(@organization), class: "dark:text-indigo-400" %>

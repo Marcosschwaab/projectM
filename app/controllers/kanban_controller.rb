@@ -5,7 +5,11 @@ class KanbanController < ApplicationController
 
   def show
     authorize @project, :show?
-    @tasks = policy_scope(Task).where(project: @project).includes(:assignee)
+    @tasks = policy_scope(Task)
+      .where(project: @project)
+      .includes(:assignee, :checklist_items)
+      .by_status
+
     @grouped_tasks = @tasks.group_by(&:status)
   end
 

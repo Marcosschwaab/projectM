@@ -3,16 +3,60 @@ class DashboardController < ApplicationController
 
   def show
     @organization = current_user.organizations.first
-    return redirect_to new_organization_path, alert: "Create an organization to get started." unless @organization
+    return redirect_to new_organization_path, alert: t("flash.create_organization_first") unless @organization
 
-    @projects = policy_scope(Project).where(organization: @organization).active.includes(:assignee)
+    @projects = policy_scope(Project).where(organization: @organization).includes(:assignee)
     @tasks = policy_scope(Task).where(project_id: @projects.pluck(:id)).includes(:assignee, :project)
 
-    @active_projects_count = @projects.count
+    @active_projects_count = @projects.active.count
     @completed_projects_count = @projects.where(status: :completed).count
     @open_tasks_count = @tasks.where.not(status: :done).count
-    @overdue_tasks = @tasks.where("due_date < ? AND status != ?", Date.today, :done)
+    @overdue_tasks = @tasks.where("tasks.due_date < ?", Date.today).where.not(status: :done)
+    @my_tasks = @tasks.where(assignee_id: current_user.id)
     @upcoming_tasks = @tasks.where(due_date: Date.today..7.days.from_now).where.not(status: :done)
-    @recent_activity = ActivityLog.where(organization: @organization).order(created_at: :desc).limit(10)
+    @recent_activity = ActivityLog.where(organization: @organization).includes(:user).order(created_at: :desc).limit(8)
+
+    @status_distribution = @projects.group(:status).count
+    @task_status_distribution = @tasks_grouped = @tasks.group(:status).count
+    @priority_distribution = @tasks.group(:priority).count
+    @tasks_by_project = @projects.left_joins(:tasks).group("projects.id", "projects.name").count("tasks.id")
+    @completion_rate = @tasks.count > 0 ? ((@tasks.where(status: :done).count.to_f / @tasks.count) * 100).round(0) : 0
+    @members_count = @organization.members.count
+
+    @active_cycle = @organization.okr_cycles.find_by(status: :active)
+    @okr_progress = @active_cycle&.overall_progress || 0
+    @kpis = policy_scope(@organization.kpis).limit(6)
+    @kpi_achieved = @kpis.count { |k| k.calculate_progress >= 100 }
+    @kpi_total = @kpis.size
+
+    @gantt_projects = @projects.active.order(:start_date)
+    now = Date.today
+    @gantt_start = @gantt_projects.map { |p| p.start_date || p.created_at.to_date }.min || now
+    @gantt_end = @gantt_projects.map { |p| p.end_date || p.created_at.to_date + 90 }.max || now + 90
+    @gantt_items = @gantt_projects.map do |p|
+      s = p.start_date || p.created_at.to_date
+      e = p.end_date || s + 90
+      {
+        name: p.name,
+        assignee: p.assignee&.name,
+        start: s.to_s,
+        end: e.to_s,
+        color: project_gantt_color(p),
+        dependencies: []
+      }
+    end
+  end
+
+  private
+
+  def project_gantt_color(status)
+    case status.to_s
+    when "on_track" then "bg-green-500"
+    when "at_risk" then "bg-red-500"
+    when "behind" then "bg-orange-500"
+    when "on_hold" then "bg-gray-500"
+    when "completed" then "bg-blue-500"
+    else "bg-indigo-500"
+    end
   end
 end

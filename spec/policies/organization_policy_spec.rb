@@ -11,6 +11,7 @@ RSpec.describe OrganizationPolicy do
   end
 
   describe "permissions" do
+    it { is_expected.to permit_action(:index) }
     it { is_expected.to permit_action(:show) }
     it { is_expected.to permit_action(:create) }
 

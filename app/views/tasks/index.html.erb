@@ -1,14 +1,109 @@
-<h1>Tasks</h1>
-
-<%= link_to "New task", new_organization_project_task_path(@organization, @project) %>
-
-<ul>
-  <% @tasks.each do |task| %>
-    <li>
-      <%= link_to task.title, [@organization, @project, task] %>
-      <span><%= task.status %></span>
-      <span><%= task.priority %></span>
-      <span><%= task.assignee&.name || "Unassigned" %></span>
-    </li>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("tasks.title") %></h1>
+  <%= link_to new_organization_project_task_path(@organization, @project), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("tasks.new") %>
   <% end %>
-</ul>
+</div>
+
+<%= form_with url: organization_project_tasks_path(@organization, @project), method: :get, class: "mb-6" do |f| %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div>
+        <%= f.search_field :q, value: params[:q], placeholder: t("tasks.filters.search"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+      <div>
+        <%= f.select :assignee_id, options_from_collection_for_select(@organization.members, :id, :name, params[:assignee_id]), { include_blank: t("tasks.filters.all_assignees") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+      <div>
+        <%= f.select :priority, options_for_select(Task.priorities.keys.map { |k| [k.humanize, k] }, params[:priority]), { include_blank: t("tasks.filters.all_priorities") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+      <div>
+        <%= f.select :status, options_for_select(Task.statuses.keys.map { |k| [k.humanize, k] }, params[:status]), { include_blank: t("tasks.filters.all_statuses") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+      <div>
+        <%= f.select :tag_id, options_from_collection_for_select(@organization.tags.order(:name), :id, :name, params[:tag_id]), { include_blank: t("tags.all_tags") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+      <div>
+        <%= f.date_field :due_date_from, value: params[:due_date_from], placeholder: t("tasks.filters.due_from"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 mt-3">
+      <%= f.submit t("actions.filter"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+      <%= link_to t("actions.clear"), organization_project_tasks_path(@organization, @project), class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" %>
+      <span class="text-xs text-gray-400 ml-auto dark:text-gray-500"><%= t("tasks.count", count: @tasks.count) %></span>
+    </div>
+  </div>
+<% end %>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+  <table class="w-full">
+    <thead>
+      <tr class="bg-gray-50 dark:bg-gray-700">
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.title") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.depends_on") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tags.title") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.status") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.priority") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.assignee") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.due_date") %></th>
+        <th class="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.filters.actions") %></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+      <% @tasks.each do |task| %>
+        <tr class="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+          <td class="px-6 py-4">
+            <%= link_to [@organization, @project, task], class: "text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400" do %>
+              <%= task.title %>
+            <% end %>
+          </td>
+          <td class="px-6 py-4">
+            <% if task.dependencies.any? %>
+              <div class="flex -space-x-1">
+                <% task.dependencies.each do |dep| %>
+                  <span class="w-5 h-5 rounded-full text-[9px] font-bold flex items-center justify-center border-2 border-white <%= dep.status == "done" ? "bg-green-500 text-white" : "bg-yellow-500 text-white" %> dark:border-gray-800" title="<%= dep.title %>"><%= dep.title.first.upcase %></span>
+                <% end %>
+              </div>
+            <% else %>
+              <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <% task.tags.each do |tag| %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style="background-color: <%= tag.color %>20; color: <%= tag.color %>">
+                  <%= tag.name %>
+                </span>
+              <% end %>
+              <% if task.tags.empty? %>
+                <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
+              <% end %>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="<%= status_badge_class(task.status) %>"><%= task.status&.humanize %></span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="<%= priority_class(task.priority) %>"><%= task.priority&.humanize %></span>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><%= task.assignee&.name || "-" %></td>
+          <td class="px-6 py-4 text-sm <%= task.due_date && task.due_date < Date.today && task.status != "done" ? "text-red-600 font-medium dark:text-red-400" : "text-gray-600 dark:text-gray-400" %>">
+            <%= task.due_date || "-" %>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <%= link_to t("actions.edit"), edit_organization_project_task_path(@organization, @project, task), class: "text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+              <%= button_to t("actions.delete"), [@organization, @project, task], method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-xs text-red-600 hover:text-red-700 bg-transparent border-none cursor-pointer dark:text-red-400 dark:hover:text-red-300" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @tasks.empty? %>
+    <div class="p-8 text-center">
+      <p class="text-gray-500 dark:text-gray-400"><%= t("tasks.no_tasks_found") %></p>
+    </div>
+  <% end %>
+</div>

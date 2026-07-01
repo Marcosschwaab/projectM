@@ -15,12 +15,13 @@ class InvitationsController < ApplicationController
   def create
     authorize @organization, :manage_members?
     @invitation = @organization.invitations.build(invitation_params)
+    @invitation.user = current_user
     @invitation.role ||= :member
 
     if @invitation.save
-      redirect_to organization_invitations_path(@organization), notice: "Invitation sent."
+      redirect_to organization_invitations_path(@organization), notice: t("flash.invitation.sent")
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

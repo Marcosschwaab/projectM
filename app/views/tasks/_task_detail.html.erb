@@ -1,0 +1,122 @@
+<div class="flex items-start justify-between mb-4">
+  <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100"><%= task.title %></h2>
+  <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+    <%= link_to edit_organization_project_task_path(organization, project, task), class: "px-3 py-1.5 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+    <% end %>
+  </div>
+</div>
+
+<p class="text-gray-600 mb-5 dark:text-gray-400"><%= task.description.presence || t("tasks.no_description") %></p>
+
+<% if task.tags.any? %>
+  <div class="flex items-center gap-2 mb-5 flex-wrap">
+    <% task.tags.each do |tag| %>
+      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: <%= tag.color %>20; color: <%= tag.color %>">
+        <%= tag.name %>
+      </span>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="grid grid-cols-2 gap-3 mb-5">
+  <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.status") %></p>
+    <span class="<%= status_badge_class(task.status) %>"><%= task.status&.humanize %></span>
+  </div>
+  <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.priority") %></p>
+    <span class="<%= priority_class(task.priority) %>"><%= task.priority&.humanize %></span>
+  </div>
+  <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.assignee") %></p>
+    <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= task.assignee&.name || t("projects.unassigned") %></p>
+  </div>
+  <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.due_date") %></p>
+    <p class="text-sm font-medium <%= task.due_date && task.due_date < Date.today && task.status != "done" ? "text-red-600 dark:text-red-400" : "text-gray-900 dark:text-gray-100" %>">
+      <%= task.due_date || "-" %>
+    </p>
+  </div>
+</div>
+
+<div class="mb-5">
+  <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("tasks.checklist") %></h3>
+  <div class="space-y-2 mb-3">
+    <% task.checklist_items.each do |item| %>
+      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+        <%= form_with(model: [organization, project, task, item], class: "flex items-center gap-3 w-full") do |f| %>
+          <%= f.check_box :completed, onchange: "this.form.submit()", class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:text-indigo-400" %>
+          <span class="text-sm <%= item.completed? ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-300" %>"><%= item.content %></span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if task.checklist_items.empty? %>
+      <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("tasks.no_checklist_items") %></p>
+    <% end %>
+  </div>
+  <%= form_with(model: [organization, project, task, checklist_item], class: "flex items-center gap-2") do |f| %>
+    <%= f.text_field :content, placeholder: t("tasks.add_checklist_item"), class: "flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+    <%= f.submit t("actions.add"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+  <% end %>
+</div>
+
+  <% if task.files.any? %>
+    <div class="mb-5">
+      <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("attachments.files") %></h3>
+      <%= render "shared/attachments", attachable: task %>
+    </div>
+  <% end %>
+
+  <% if task.dependencies.any? || task.dependent_tasks.any? %>
+    <div class="mb-5">
+      <div class="grid grid-cols-2 gap-3">
+        <% if task.dependencies.any? %>
+          <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+            <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.depends_on") %></p>
+            <div class="space-y-1">
+              <% task.dependencies.each do |dep| %>
+                <%= link_to [organization, project, dep], class: "block text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+                  <span class="flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full <%= dep.status == "done" ? "bg-green-500" : "bg-yellow-500" %>"></span>
+                    <%= dep.title %>
+                  </span>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if task.dependent_tasks.any? %>
+          <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+            <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.blocking") %></p>
+            <div class="space-y-1">
+              <% task.dependent_tasks.each do |dep| %>
+                <%= link_to [organization, project, dep], class: "block text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+                  <%= dep.title %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div data-controller="comments" data-comments-task-id-value="<%= task.id %>">
+    <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("tasks.comments") %></h3>
+    <div class="space-y-4 mb-4 max-h-60 overflow-y-auto" data-comments-target="list">
+      <% task.comments.includes(:user).each do |comment| %>
+        <%= render "comments/comment", comment: comment %>
+      <% end %>
+      <% if task.comments.empty? %>
+        <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("tasks.no_comments") %></p>
+      <% end %>
+    </div>
+  <%= form_with(model: [organization, project, task, comment], class: "space-y-2") do |f| %>
+    <%= f.text_area :content, rows: 2, placeholder: t("tasks.add_comment_placeholder"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+    <div class="flex items-center gap-2">
+      <%= f.file_field :files, multiple: true, class: "text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 dark:hover:file:bg-indigo-900/50 dark:text-gray-400" %>
+      <%= f.submit t("tasks.comment_submit"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+    </div>
+  <% end %>
+</div>

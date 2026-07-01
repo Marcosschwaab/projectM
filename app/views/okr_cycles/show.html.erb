@@ -1,22 +1,159 @@
-<h1><%= @cycle.title %></h1>
-
-<p><%= @cycle.start_date %> - <%= @cycle.end_date %></p>
-<p>Status: <%= @cycle.status %></p>
-
-<h2>Objectives</h2>
-<% @cycle.objectives.each do |objective| %>
+<div class="flex items-center justify-between mb-6">
   <div>
-    <h3><%= objective.title %></h3>
-    <p>Progress: <%= objective.calculate_progress %>%</p>
-
-    <h4>Key Results</h4>
-    <% objective.key_results.each do |kr| %>
-      <div>
-        <%= kr.title %> - <%= kr.current_value %>/<%= kr.target_value %> <%= kr.unit %>
-        (Progress: <%= kr.calculate_progress %>%)
-      </div>
+    <div class="flex items-center gap-2 mb-1">
+      <%= link_to organization_okr_cycles_path(@organization), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+        <%= t("actions.back_to_cycles") %>
+      <% end %>
+    </div>
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @cycle.title %></h1>
+      <span class="<%= cycle_status_badge_class(@cycle.status) %>"><%= @cycle.status.humanize %></span>
+    </div>
+    <p class="text-sm text-gray-500 mt-1 dark:text-gray-400">
+      <%= l(@cycle.start_date, format: :default) %> &ndash; <%= l(@cycle.end_date, format: :default) %>
+    </p>
+  </div>
+  <div class="flex items-center gap-2">
+    <%= link_to edit_organization_okr_cycle_path(@organization, @cycle), class: "px-3 py-1.5 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" do %>
+      <%= t("actions.edit") %>
+    <% end %>
+    <%= button_to organization_okr_cycle_path(@organization, @cycle), method: :delete, data: { turbo_confirm: t("okrs.delete_confirm") }, class: "px-3 py-1.5 bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 cursor-pointer border-none dark:bg-red-500 dark:hover:bg-red-600" do %>
+      <%= t("actions.delete") %>
     <% end %>
   </div>
-<% end %>
+</div>
 
-<%= link_to "Back", organization_okr_cycles_path(@organization) %>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("okrs.overall_progress") %></p>
+    <% progress = @cycle.overall_progress %>
+    <p class="text-2xl font-bold <%= progress >= 100 ? 'text-green-600 dark:text-green-400' : progress >= 75 ? 'text-blue-600 dark:text-blue-400' : progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %>"><%= progress %>%</p>
+    <div class="w-full bg-gray-100 rounded-full h-2 mt-2 dark:bg-gray-700">
+      <div class="h-2 rounded-full <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("okrs.objectives") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objectives.size %></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= @cycle.objectives_completed %> <%= t("okrs.completed") %></p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("okrs.key_results") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @cycle.kr_count %></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= @cycle.krs_achieved %> <%= t("okrs.achieved") %></p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("okrs.project_alignment") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @objectives.linked_to_project.size %></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= t("okrs.linked_to_project") %></p>
+  </div>
+</div>
+
+<div class="space-y-6">
+  <% @objectives.each do |objective| %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= objective.title %></h3>
+              <% if objective.project %>
+                <span class="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full font-medium dark:bg-indigo-900/30 dark:text-indigo-400"><%= objective.project.name %></span>
+              <% end %>
+            </div>
+            <% if objective.description.present? %>
+              <p class="text-sm text-gray-500 dark:text-gray-400"><%= objective.description %></p>
+            <% end %>
+          </div>
+          <div class="flex items-center gap-1">
+            <%= link_to edit_organization_okr_cycle_objective_path(@organization, @cycle, objective), class: "p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <% end %>
+            <%= button_to [@organization, @cycle, objective], method: :delete, data: { turbo_confirm: t("okrs.delete_objective_confirm") }, class: "p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded dark:text-gray-500 dark:hover:text-red-400 dark:hover:bg-red-900/30" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-gray-500 mb-4 dark:text-gray-400">
+          <% if objective.owner %>
+            <span class="font-medium text-gray-700 dark:text-gray-300"><%= t("okrs.owner") %>: <%= objective.owner.name %></span>
+            <span>&middot;</span>
+          <% end %>
+          <% obj_progress = objective.calculate_progress %>
+          <span class="<%= obj_progress >= 100 ? 'text-green-600 dark:text-green-400' : obj_progress >= 75 ? 'text-blue-600 dark:text-blue-400' : obj_progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %> font-medium"><%= obj_progress %>% <%= t("okrs.percent_complete") %></span>
+        </div>
+
+        <div class="w-full bg-gray-100 rounded-full h-2 mb-4 dark:bg-gray-700">
+          <div class="h-2 rounded-full <%= obj_progress >= 100 ? 'bg-green-500' : obj_progress >= 75 ? 'bg-blue-500' : obj_progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [obj_progress, 100].min %>%"></div>
+        </div>
+
+        <div class="space-y-2">
+          <% objective.key_results.order(:created_at).each do |kr| %>
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= kr.title %></span>
+                  <span class="text-xs text-gray-400 dark:text-gray-500"><%= kr.unit %></span>
+                </div>
+                <div class="flex items-center gap-3 mt-1">
+                  <div class="flex-1 bg-gray-200 rounded-full h-1.5 max-w-48 dark:bg-gray-600">
+                    <% kr_progress = kr.calculate_progress %>
+                    <div class="h-1.5 rounded-full <%= kr_progress >= 100 ? 'bg-green-500' : kr_progress >= 75 ? 'bg-blue-500' : kr_progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [kr_progress, 100].min %>%"></div>
+                  </div>
+                  <span class="text-xs font-medium <%= kr_progress >= 100 ? 'text-green-600 dark:text-green-400' : kr_progress >= 75 ? 'text-blue-600 dark:text-blue-400' : kr_progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %>"><%= kr.current_value %>/<%= kr.target_value %> <%= kr.unit %></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 flex-shrink-0">
+                <%= link_to edit_organization_okr_cycle_objective_key_result_path(@organization, @cycle, objective, kr), class: "p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" do %>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <% end %>
+                <%= button_to [@organization, @cycle, objective, kr], method: :delete, data: { turbo_confirm: t("okrs.delete_key_result_confirm") }, class: "p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400" do %>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <details class="group">
+            <summary class="text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer font-medium list-none flex items-center gap-1 py-1 dark:text-indigo-400 dark:hover:text-indigo-300">
+              <svg class="w-4 h-4 group-open:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <%= t("okrs.add_key_result") %>
+            </summary>
+            <%= form_with(model: [@organization, @cycle, objective, objective.key_results.build], class: "mt-2 p-3 bg-gray-50 rounded-lg space-y-2 dark:bg-gray-700/50") do |f| %>
+              <div>
+                <%= f.text_field :title, placeholder: t("okrs.key_result_title_placeholder"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+              </div>
+              <div class="flex items-center gap-2">
+                <%= f.number_field :current_value, placeholder: t("okrs.current_value_placeholder"), step: 0.01, class: "w-24 px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                <span class="text-gray-400 dark:text-gray-500">/</span>
+                <%= f.number_field :target_value, placeholder: t("okrs.target_value_placeholder"), step: 0.01, class: "w-24 px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                <%= f.text_field :unit, placeholder: t("okrs.unit_placeholder"), class: "w-16 px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                <%= f.submit t("actions.add"), class: "px-3 py-1.5 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+              </div>
+            <% end %>
+          </details>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <details class="bg-white rounded-xl shadow-sm border border-dashed border-gray-300 hover:border-indigo-300 transition-colors dark:bg-gray-800 dark:border-gray-600 dark:hover:border-indigo-500">
+    <summary class="p-5 text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer font-medium flex items-center gap-2 list-none dark:text-indigo-400 dark:hover:text-indigo-300">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      <%= t("okrs.add_objective") %>
+    </summary>
+    <div class="px-5 pb-5">
+      <%= form_with(model: [@organization, @cycle, @cycle.objectives.build], class: "space-y-3") do |f| %>
+        <div>
+          <%= f.text_field :title, placeholder: t("okrs.objective_title_placeholder"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= f.collection_select :owner_id, @organization.members, :id, :name, { include_blank: t("okrs.owner") }, class: "px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          <%= f.collection_select :project_id, @organization.projects.active.order(:name), :id, :name, { include_blank: t("okrs.no_project") }, class: "px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          <%= f.submit t("actions.create"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        </div>
+      <% end %>
+    </div>
+  </details>
+</div>

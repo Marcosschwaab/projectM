@@ -1,0 +1,63 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("kpis.title") %></h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= @organization.name %></p>
+  </div>
+  <%= link_to new_organization_kpi_path(@organization), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("kpis.new") %>
+  <% end %>
+</div>
+
+<% if @kpis.empty? %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center dark:bg-gray-800 dark:border-gray-700">
+    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    <p class="text-gray-500 mb-4 dark:text-gray-400"><%= t("kpis.no_kpis") %> <%= t("kpis.description") %></p>
+    <%= link_to t("kpis.create_first"), new_organization_kpi_path(@organization), class: "text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" %>
+  </div>
+<% else %>
+  <% @categories.each do |category, kpis| %>
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3 capitalize dark:text-gray-100"><%= category.humanize %></h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% kpis.each do |kpi| %>
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:shadow-gray-900/40">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100"><%= kpi.name %></h3>
+              <div class="flex items-center gap-1">
+                <%= link_to edit_organization_kpi_path(@organization, kpi), class: "p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <% end %>
+                <%= button_to organization_kpi_path(@organization, kpi), method: :delete, data: { turbo_confirm: t("kpis.delete_confirm") }, class: "p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <% end %>
+              </div>
+            </div>
+            <% if kpi.description.present? %>
+              <p class="text-xs text-gray-500 mb-3 dark:text-gray-400"><%= kpi.description %></p>
+            <% end %>
+            <% progress = kpi.calculate_progress %>
+            <div class="mb-2">
+              <div class="flex items-baseline justify-between mb-1">
+                <span class="text-2xl font-bold <%= progress >= 100 ? 'text-green-600 dark:text-green-400' : progress >= 75 ? 'text-blue-600 dark:text-blue-400' : progress >= 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400' %>">
+                  <%= kpi.current_value.to_f %><span class="text-sm text-gray-400 dark:text-gray-500"><%= kpi.unit %></span>
+                </span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"><%= t("kpis.target") %>: <%= kpi.target_value %><%= kpi.unit %></span>
+              </div>
+              <div class="w-full bg-gray-100 rounded-full h-2 dark:bg-gray-700">
+                <div class="h-2 rounded-full transition-all duration-500 <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+              <span class="capitalize"><%= kpi.frequency.humanize %></span>
+              <% if kpi.project %>
+                <span><%= kpi.project.name %></span>
+              <% else %>
+                <span><%= t("kpis.org_wide") %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

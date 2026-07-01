@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_155603) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "activity_logs", force: :cascade do |t|
     t.string "action"
@@ -75,16 +103,59 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
     t.index ["objective_id"], name: "index_key_results_on_objective_id"
   end
 
+  create_table "kpis", force: :cascade do |t|
+    t.integer "category", default: 0
+    t.datetime "created_at", null: false
+    t.decimal "current_value", precision: 12, scale: 2, default: "0.0"
+    t.text "description"
+    t.integer "frequency", default: 0
+    t.jsonb "metadata", default: {}
+    t.string "name", null: false
+    t.bigint "organization_id", null: false
+    t.bigint "owner_id"
+    t.bigint "project_id"
+    t.decimal "target_value", precision: 12, scale: 2
+    t.integer "trend", default: 0
+    t.string "unit"
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_kpis_on_category"
+    t.index ["frequency"], name: "index_kpis_on_frequency"
+    t.index ["organization_id"], name: "index_kpis_on_organization_id"
+    t.index ["owner_id"], name: "index_kpis_on_owner_id"
+    t.index ["project_id"], name: "index_kpis_on_project_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "action", null: false
+    t.bigint "actor_id"
+    t.datetime "created_at", null: false
+    t.bigint "notifiable_id"
+    t.string "notifiable_type"
+    t.bigint "organization_id"
+    t.boolean "read", default: false
+    t.datetime "read_at"
+    t.bigint "recipient_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["organization_id"], name: "index_notifications_on_organization_id"
+    t.index ["recipient_id", "read"], name: "index_notifications_on_recipient_id_and_read"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
+  end
+
   create_table "objectives", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
     t.bigint "okr_cycle_id", null: false
     t.bigint "owner_id"
     t.decimal "progress", precision: 5, scale: 2, default: "0.0"
+    t.bigint "project_id"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["okr_cycle_id"], name: "index_objectives_on_okr_cycle_id"
     t.index ["owner_id"], name: "index_objectives_on_owner_id"
+    t.index ["project_id"], name: "index_objectives_on_project_id"
   end
 
   create_table "okr_cycles", force: :cascade do |t|
@@ -152,6 +223,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
     t.index ["project_id"], name: "index_strategic_canvases_on_project_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "color", default: "#6366f1"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_tags_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_tags_on_organization_id"
+  end
+
+  create_table "task_dependencies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "dependency_id", null: false
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dependency_id"], name: "index_task_dependencies_on_dependency_id"
+    t.index ["task_id", "dependency_id"], name: "index_task_dependencies_on_task_id_and_dependency_id", unique: true
+    t.index ["task_id"], name: "index_task_dependencies_on_task_id"
+  end
+
+  create_table "task_tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "tag_id", null: false
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_task_tags_on_tag_id"
+    t.index ["task_id", "tag_id"], name: "index_task_tags_on_task_id_and_tag_id", unique: true
+    t.index ["task_id"], name: "index_task_tags_on_task_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.bigint "assignee_id"
     t.datetime "created_at", null: false
@@ -172,15 +273,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "locale", default: "en"
     t.string "name"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.string "theme", default: "system"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["locale"], name: "index_users_on_locale"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "webhook_deliveries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "error"
+    t.text "response"
+    t.integer "status"
+    t.datetime "updated_at", null: false
+    t.bigint "webhook_id", null: false
+    t.index ["webhook_id"], name: "index_webhook_deliveries_on_webhook_id"
+  end
+
+  create_table "webhooks", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.text "events", default: "--- []\n", null: false
+    t.string "name", null: false
+    t.bigint "organization_id", null: false
+    t.string "secret"
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["organization_id"], name: "index_webhooks_on_organization_id"
+  end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activity_logs", "organizations"
   add_foreign_key "activity_logs", "users"
   add_foreign_key "checklist_items", "tasks"
@@ -189,7 +317,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
   add_foreign_key "invitations", "organizations"
   add_foreign_key "invitations", "users"
   add_foreign_key "key_results", "objectives"
+  add_foreign_key "kpis", "organizations"
+  add_foreign_key "kpis", "projects"
+  add_foreign_key "kpis", "users", column: "owner_id"
+  add_foreign_key "notifications", "organizations"
+  add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "notifications", "users", column: "recipient_id"
   add_foreign_key "objectives", "okr_cycles"
+  add_foreign_key "objectives", "projects"
   add_foreign_key "objectives", "users", column: "owner_id"
   add_foreign_key "okr_cycles", "organizations"
   add_foreign_key "organization_memberships", "organizations"
@@ -197,6 +332,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_184511) do
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "users", column: "assignee_id"
   add_foreign_key "strategic_canvases", "projects"
+  add_foreign_key "tags", "organizations"
+  add_foreign_key "task_dependencies", "tasks"
+  add_foreign_key "task_dependencies", "tasks", column: "dependency_id"
+  add_foreign_key "task_tags", "tags"
+  add_foreign_key "task_tags", "tasks"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "users", column: "assignee_id"
+  add_foreign_key "webhook_deliveries", "webhooks"
+  add_foreign_key "webhooks", "organizations"
 end

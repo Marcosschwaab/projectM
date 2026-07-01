@@ -13,9 +13,9 @@ class StrategicCanvasesController < ApplicationController
     authorize @canvas
 
     if @canvas.update(canvas_params)
-      redirect_to [ @organization, @project, @canvas ], notice: "Canvas updated."
+      redirect_to [ @organization, @project, @canvas ], notice: t("flash.canvas.updated")
     else
-      render :show, status: :unprocessable_entity
+      render :show, status: :unprocessable_content
     end
   end
 

@@ -52,3 +52,5 @@ end
 gem "tailwindcss-rails", "~> 4.6"
 
 gem "pundit-matchers", "~> 4.0", group: :test
+
+gem "grover"

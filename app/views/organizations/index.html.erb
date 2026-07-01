@@ -1,12 +1,24 @@
-<h1>Organizations</h1>
-
-<%= link_to "New organization", new_organization_path %>
-
-<ul>
-  <% @organizations.each do |organization| %>
-    <li>
-      <%= link_to organization.name, organization %>
-      <small><%= organization.description %></small>
-    </li>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("organizations.title") %></h1>
+  <%= link_to new_organization_path, class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("organizations.new") %>
   <% end %>
-</ul>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @organizations.each do |organization| %>
+    <%= link_to organization, class: "block bg-white rounded-xl shadow-sm border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-indigo-500 dark:hover:shadow-gray-900/40" do %>
+      <div class="p-5">
+        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-3 dark:bg-indigo-900/30">
+          <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400"><%= organization.name.first.upcase %></span>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-1 dark:text-gray-100"><%= organization.name %></h3>
+        <p class="text-sm text-gray-500 line-clamp-2 dark:text-gray-400"><%= organization.description.presence || t("organizations.no_description") %></p>
+      </div>
+      <div class="px-5 py-3 border-t border-gray-100 bg-gray-50/50 rounded-b-xl flex items-center gap-4 text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-700/30 dark:text-gray-400">
+        <span><%= t("organizations.members_count", count: organization.members.count) %></span>
+        <span><%= t("organizations.projects_count", count: organization.projects.count) %></span>
+      </div>
+    <% end %>
+  <% end %>
+</div>

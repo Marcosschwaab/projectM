@@ -25,25 +25,25 @@ class OrganizationsController < ApplicationController
 
     if @organization.save
       @organization.memberships.create!(user: current_user, role: :admin)
-      redirect_to @organization, notice: "Organization was successfully created."
+      redirect_to @organization, notice: t("flash.organization.created")
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
   def update
     authorize @organization
     if @organization.update(organization_params)
-      redirect_to @organization, notice: "Organization was successfully updated."
+      redirect_to @organization, notice: t("flash.organization.updated")
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     authorize @organization
     @organization.destroy!
-    redirect_to organizations_url, notice: "Organization was successfully destroyed."
+    redirect_to organizations_url, notice: t("flash.organization.destroyed")
   end
 
   private

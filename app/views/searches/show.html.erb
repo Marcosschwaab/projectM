@@ -1,40 +1,40 @@
-<h1>Search Results</h1>
+<h1 class="dark:text-gray-100"><%= t("searches.title") %></h1>
 
 <%= form_with(url: search_path, method: :get, local: true, class: "mb-6") do |f| %>
-  <%= f.search_field :q, value: @query, placeholder: "Search projects, tasks, people...", class: "w-full max-w-md border rounded-lg p-2 text-sm" %>
+  <%= f.search_field :q, value: @query, placeholder: t("searches.placeholder"), class: "w-full max-w-md border rounded-lg p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
 <% end %>
 
 <% if @query.present? %>
-  <p class="text-sm text-gray-500 mb-4"><%= @results_count %> results for "<%= @query %>"</p>
+  <p class="text-sm text-gray-500 mb-4 dark:text-gray-400"><%= @results_count %> <%= t("searches.results_for") %> "<%= @query %>"</p>
 
   <% if @projects.any? %>
-    <h2 class="text-lg font-semibold mb-2">Projects</h2>
+    <h2 class="text-lg font-semibold mb-2 dark:text-gray-100"><%= t("projects.title") %></h2>
     <ul class="mb-6">
       <% @projects.each do |project| %>
-        <li><%= link_to project.name, [@organization, project], class: "text-sm text-indigo-600" %></li>
+        <li><%= link_to project.name, [@organization, project], class: "text-sm text-indigo-600 dark:text-indigo-400" %></li>
       <% end %>
     </ul>
   <% end %>
 
   <% if @tasks.any? %>
-    <h2 class="text-lg font-semibold mb-2">Tasks</h2>
+    <h2 class="text-lg font-semibold mb-2 dark:text-gray-100"><%= t("tasks.title") %></h2>
     <ul class="mb-6">
       <% @tasks.each do |task| %>
-        <li><%= link_to task.title, [@organization, task.project, task], class: "text-sm text-indigo-600" %></li>
+        <li><%= link_to task.title, [@organization, task.project, task], class: "text-sm text-indigo-600 dark:text-indigo-400" %></li>
       <% end %>
     </ul>
   <% end %>
 
   <% if @users.any? %>
-    <h2 class="text-lg font-semibold mb-2">People</h2>
+    <h2 class="text-lg font-semibold mb-2 dark:text-gray-100"><%= t("searches.people") %></h2>
     <ul class="mb-6">
       <% @users.each do |user| %>
-        <li><span class="text-sm"><%= user.name %> (<%= user.email %>)</span></li>
+        <li><span class="text-sm dark:text-gray-300"><%= user.name %> (<%= user.email %>)</span></li>
       <% end %>
     </ul>
   <% end %>
 
   <% if @results_count.zero? %>
-    <p class="text-sm text-gray-500">No results found.</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= t("searches.no_results") %></p>
   <% end %>
 <% end %>

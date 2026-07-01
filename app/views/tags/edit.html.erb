@@ -1,0 +1,44 @@
+<div class="mb-6">
+  <%= link_to organization_tags_path(@organization), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+    <%= t("actions.back_to_tags") %>
+  <% end %>
+</div>
+
+<div class="max-w-lg">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 dark:bg-gray-800 dark:border-gray-700">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6 dark:text-gray-100"><%= t("tags.edit") %></h1>
+
+    <%= form_with(model: [@organization, @tag]) do |f| %>
+      <% if @tag.errors.any? %>
+        <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-900/30 dark:border-red-800 dark:text-red-400">
+          <h2 class="font-semibold mb-1"><%= pluralize(@tag.errors.count, t("errors.error", count: @tag.errors.count)) %> <%= t("errors.prohibited", model: t("tags.singular").downcase) %></h2>
+          <ul class="list-disc pl-4 space-y-1">
+            <% @tag.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-4">
+        <div>
+          <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300" %>
+          <%= f.text_field :name, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        </div>
+
+        <div>
+          <%= f.label :color, class: "block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300" %>
+          <div class="flex items-center gap-3">
+            <%= f.color_field :color, class: "w-10 h-10 rounded border border-gray-300 cursor-pointer dark:border-gray-600" %>
+            <%= f.text_field :color, class: "flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 font-mono" %>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 pt-2">
+          <%= f.submit class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+          <%= link_to t("actions.cancel"), organization_tags_path(@organization), class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

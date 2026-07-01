@@ -1,19 +1,63 @@
-<div class="kanban-card bg-white rounded-lg shadow-sm border border-gray-200 p-3 cursor-grab"
-     data-task-id="<%= task.id %>">
+<div class="kanban-card bg-white rounded-lg shadow-sm border border-gray-200 p-3 cursor-grab hover:shadow-md hover:border-indigo-300 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-indigo-500 dark:hover:shadow-gray-900/40"
+     data-task-id="<%= task.id %>"
+     draggable="true">
   <div class="flex items-start justify-between mb-2">
-    <h4 class="text-sm font-medium text-gray-900"><%= task.title %></h4>
-    <span class="text-xs px-2 py-0.5 rounded-full <%= priority_badge_class(task.priority) %>">
-      <%= task.priority.titleize %>
-    </span>
+    <%= link_to modal_organization_project_task_path(task.project.organization, task.project, task),
+                class: "flex-1 min-w-0",
+                data: { action: "slideover#open", modal_title: task.title } do %>
+      <h4 class="text-sm font-medium text-gray-900 truncate dark:text-gray-100"><%= task.title %></h4>
+    <% end %>
   </div>
-  <% if task.assignee %>
-    <div class="flex items-center gap-2 text-xs text-gray-500">
-      <span><%= task.assignee.name %></span>
+
+  <% if task.description.present? %>
+    <p class="text-xs text-gray-400 line-clamp-2 mb-2 dark:text-gray-500"><%= task.description %></p>
+  <% end %>
+
+  <% if task.tags.any? %>
+    <div class="flex items-center gap-1 mb-2 flex-wrap">
+      <% task.tags.each do |tag| %>
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium" style="background-color: <%= tag.color %>20; color: <%= tag.color %>">
+          <%= tag.name %>
+        </span>
+      <% end %>
     </div>
   <% end %>
-  <% if task.due_date %>
-    <div class="text-xs text-gray-400 mt-1">
-      <%= task.due_date.strftime("%b %d") %>
+
+  <div class="flex items-center gap-2 mb-2 flex-wrap">
+    <span class="text-xs px-1.5 py-0.5 rounded font-medium <%= priority_badge_class(task.priority) %>">
+      <%= task.priority&.humanize %>
+    </span>
+    <% if task.due_date %>
+      <span class="text-xs <%= task.due_date < Date.today ? "text-red-500 font-medium dark:text-red-400" : "text-gray-400 dark:text-gray-500" %>">
+        <%= l(task.due_date, format: :short) %>
+      </span>
+    <% end %>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <% if task.assignee %>
+        <div class="w-5 h-5 bg-indigo-100 rounded-full flex items-center justify-center dark:bg-indigo-900/30">
+          <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400"><%= task.assignee.name.first.upcase %></span>
+        </div>
+      <% end %>
+          <% if task.checklist_items.any? %>
+        <span class="text-xs text-gray-400 dark:text-gray-500">
+          <%= task.checklist_items.count(&:completed) %>/<%= task.checklist_items.size %>
+        </span>
+      <% end %>
+      <% if task.dependencies.any? %>
+        <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-0.5" title="<%= t("tasks.depends_on") %>">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <%= task.dependencies.size %>
+        </span>
+      <% end %>
+      <% if task.files.any? %>
+        <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-0.5">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+          <%= task.files.size %>
+        </span>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

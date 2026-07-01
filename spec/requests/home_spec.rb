@@ -7,11 +7,11 @@ RSpec.describe "Homes", type: :request do
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    it "returns http success when authenticated" do
+    it "redirects to dashboard when authenticated" do
       user = create(:user)
       sign_in user
       get root_path
-      expect(response).to have_http_status(:success)
+      expect(response).to redirect_to(dashboard_path)
     end
   end
 end

@@ -1,31 +1,548 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app:
+    name: "ProjectM"
+    description: "Project Management Platform"
+
+  home:
+    title: "Home"
+    description: "Welcome to ProjectM"
+
+  date:
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    formats:
+      default: "%b %d, %Y"
+      short: "%b %d"
+      long: "%B %d, %Y"
+      dashboard: "%A, %B %d"
+      month_year: "%B %Y"
+
+  time:
+    formats:
+      default: "%b %d, %Y at %I:%M %p"
+      short: "%b %d %I:%M %p"
+      dashboard: "%A, %B %d"
+    ago: "%{time} ago"
+    today: "Today"
+
+  nav:
+    dashboard: "Dashboard"
+    projects: "Projects"
+    okrs: "OKRs"
+    kpis: "KPIs"
+    calendar: "Calendar"
+    notifications: "Notifications"
+    reports: "Reports"
+    organizations: "Organizations"
+    settings: "Settings"
+    sign_out: "Sign out"
+
+  actions:
+    new: "New %{model}"
+    edit: "Edit"
+    delete: "Delete"
+    cancel: "Cancel"
+    save: "Save"
+    update: "Update"
+    create: "Create"
+    add: "Add"
+    back: "Back"
+    search: "Search"
+    view: "View"
+    view_all: "View all"
+    view_details: "View details"
+    mark_all_read: "Mark all as read"
+    archive: "Archive"
+    restore: "Restore"
+    filter: "Filter"
+    clear: "Clear"
+    confirm_delete: "Are you sure?"
+    back_to_projects: "← Back to projects"
+    back_to_project: "← Back to project"
+    back_to_tasks: "← Back to tasks"
+    back_to_task: "← Back to task"
+    back_to_cycles: "← Cycles"
+    back_to_cycle: "← Back to cycle"
+    back_to_organizations: "← Back to organizations"
+    back_to_organization: "← Back to organization"
+    back_to_tags: "← Back to tags"
+    back_to_webhooks: "← Back to webhooks"
+    back_to_kpis: "← Back to KPIs"
+
+  topbar:
+    search_placeholder: "Search..."
+
+  slideover:
+    default_title: "Task"
+    failed_to_load: "Failed to load task."
+
+  flash:
+    created: "%{model} was successfully created."
+    updated: "%{model} was successfully updated."
+    deleted: "%{model} was successfully deleted."
+    unauthorized: "You are not authorized to perform this action."
+    invalid_locale: "Invalid locale"
+    create_organization_first: "Create an organization to get started."
+    project:
+      created: "Project was successfully created."
+      updated: "Project was successfully updated."
+      destroyed: "Project was successfully destroyed."
+      archived: "Project archived."
+      restored: "Project restored."
+    task:
+      created: "Task was successfully created."
+      updated: "Task was successfully updated."
+      destroyed: "Task was successfully destroyed."
+    okr_cycle:
+      created: "OKR cycle created."
+      updated: "OKR cycle updated."
+      deleted: "OKR cycle deleted."
+    objective:
+      added: "Objective added."
+      create_failed: "Failed to create objective."
+      updated: "Objective updated."
+      deleted: "Objective deleted."
+    key_result:
+      added: "Key result added."
+      create_failed: "Failed to create key result."
+      updated: "Key result updated."
+      deleted: "Key result deleted."
+    checklist_item:
+      added: "Checklist item added."
+      create_failed: "Checklist item could not be created."
+      removed: "Checklist item removed."
+    comment:
+      added: "Comment added."
+      create_failed: "Comment could not be created."
+    kpi:
+      created: "KPI created."
+      updated: "KPI updated."
+      deleted: "KPI deleted."
+    organization:
+      created: "Organization was successfully created."
+      updated: "Organization was successfully updated."
+      destroyed: "Organization was successfully destroyed."
+    canvas:
+      updated: "Canvas updated."
+    invitation:
+      sent: "Invitation sent."
+    theme_updated: "Theme updated."
+    tag:
+      created: "Tag created."
+      updated: "Tag updated."
+      destroyed: "Tag deleted."
+    webhook:
+      created: "Webhook created."
+      updated: "Webhook updated."
+      destroyed: "Webhook deleted."
+
+  projects:
+    title: "Projects"
+    new: "New Project"
+    edit: "Edit Project"
+    active: "Active"
+    archived: "Archived"
+    no_projects: "No projects yet."
+    no_archived: "No archived projects."
+    no_projects_body: "Start by creating your first project."
+    no_description: "No description"
+    unassigned: "Unassigned"
+    assignee: "Assignee"
+    progress: "Progress"
+    start_date: "Start"
+    end_date: "End"
+    color: "Color"
+    done_count: "done"
+    done_count_pattern: "%{done}/%{total} done"
+    tasks_count: "%{count} tasks"
+    okr_alignment: "OKR Alignment"
+    project_kpis: "Project KPIs"
+    no_objectives: "No objectives linked to this project."
+    link_objectives_hint: "Link objectives from an OKR cycle to show alignment."
+    no_kpis: "No KPIs for this project yet."
+    create_kpis_hint: "to track project health."
+    create_kpis_link: "Create KPIs"
+    kanban_link: "Kanban"
+    statuses:
+      on_track: "On Track"
+      at_risk: "At Risk"
+      behind: "Behind"
+      on_hold: "On Hold"
+      completed: "Completed"
+    fields:
+      name: "Name"
+      status: "Status"
+      tasks: "Tasks"
+      assignee: "Assignee"
+
+  tasks:
+    title: "Tasks"
+    new: "New Task"
+    edit: "Edit Task"
+    no_tasks: "No tasks yet."
+    no_description: "No description"
+    checklist: "Checklist"
+    comments: "Comments"
+    no_checklist_items: "No checklist items."
+    no_comments: "No comments yet."
+    add_checklist_item: "Add checklist item..."
+    add_comment_placeholder: "Add a comment..."
+    comment_submit: "Comment"
+    no_tasks_found: "No tasks found."
+    count:
+      one: "%{count} task"
+      other: "%{count} tasks"
+    statuses:
+      backlog: "Backlog"
+      todo: "To Do"
+      in_progress: "In Progress"
+      in_review: "In Review"
+      done: "Done"
+    priorities:
+      low: "Low"
+      medium: "Medium"
+      high: "High"
+      urgent: "Urgent"
+    filters:
+      assignee: "Assignee"
+      priority: "Priority"
+      status: "Status"
+      due_date: "Due date"
+      due_from: "Due from"
+      search: "Search tasks..."
+      all_assignees: "All assignees"
+      all_priorities: "All priorities"
+      all_statuses: "All statuses"
+      actions: "Actions"
+    depends_on: "Depends on"
+    blocking: "Blocking"
+    dependencies: "Dependencies"
+    fields:
+      title: "Title"
+      status: "Status"
+      priority: "Priority"
+      assignee: "Assignee"
+      due_date: "Due date"
+
+  okrs:
+    title: "OKR Cycles"
+    new: "New Cycle"
+    no_cycles: "No OKR cycles yet."
+    no_cycles_body: "No OKR cycles yet. Start by creating one."
+    create_first: "Create your first cycle"
+    create_one: "Create one"
+    statuses:
+      draft: "Draft"
+      active: "Active"
+      completed: "Completed"
+      cancelled: "Cancelled"
+    overall_progress: "Overall progress"
+    objectives: "Objectives"
+    objectives_count: "%{count} objectives"
+    key_results: "Key results"
+    key_results_count: "%{count} key results"
+    krs: "KRs"
+    objectives_met: "objectives met"
+    krs_achieved: "KRs achieved"
+    achieved: "achieved"
+    completed: "completed"
+    project_alignment: "Project Alignment"
+    linked_to_project: "objectives linked to projects"
+    add_objective: "Add objective"
+    add_key_result: "Add key result"
+    owner: "Owner"
+    linked_project: "Linked Project"
+    no_project: "No project"
+    percent_complete: "complete"
+    view_cycle: "View cycle"
+    edit_cycle: "Edit Cycle"
+    edit_objective: "Edit Objective"
+    edit_key_result: "Edit Key Result"
+    create_cycle: "Create cycle"
+    delete_confirm: "Delete this cycle and all its objectives?"
+    delete_objective_confirm: "Delete this objective?"
+    delete_key_result_confirm: "Delete this key result?"
+    objective_title_placeholder: "Objective title"
+    key_result_title_placeholder: "Key result title"
+    current_value_placeholder: "Current"
+    target_value_placeholder: "Target"
+    current_value: "Current"
+    target_value: "Target"
+    unit_placeholder: "unit"
+    back_to_cycles: "← Cycles"
+    back_to_cycle: "← Back to cycle"
+
+  kpis:
+    title: "KPIs"
+    new: "New KPI"
+    edit: "Edit KPI"
+    no_kpis: "No KPIs yet."
+    description: "Start tracking your team's performance."
+    create_first: "Create your first KPI"
+    create: "Create KPI"
+    update: "Update KPI"
+    delete_confirm: "Delete this KPI?"
+    target: "target"
+    current_value: "Current"
+    target_value: "Target"
+    unit_placeholder: "%"
+    project: "Project"
+    org_wide: "Org-wide"
+    org_wide_no_project: "Org-wide (no project)"
+    owner: "Owner"
+    back_to_kpis: "← Back to KPIs"
+    categories:
+      strategic: "Strategic"
+      project: "Project"
+      quality: "Quality"
+      operational: "Operational"
+      financial: "Financial"
+    frequencies:
+      daily: "Daily"
+      weekly: "Weekly"
+      monthly: "Monthly"
+      quarterly: "Quarterly"
+      yearly: "Yearly"
+
+  calendar:
+    title: "Calendar"
+    today: "Today"
+    tasks_with_deadlines: "tasks with deadlines"
+    tasks_with_deadlines_count: "%{count} tasks with deadlines"
+    no_deadlines: "No deadlines this week"
+    more: "+ %{count} more"
+
+  dashboard:
+    title: "Dashboard"
+    active_projects: "Active Projects"
+    done: "Done"
+    open_tasks: "Open Tasks"
+    overdue: "Overdue"
+    my_tasks: "My Tasks"
+    team: "Team"
+    members: "members"
+    tasks_completed: "tasks completed"
+    tasks_completed_count: "%{done} of %{total} tasks completed"
+    completion_rate: "Completion Rate"
+    tasks_by_status: "Tasks by Status"
+    tasks_by_priority: "Tasks by Priority"
+    project_status: "Project Status"
+    upcoming_deadlines: "Upcoming Deadlines"
+    recent_activity: "Recent Activity"
+    projects_overview: "Projects Overview"
+    okr_progress: "OKR Progress"
+    kpis_summary: "KPIs Summary"
+    objectives_count: "%{completed}/%{total} objectives"
+    krs_count: "%{achieved}/%{total} KRs"
+    no_okr_cycle: "No active OKR cycle"
+    no_kpis: "No KPIs yet"
+    no_tasks_assigned: "No tasks assigned to you"
+    this_week: "this week"
+    this_week_count: "%{count} this week"
+    kpis_achieved: "%{achieved} of %{total} KPIs achieved"
+    view_cycle: "View cycle"
+    tasks_count: "%{count} tasks"
+
+  notifications:
+    title: "Notifications"
+    empty: "No notifications yet."
+    view_all: "View all"
+    no_new: "No new notifications"
+    description:
+      task_assigned: "assigned you to"
+      task_commented: "commented on"
+      task_moved: "moved"
+      task_updated: "updated"
+      project_archived: "archived"
+
+  organizations:
+    title: "Organizations"
+    new: "New Organization"
+    edit: "Edit organization"
+    no_orgs: "No organizations yet."
+    no_description: "No description"
+    members: "Members"
+    invite: "Invite"
+    members_count:
+      one: "%{count} member"
+      other: "%{count} members"
+    projects_count:
+      one: "%{count} project"
+      other: "%{count} projects"
+    roles:
+      admin: "Admin"
+      manager: "Manager"
+      member: "Member"
+    name_placeholder: "e.g. Acme Corp"
+    description_placeholder: "What does this organization do?"
+    allow_auto_join: "Allow anyone with the link to join"
+    back_to_organizations: "← Back to organizations"
+    back_to_organization: "← Back to organization"
+
+  strategic_canvas:
+    title: "Strategic Canvas"
+    save: "Save Canvas"
+    saved: "Canvas saved."
+    problem: "Problem"
+    problem_placeholder: "What problem are you solving?"
+    goal: "Goal"
+    goal_placeholder: "What is your primary objective?"
+    value_proposition: "Value Proposition"
+    value_proposition_placeholder: "What unique value do you deliver?"
+    stakeholders: "Stakeholders"
+    stakeholders_placeholder: "Who is impacted by this work?"
+    team: "Team"
+    team_placeholder: "Who is working on this?"
+    metrics: "Metrics"
+    metrics_placeholder: "How will you measure success?"
+    risks: "Risks"
+    risks_placeholder: "What could go wrong?"
+    resources: "Resources"
+    resources_placeholder: "What do you need to succeed?"
+    roadmap: "Roadmap"
+    roadmap_placeholder: "What are the key milestones and timeline?"
+    next_steps: "Next Steps"
+    next_steps_placeholder: "What needs to happen next?"
+
+  reports:
+    title: "Reports"
+    projects_completed: "Projects Completed"
+    completed: "completed"
+    tasks_completed: "Tasks Completed"
+    productivity_rate: "Productivity Rate"
+    completion_rate_label: "completion rate"
+    overdue_tasks: "Overdue Tasks"
+    tasks_past_due: "tasks past their due date"
+    projects_overview: "Projects Overview"
+    download_pdf: "Download PDF"
+
+  kanban:
+    title: "Kanban"
+    new_task: "New task"
+    no_tasks: "No tasks"
+    add_one: "Add one"
+
+  searches:
+    title: "Search Results"
+    placeholder: "Search projects, tasks, people..."
+    results_for: "results for"
+    people: "People"
+    no_results: "No results found."
+
+  invitations:
+    title: "Invitations"
+    new: "New invitation"
+    invite_member: "Invite a member"
+    send: "Send invitation"
+    email_placeholder: "email@example.com"
+
+  attachments:
+    files: "Files"
+
+  tags:
+    title: "Tags"
+    singular: "Tag"
+    new: "New Tag"
+    edit: "Edit Tag"
+    no_tags: "No tags yet."
+    all_tags: "All tags"
+    fields:
+      name: "Name"
+      color: "Color"
+      actions: "Actions"
+
+  webhooks:
+    title: "Webhooks"
+    singular: "Webhook"
+    new: "New Webhook"
+    edit: "Edit Webhook"
+    no_webhooks: "No webhooks yet."
+    no_deliveries: "No deliveries yet."
+    deliveries: "Deliveries"
+    events_count:
+      one: "%{count} event"
+      other: "%{count} events"
+    deliveries_count:
+      one: "%{count} delivery"
+      other: "%{count} deliveries"
+    fields:
+      url: "URL"
+      secret: "Secret"
+      events: "Events"
+
+  gantt:
+    title: "Timeline"
+    timeline: "Project Timeline"
+    item: "Item"
+
+  theme:
+    dark: "Dark mode"
+    light: "Light mode"
+
+  devise:
+    sessions:
+      title: "Sign in to ProjectM"
+      sign_in: "Sign in"
+      remember_me: "Remember me"
+      demo_hint: "Demo: alice@example.com / password123"
+    registrations:
+      title: "Create your account"
+      sign_up: "Sign up"
+      minimum_password_length: "%{count} characters minimum"
+      waiting_confirmation: "Waiting confirmation for:"
+      leave_blank: "Leave blank if you don't want to change it"
+      current_password_hint: "We need your current password to confirm your changes"
+      danger_zone: "Danger zone"
+      delete_warning: "Once you delete your account, there is no going back."
+      cancel_account: "Cancel my account"
+    passwords:
+      title: "Forgot your password?"
+      change_title: "Change your password"
+      send_instructions: "Send reset instructions"
+      new_password: "New password"
+      confirm_password: "Confirm new password"
+      change_button: "Change my password"
+    confirmations:
+      title: "Resend confirmation instructions"
+      resend: "Resend confirmation instructions"
+    unlocks:
+      title: "Resend unlock instructions"
+      resend: "Resend unlock instructions"
+    shared:
+      sign_in: "Sign in"
+      create_account: "Create an account"
+      forgot_password: "Forgot your password?"
+      resend_confirmation: "Didn't receive confirmation instructions?"
+      resend_unlock: "Didn't receive unlock instructions?"
+    mailer:
+      hello: "Hello "
+      welcome: "Welcome "
+      confirmation_body: "You can confirm your account email through the link below:"
+      confirm_link: "Confirm my account"
+      reset_password_body: "Someone has requested a link to change your password. You can do this through the link below."
+      change_password_link: "Change my password"
+      reset_ignore: "If you didn't request this, please ignore this email."
+      reset_no_change: "Your password won't change until you access the link above and create a new one."
+      unlock_body: "Your account has been locked due to an excessive number of unsuccessful sign in attempts."
+      unlock_instructions: "Click the link below to unlock your account:"
+      unlock_link: "Unlock my account"
+      email_changing: "We're contacting you to notify you that your email is being changed to"
+      email_changed: "We're contacting you to notify you that your email has been changed to"
+      password_changed: "We're contacting you to notify you that your password has been changed."
+
+  errors:
+    error:
+      one: "error"
+      other: "errors"
+    prohibited: "prohibited this %{model} from being saved:"
+
+  helpers:
+    submit:
+      project:
+        create: "Create Project"
+        update: "Update Project"
+      task:
+        create: "Create Task"
+        update: "Update Task"

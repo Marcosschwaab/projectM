@@ -1,46 +1,9 @@
-<h1><%= @task.title %></h1>
-
-<p><%= @task.description %></p>
-
-<p>
-  <strong>Status:</strong> <%= @task.status %><br>
-  <strong>Priority:</strong> <%= @task.priority %><br>
-  <strong>Assignee:</strong> <%= @task.assignee&.name || "Unassigned" %><br>
-  <strong>Due:</strong> <%= @task.due_date %><br>
-  <strong>Progress:</strong> <%= @task.progress %>%
-</p>
-
-<%= link_to "Edit", edit_organization_project_task_path(@organization, @project, @task) %> |
-<%= link_to "Back", organization_project_tasks_path(@organization, @project) %>
-
-<h2>Checklist</h2>
-<ul>
-  <% @task.checklist_items.each do |item| %>
-    <li>
-      <%= form_with(model: [@organization, @project, @task, item]) do |f| %>
-        <%= f.check_box :completed, onchange: "this.form.submit()" %>
-        <%= item.content %>
-      <% end %>
-    </li>
+<div class="mb-6">
+  <%= link_to organization_project_tasks_path(@organization, @project), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+    <%= t("actions.back_to_tasks") %>
   <% end %>
-</ul>
+</div>
 
-<%= form_with(model: [@organization, @project, @task, @checklist_item]) do |f| %>
-  <%= f.text_field :content, placeholder: "Add checklist item" %>
-  <%= f.submit "Add" %>
-<% end %>
-
-<h2>Comments</h2>
-<ul>
-  <% @task.comments.each do |comment| %>
-    <li>
-      <strong><%= comment.user.name %></strong>: <%= comment.content %>
-      <small><%= time_ago_in_words(comment.created_at) %> ago</small>
-    </li>
-  <% end %>
-</ul>
-
-<%= form_with(model: [@organization, @project, @task, @comment]) do |f| %>
-  <%= f.text_area :content, placeholder: "Add a comment..." %>
-  <%= f.submit "Comment" %>
-<% end %>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+  <%= render "task_detail", task: @task, organization: @organization, project: @project, checklist_item: @checklist_item, comment: @comment %>
+</div>

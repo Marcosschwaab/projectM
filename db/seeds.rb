@@ -115,6 +115,53 @@ projects.each do |project|
   end
 end
 
+puts "Linking objectives to projects..."
+objectives[0].update(project: projects[0])
+objectives[1].update(project: projects[3])
+objectives[2].update(project: projects[1])
+
+puts "Creating KPIs..."
+kpi_data = [
+  { name: "Customer NPS", description: "Net Promoter Score from customer surveys", category: :strategic, frequency: :monthly, target_value: 70, current_value: 52, unit: "points", owner: bob },
+  { name: "Release Cadence", description: "Number of production releases per month", category: :operational, frequency: :monthly, target_value: 8, current_value: 5, unit: "releases", owner: carol },
+  { name: "Bug Fix Rate", description: "Percentage of reported bugs resolved within SLA", category: :quality, frequency: :weekly, target_value: 95, current_value: 87, unit: "%", owner: alice, project: projects[0] },
+  { name: "Test Coverage", description: "Code test coverage percentage", category: :quality, frequency: :monthly, target_value: 90, current_value: 78, unit: "%", owner: alice, project: projects[0] },
+  { name: "Mobile Crash Rate", description: "App crash rate per 1000 sessions", category: :quality, frequency: :weekly, target_value: 0.1, current_value: 0.3, unit: "%", owner: bob, project: projects[1] },
+  { name: "Data Migration Progress", description: "Percentage of records migrated", category: :project, frequency: :weekly, target_value: 100, current_value: 65, unit: "%", owner: carol, project: projects[2] },
+  { name: "Monthly Recurring Revenue", description: "Track MRR growth", category: :financial, frequency: :monthly, target_value: 150000, current_value: 120000, unit: "$", owner: alice }
+]
+
+kpi_data.each do |attrs|
+  proj = attrs.delete(:project)
+  owner = attrs.delete(:owner)
+  org.kpis.find_or_create_by!(name: attrs[:name]) do |k|
+    k.assign_attributes(attrs)
+    k.project = proj
+    k.owner = owner
+  end
+end
+
+puts "Creating sample notifications..."
+sample_tasks = Task.all.to_a
+alice.notifications.find_or_create_by!(action: "task_assigned", notifiable: sample_tasks[0]) do |n|
+  n.actor = bob; n.organization = org; n.created_at = 1.hour.ago
+end
+alice.notifications.find_or_create_by!(action: "task_commented", notifiable: sample_tasks[1]) do |n|
+  n.actor = carol; n.organization = org; n.created_at = 3.hours.ago
+end
+bob.notifications.find_or_create_by!(action: "task_moved", notifiable: sample_tasks[4]) do |n|
+  n.actor = alice; n.organization = org; n.created_at = 6.hours.ago
+end
+carol.notifications.find_or_create_by!(action: "task_assigned", notifiable: sample_tasks[2]) do |n|
+  n.actor = alice; n.organization = org; n.created_at = 1.day.ago
+end
+alice.notifications.find_or_create_by!(action: "task_assigned", notifiable: sample_tasks[3]) do |n|
+  n.actor = dave; n.organization = org; n.created_at = 2.days.ago; n.read = true; n.read_at = 1.day.ago
+end
+alice.notifications.find_or_create_by!(action: "task_commented", notifiable: sample_tasks[0]) do |n|
+  n.actor = eve; n.organization = org; n.created_at = 3.days.ago; n.read = true; n.read_at = 2.days.ago
+end
+
 puts "Adding activity logs..."
 projects.each do |project|
   ActivityLog.find_or_create_by!(

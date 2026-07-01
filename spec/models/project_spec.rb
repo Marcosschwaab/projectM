@@ -29,7 +29,7 @@ RSpec.describe Project, type: :model do
 
     it "has one strategic canvas" do
       project = create(:project)
-      canvas = project.create_strategic_canvas!
+      canvas = project.create_strategic_canvas!(goal: "Achieve market leadership")
       expect(project.strategic_canvas).to eq(canvas)
     end
   end

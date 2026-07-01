@@ -1,0 +1,70 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("calendar.title") %></h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= @organization.name %></p>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <%= link_to organization_calendar_path(@organization, year: @start_date.prev_month.year, month: @start_date.prev_month.month), class: "p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <% end %>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= l(@start_date, format: :month_year) %></h2>
+      <%= link_to organization_calendar_path(@organization, year: @start_date.next_month.year, month: @start_date.next_month.month), class: "p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <% end %>
+      <%= link_to organization_calendar_path(@organization), class: "ml-2 px-3 py-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+        <%= t("calendar.today") %>
+      <% end %>
+    </div>
+    <div class="text-sm text-gray-500 dark:text-gray-400"><%= t("calendar.tasks_with_deadlines_count", count: @tasks.size) %></div>
+  </div>
+
+  <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
+    <% t("date.abbr_day_names").each do |day| %>
+      <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center border-r border-gray-200 last:border-r-0 dark:text-gray-400 dark:border-gray-700">
+        <%= day %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-7 auto-rows-[120px]">
+    <% padding_days = @start_date.wday %>
+    <% padding_days.times do %>
+      <div class="border-r border-b border-gray-100 bg-gray-50/30 p-2 dark:border-gray-700 dark:bg-gray-800/30"></div>
+    <% end %>
+
+    <% (@start_date..@end_date).each do |date| %>
+      <% tasks_today = @tasks_by_date[date] || [] %>
+      <% is_today = date == @today %>
+      <% is_weekend = date.saturday? || date.sunday? %>
+
+      <div class="border-r border-b border-gray-100 p-2 <%= "bg-indigo-50/20 dark:bg-indigo-900/20" if is_today %> <%= "bg-gray-50/50 dark:bg-gray-800/50" if is_weekend && !is_today %> flex flex-col min-h-0 overflow-hidden dark:border-gray-700">
+        <div class="flex items-center justify-center mb-1">
+          <span class="text-sm <%= is_today ? "w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold dark:bg-indigo-500" : "text-gray-700 font-medium dark:text-gray-300" %>">
+            <%= date.day %>
+          </span>
+        </div>
+        <div class="flex-1 space-y-0.5 overflow-y-auto">
+          <% tasks_today.first(4).each do |task| %>
+            <%= link_to modal_organization_project_task_path(@organization, task.project, task),
+                        class: "block text-[11px] px-1.5 py-0.5 rounded truncate font-medium #{priority_class(task.priority)} hover:opacity-80 transition-opacity",
+                        data: { action: "slideover#open", modal_title: task.title } do %>
+              <%= task.title %>
+            <% end %>
+          <% end %>
+          <% if tasks_today.size > 4 %>
+            <p class="text-[11px] text-gray-400 px-1 dark:text-gray-500"><%= t("calendar.more", count: tasks_today.size - 4) %></p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% remaining = (7 - (@start_date.end_of_month.wday + 1) % 7) % 7 %>
+    <% remaining.times do %>
+      <div class="border-r border-b border-gray-100 bg-gray-50/30 p-2 dark:border-gray-700 dark:bg-gray-800/30"></div>
+    <% end %>
+  </div>
+</div>

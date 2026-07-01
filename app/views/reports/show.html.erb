@@ -1,48 +1,96 @@
-<h1>Reports</h1>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("reports.title") %></h1>
+  <%= link_to report_path(format: :pdf), class: "inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    <%= t("reports.download_pdf") %>
+  <% end %>
+</div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-    <h3 class="text-sm text-gray-500">Projects</h3>
-    <p class="text-2xl font-bold"><%= @completed_projects %>/<%= @total_projects %></p>
-    <p class="text-xs text-gray-400">completed</p>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center dark:bg-indigo-900/30">
+        <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("projects.title") %></p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @completed_projects %>/<%= @total_projects %></p>
+      </div>
+    </div>
+    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-700">
+      <div class="h-full rounded-full bg-indigo-500" style="width: <%= @total_projects > 0 ? (@completed_projects.to_f / @total_projects * 100) : 0 %>%"></div>
+    </div>
+    <p class="text-xs text-gray-400 mt-1 dark:text-gray-500"><%= t("reports.completed") %></p>
   </div>
 
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-    <h3 class="text-sm text-gray-500">Tasks</h3>
-    <p class="text-2xl font-bold"><%= @completed_tasks %>/<%= @total_tasks %></p>
-    <p class="text-xs text-gray-400">completed</p>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center dark:bg-green-900/30">
+        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("tasks.title") %></p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @completed_tasks %>/<%= @total_tasks %></p>
+      </div>
+    </div>
+    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-700">
+      <div class="h-full rounded-full bg-green-500" style="width: <%= @total_tasks > 0 ? (@completed_tasks.to_f / @total_tasks * 100) : 0 %>%"></div>
+    </div>
+    <p class="text-xs text-gray-400 mt-1 dark:text-gray-500"><%= t("reports.completed") %></p>
   </div>
 
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-    <h3 class="text-sm text-gray-500">Productivity</h3>
-    <p class="text-2xl font-bold"><%= @productivity %>%</p>
-    <p class="text-xs text-gray-400">completion rate</p>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center dark:bg-amber-900/30">
+        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("reports.productivity_rate") %></p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @productivity %>%</p>
+      </div>
+    </div>
+    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-700">
+      <div class="h-full rounded-full <%= @productivity >= 75 ? 'bg-green-500' : @productivity >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= @productivity %>%"></div>
+    </div>
+    <p class="text-xs text-gray-400 mt-1 dark:text-gray-500"><%= t("reports.completion_rate_label") %></p>
   </div>
 </div>
 
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
-  <h2 class="text-lg font-semibold mb-4">Overdue Tasks</h2>
-  <p class="text-2xl font-bold text-red-600"><%= @overdue_tasks %></p>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8 dark:bg-gray-800 dark:border-gray-700">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100"><%= t("reports.overdue_tasks") %></h2>
+  <p class="text-3xl font-bold text-red-600 dark:text-red-400"><%= @overdue_tasks %></p>
+  <p class="text-xs text-gray-400 mt-1 dark:text-gray-500"><%= t("reports.tasks_past_due") %></p>
 </div>
 
-<h2 class="text-lg font-semibold mb-4">Projects Overview</h2>
-<table class="w-full bg-white rounded-lg shadow-sm border border-gray-200">
-  <thead>
-    <tr class="border-b border-gray-200">
-      <th class="text-left p-3 text-sm font-medium">Name</th>
-      <th class="text-left p-3 text-sm font-medium">Status</th>
-      <th class="text-left p-3 text-sm font-medium">Tasks</th>
-      <th class="text-left p-3 text-sm font-medium">Assignee</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @projects.each do |project| %>
-      <tr class="border-b border-gray-100">
-        <td class="p-3 text-sm"><%= project.name %></td>
-        <td class="p-3 text-sm"><%= project.status %></td>
-        <td class="p-3 text-sm"><%= project.tasks.count %></td>
-        <td class="p-3 text-sm"><%= project.assignee&.name || "-" %></td>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+  <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= t("reports.projects_overview") %></h2>
+  </div>
+  <table class="w-full">
+    <thead>
+      <tr class="bg-gray-50 dark:bg-gray-700">
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("projects.fields.name") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("projects.fields.status") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("projects.fields.tasks") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("projects.fields.assignee") %></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+      <% @projects.each do |project| %>
+        <tr class="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= project.color || "#6366f1" %>"></span>
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= project.name %></span>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="<%= project_status_badge_class(project.status) %>"><%= project.status&.humanize %></span>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><%= project.tasks.count %></td>
+          <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><%= project.assignee&.name || "-" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

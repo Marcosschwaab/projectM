@@ -15,6 +15,14 @@ class TaskPolicy < ApplicationPolicy
     user.member_of?(record.project.organization)
   end
 
+  def modal?
+    show?
+  end
+
+  def move?
+    update?
+  end
+
   def destroy?
     user.role_in(record.project.organization).in?(%w[admin manager])
   end

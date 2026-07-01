@@ -6,6 +6,7 @@ SimpleCov.start "rails" do
   add_filter "db/migrate"
   add_filter "db/seeds.rb"
   add_filter "spec/"
+  add_filter "app/policies/application_policy.rb"
 end
 
 require "spec_helper"

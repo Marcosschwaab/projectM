@@ -4,6 +4,8 @@ class Project < ApplicationRecord
 
   has_many :tasks, dependent: :destroy
   has_one :strategic_canvas, dependent: :destroy
+  has_many :objectives, dependent: :nullify
+  has_many :kpis, dependent: :destroy
 
   validates :name, presence: true
 

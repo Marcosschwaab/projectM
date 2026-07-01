@@ -1,0 +1,553 @@
+pt-BR:
+  app:
+    name: "ProjectM"
+    description: "Plataforma de Gerenciamento de Projetos"
+
+  home:
+    title: "Início"
+    description: "Bem-vindo ao ProjectM"
+
+  date:
+    day_names: [Domingo, Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado]
+    abbr_day_names: [Dom, Seg, Ter, Qua, Qui, Sex, Sáb]
+    month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
+    abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
+    formats:
+      default: "%d de %B de %Y"
+      short: "%d de %b"
+      long: "%d de %B de %Y"
+      dashboard: "%A, %d de %B"
+      month_year: "%B de %Y"
+
+  time:
+    formats:
+      default: "%d de %B de %Y às %H:%M"
+      short: "%d de %b às %H:%M"
+      dashboard: "%A, %d de %B"
+    ago: "há %{time}"
+    today: "Hoje"
+
+  nav:
+    dashboard: "Dashboard"
+    projects: "Projetos"
+    okrs: "OKRs"
+    kpis: "KPIs"
+    calendar: "Calendário"
+    notifications: "Notificações"
+    reports: "Relatórios"
+    organizations: "Organizações"
+    settings: "Configurações"
+    sign_out: "Sair"
+
+  actions:
+    new: "Novo %{model}"
+    edit: "Editar"
+    delete: "Excluir"
+    cancel: "Cancelar"
+    save: "Salvar"
+    update: "Atualizar"
+    create: "Criar"
+    add: "Adicionar"
+    back: "Voltar"
+    search: "Pesquisar"
+    view: "Visualizar"
+    view_all: "Ver todos"
+    view_details: "Ver detalhes"
+    mark_all_read: "Marcar todas como lidas"
+    archive: "Arquivar"
+    restore: "Restaurar"
+    filter: "Filtrar"
+    clear: "Limpar"
+    confirm_delete: "Tem certeza?"
+    back_to_projects: "← Voltar para projetos"
+    back_to_project: "← Voltar para projeto"
+    back_to_tasks: "← Voltar para tarefas"
+    back_to_task: "← Voltar para tarefa"
+    back_to_cycles: "← Ciclos"
+    back_to_cycle: "← Voltar para ciclo"
+    back_to_organizations: "← Voltar para organizações"
+    back_to_organization: "← Voltar para organização"
+    back_to_tags: "← Voltar para tags"
+    back_to_webhooks: "← Voltar para webhooks"
+    back_to_kpis: "← Voltar para KPIs"
+
+  topbar:
+    search_placeholder: "Pesquisar..."
+
+  slideover:
+    default_title: "Tarefa"
+    failed_to_load: "Falha ao carregar tarefa."
+
+  flash:
+    created: "%{model} foi criado(a) com sucesso."
+    updated: "%{model} foi atualizado(a) com sucesso."
+    deleted: "%{model} foi excluído(a) com sucesso."
+    unauthorized: "Você não tem permissão para executar esta ação."
+    invalid_locale: "Idioma inválido"
+    create_organization_first: "Crie uma organização para começar."
+    project:
+      created: "Projeto foi criado com sucesso."
+      updated: "Projeto foi atualizado com sucesso."
+      destroyed: "Projeto foi excluído com sucesso."
+      archived: "Projeto arquivado."
+      restored: "Projeto restaurado."
+    task:
+      created: "Tarefa foi criada com sucesso."
+      updated: "Tarefa foi atualizada com sucesso."
+      destroyed: "Tarefa foi excluída com sucesso."
+    okr_cycle:
+      created: "Ciclo OKR criado."
+      updated: "Ciclo OKR atualizado."
+      deleted: "Ciclo OKR excluído."
+    objective:
+      added: "Objetivo adicionado."
+      create_failed: "Falha ao criar objetivo."
+      updated: "Objetivo atualizado."
+      deleted: "Objetivo excluído."
+    key_result:
+      added: "Resultado-chave adicionado."
+      create_failed: "Falha ao criar resultado-chave."
+      updated: "Resultado-chave atualizado."
+      deleted: "Resultado-chave excluído."
+    checklist_item:
+      added: "Item adicionado."
+      create_failed: "Não foi possível criar o item."
+      removed: "Item removido."
+    comment:
+      added: "Comentário adicionado."
+      create_failed: "Não foi possível criar o comentário."
+    kpi:
+      created: "KPI criado."
+      updated: "KPI atualizado."
+      deleted: "KPI excluído."
+    organization:
+      created: "Organização foi criada com sucesso."
+      updated: "Organização foi atualizada com sucesso."
+      destroyed: "Organização foi excluída com sucesso."
+    canvas:
+      updated: "Canvas atualizado."
+    invitation:
+      sent: "Convite enviado."
+    theme_updated: "Tema atualizado."
+    tag:
+      created: "Tag criada."
+      updated: "Tag atualizada."
+      destroyed: "Tag excluída."
+    webhook:
+      created: "Webhook criado."
+      updated: "Webhook atualizado."
+      destroyed: "Webhook excluído."
+
+  projects:
+    title: "Projetos"
+    new: "Novo Projeto"
+    edit: "Editar Projeto"
+    active: "Ativos"
+    archived: "Arquivados"
+    no_projects: "Nenhum projeto ainda."
+    no_archived: "Nenhum projeto arquivado."
+    no_projects_body: "Comece criando seu primeiro projeto."
+    no_description: "Sem descrição"
+    unassigned: "Não atribuído"
+    assignee: "Responsável"
+    progress: "Progresso"
+    start_date: "Início"
+    end_date: "Término"
+    color: "Cor"
+    done_count: "concluídos"
+    done_count_pattern: "%{done}/%{total} concluídos"
+    tasks_count: "%{count} tarefas"
+    okr_alignment: "Alinhamento OKR"
+    project_kpis: "KPIs do Projeto"
+    no_objectives: "Nenhum objetivo vinculado a este projeto."
+    link_objectives_hint: "Vincule objetivos de um ciclo OKR para mostrar alinhamento."
+    no_kpis: "Nenhum KPI para este projeto ainda."
+    create_kpis_hint: "para acompanhar a saúde do projeto."
+    create_kpis_link: "Criar KPIs"
+    kanban_link: "Kanban"
+    statuses:
+      on_track: "No Prazo"
+      at_risk: "Em Risco"
+      behind: "Atrasado"
+      on_hold: "Pausado"
+      completed: "Concluído"
+    fields:
+      name: "Nome"
+      status: "Status"
+      tasks: "Tarefas"
+      assignee: "Responsável"
+
+  tasks:
+    title: "Tarefas"
+    new: "Nova Tarefa"
+    edit: "Editar Tarefa"
+    no_tasks: "Nenhuma tarefa ainda."
+    no_description: "Sem descrição"
+    checklist: "Checklist"
+    comments: "Comentários"
+    no_checklist_items: "Nenhum item no checklist."
+    no_comments: "Nenhum comentário ainda."
+    add_checklist_item: "Adicionar item..."
+    add_comment_placeholder: "Adicionar comentário..."
+    comment_submit: "Comentar"
+    no_tasks_found: "Nenhuma tarefa encontrada."
+    count:
+      one: "%{count} tarefa"
+      other: "%{count} tarefas"
+    statuses:
+      backlog: "Backlog"
+      todo: "A Fazer"
+      in_progress: "Em Andamento"
+      in_review: "Em Revisão"
+      done: "Concluído"
+    priorities:
+      low: "Baixa"
+      medium: "Média"
+      high: "Alta"
+      urgent: "Urgente"
+    filters:
+      assignee: "Responsável"
+      priority: "Prioridade"
+      status: "Status"
+      due_date: "Data limite"
+      due_from: "Data início"
+      search: "Pesquisar tarefas..."
+      all_assignees: "Todos responsáveis"
+      all_priorities: "Todas prioridades"
+      all_statuses: "Todos status"
+      actions: "Ações"
+    depends_on: "Depende de"
+    blocking: "Bloqueia"
+    dependencies: "Dependências"
+    fields:
+      title: "Título"
+      status: "Status"
+      priority: "Prioridade"
+      assignee: "Responsável"
+      due_date: "Data limite"
+
+  okrs:
+    title: "Ciclos de OKR"
+    new: "Novo Ciclo"
+    no_cycles: "Nenhum ciclo de OKR ainda."
+    no_cycles_body: "Nenhum ciclo de OKR ainda. Crie um para começar."
+    create_first: "Crie seu primeiro ciclo"
+    create_one: "Criar um"
+    statuses:
+      draft: "Rascunho"
+      active: "Ativo"
+      completed: "Concluído"
+      cancelled: "Cancelado"
+    overall_progress: "Progresso geral"
+    objectives: "Objetivos"
+    objectives_count: "%{count} objetivos"
+    key_results: "Resultados-chave"
+    key_results_count: "%{count} resultados-chave"
+    krs: "KRs"
+    objectives_met: "objetivos atingidos"
+    krs_achieved: "KRs atingidos"
+    achieved: "atingidos"
+    completed: "concluídos"
+    project_alignment: "Alinhamento com Projetos"
+    linked_to_project: "objetivos vinculados a projetos"
+    add_objective: "Adicionar objetivo"
+    add_key_result: "Adicionar resultado-chave"
+    owner: "Responsável"
+    linked_project: "Projeto Vinculado"
+    no_project: "Nenhum projeto"
+    percent_complete: "completo"
+    view_cycle: "Ver ciclo"
+    edit_cycle: "Editar Ciclo"
+    edit_objective: "Editar Objetivo"
+    edit_key_result: "Editar Resultado-chave"
+    create_cycle: "Criar ciclo"
+    delete_confirm: "Excluir este ciclo e todos os seus objetivos?"
+    delete_objective_confirm: "Excluir este objetivo?"
+    delete_key_result_confirm: "Excluir este resultado-chave?"
+    objective_title_placeholder: "Título do objetivo"
+    key_result_title_placeholder: "Título do resultado-chave"
+    current_value_placeholder: "Atual"
+    target_value_placeholder: "Meta"
+    current_value: "Atual"
+    target_value: "Meta"
+    unit_placeholder: "unidade"
+    back_to_cycles: "← Ciclos"
+    back_to_cycle: "← Voltar para ciclo"
+
+  kpis:
+    title: "KPIs"
+    new: "Novo KPI"
+    edit: "Editar KPI"
+    no_kpis: "Nenhum KPI ainda."
+    description: "Comece a acompanhar a performance do seu time."
+    create_first: "Crie seu primeiro KPI"
+    create: "Criar KPI"
+    update: "Atualizar KPI"
+    delete_confirm: "Excluir este KPI?"
+    target: "meta"
+    current_value: "Atual"
+    target_value: "Meta"
+    unit_placeholder: "%"
+    project: "Projeto"
+    org_wide: "Organizacional"
+    org_wide_no_project: "Organizacional (sem projeto)"
+    owner: "Responsável"
+    back_to_kpis: "← Voltar para KPIs"
+    categories:
+      strategic: "Estratégico"
+      project: "Projeto"
+      quality: "Qualidade"
+      operational: "Operacional"
+      financial: "Financeiro"
+    frequencies:
+      daily: "Diário"
+      weekly: "Semanal"
+      monthly: "Mensal"
+      quarterly: "Trimestral"
+      yearly: "Anual"
+
+  calendar:
+    title: "Calendário"
+    today: "Hoje"
+    tasks_with_deadlines: "tarefas com prazo"
+    tasks_with_deadlines_count: "%{count} tarefas com prazo"
+    no_deadlines: "Nenhum prazo esta semana"
+    more: "+ %{count} mais"
+
+  dashboard:
+    title: "Dashboard"
+    active_projects: "Projetos Ativos"
+    done: "Concluídos"
+    open_tasks: "Tarefas Abertas"
+    overdue: "Atrasadas"
+    my_tasks: "Minhas Tarefas"
+    team: "Equipe"
+    members: "membros"
+    tasks_completed: "tarefas concluídas"
+    tasks_completed_count: "%{done} de %{total} tarefas concluídas"
+    completion_rate: "Taxa de Conclusão"
+    tasks_by_status: "Tarefas por Status"
+    tasks_by_priority: "Tarefas por Prioridade"
+    project_status: "Status dos Projetos"
+    upcoming_deadlines: "Próximos Prazos"
+    recent_activity: "Atividade Recente"
+    projects_overview: "Visão Geral dos Projetos"
+    okr_progress: "Progresso OKR"
+    kpis_summary: "Resumo de KPIs"
+    objectives_count: "%{completed}/%{total} objetivos"
+    krs_count: "%{achieved}/%{total} KRs"
+    no_okr_cycle: "Nenhum ciclo OKR ativo"
+    no_kpis: "Nenhum KPI ainda"
+    no_tasks_assigned: "Nenhuma tarefa atribuída a você"
+    this_week: "esta semana"
+    this_week_count: "%{count} esta semana"
+    kpis_achieved: "%{achieved} de %{total} KPIs atingidos"
+    view_cycle: "Ver ciclo"
+    tasks_count: "%{count} tarefas"
+
+  notifications:
+    title: "Notificações"
+    empty: "Nenhuma notificação ainda."
+    view_all: "Ver todas"
+    no_new: "Nenhuma notificação nova"
+    description:
+      task_assigned: "te atribuiu a"
+      task_commented: "comentou em"
+      task_moved: "moveu"
+      task_updated: "atualizou"
+      project_archived: "arquivou"
+
+  organizations:
+    title: "Organizações"
+    new: "Nova Organização"
+    edit: "Editar organização"
+    no_orgs: "Nenhuma organização ainda."
+    no_description: "Sem descrição"
+    members: "Membros"
+    invite: "Convidar"
+    members_count:
+      one: "%{count} membro"
+      other: "%{count} membros"
+    projects_count:
+      one: "%{count} projeto"
+      other: "%{count} projetos"
+    roles:
+      admin: "Admin"
+      manager: "Gerente"
+      member: "Membro"
+    name_placeholder: "Ex: Acme Corp"
+    description_placeholder: "O que esta organização faz?"
+    allow_auto_join: "Permitir que qualquer pessoa com o link entre"
+    back_to_organizations: "← Voltar para organizações"
+    back_to_organization: "← Voltar para organização"
+
+  strategic_canvas:
+    title: "Canvas Estratégico"
+    save: "Salvar Canvas"
+    saved: "Canvas salvo."
+    problem: "Problema"
+    problem_placeholder: "Qual problema você está resolvendo?"
+    goal: "Meta"
+    goal_placeholder: "Qual é seu objetivo principal?"
+    value_proposition: "Proposta de Valor"
+    value_proposition_placeholder: "Qual valor único você entrega?"
+    stakeholders: "Stakeholders"
+    stakeholders_placeholder: "Quem é impactado por este trabalho?"
+    team: "Time"
+    team_placeholder: "Quem está trabalhando nisso?"
+    metrics: "Métricas"
+    metrics_placeholder: "Como você vai medir o sucesso?"
+    risks: "Riscos"
+    risks_placeholder: "O que pode dar errado?"
+    resources: "Recursos"
+    resources_placeholder: "Do que você precisa para ter sucesso?"
+    roadmap: "Roadmap"
+    roadmap_placeholder: "Quais são os principais marcos e prazos?"
+    next_steps: "Próximos Passos"
+    next_steps_placeholder: "O que precisa acontecer a seguir?"
+
+  reports:
+    title: "Relatórios"
+    projects_completed: "Projetos Concluídos"
+    completed: "concluídos"
+    tasks_completed: "Tarefas Concluídas"
+    productivity_rate: "Taxa de Produtividade"
+    completion_rate_label: "taxa de conclusão"
+    overdue_tasks: "Tarefas Atrasadas"
+    tasks_past_due: "tarefas com prazo vencido"
+    projects_overview: "Visão Geral dos Projetos"
+    download_pdf: "Baixar PDF"
+
+  kanban:
+    title: "Kanban"
+    new_task: "Nova tarefa"
+    no_tasks: "Nenhuma tarefa"
+    add_one: "Adicionar"
+
+  searches:
+    title: "Resultados da Busca"
+    placeholder: "Buscar projetos, tarefas, pessoas..."
+    results_for: "resultados para"
+    people: "Pessoas"
+    no_results: "Nenhum resultado encontrado."
+
+  invitations:
+    title: "Convites"
+    new: "Novo convite"
+    invite_member: "Convidar membro"
+    send: "Enviar convite"
+    email_placeholder: "email@example.com"
+
+  attachments:
+    files: "Arquivos"
+
+  tags:
+    title: "Tags"
+    singular: "Tag"
+    new: "Nova Tag"
+    edit: "Editar Tag"
+    no_tags: "Nenhuma tag ainda."
+    all_tags: "Todas as tags"
+    fields:
+      name: "Nome"
+      color: "Cor"
+      actions: "Ações"
+
+  webhooks:
+    title: "Webhooks"
+    singular: "Webhook"
+    new: "Novo Webhook"
+    edit: "Editar Webhook"
+    no_webhooks: "Nenhum webhook ainda."
+    no_deliveries: "Nenhuma entrega ainda."
+    deliveries: "Entregas"
+    events_count:
+      one: "%{count} evento"
+      other: "%{count} eventos"
+    deliveries_count:
+      one: "%{count} entrega"
+      other: "%{count} entregas"
+    fields:
+      url: "URL"
+      secret: "Secret"
+      events: "Eventos"
+
+  gantt:
+    title: "Linha do Tempo"
+    timeline: "Linha do Tempo do Projeto"
+    item: "Item"
+
+  theme:
+    dark: "Modo escuro"
+    light: "Modo claro"
+
+  language:
+    en: "English"
+    pt_BR: "Português (Brasil)"
+    switch_to: "Trocar idioma"
+
+  devise:
+    sessions:
+      title: "Entrar no ProjectM"
+      sign_in: "Entrar"
+      remember_me: "Lembrar de mim"
+      demo_hint: "Demo: alice@example.com / password123"
+    registrations:
+      title: "Criar sua conta"
+      sign_up: "Cadastrar"
+      minimum_password_length: "%{count} caracteres no mínimo"
+      waiting_confirmation: "Aguardando confirmação de:"
+      leave_blank: "Deixe em branco se não quiser alterar"
+      current_password_hint: "Precisamos da sua senha atual para confirmar as alterações"
+      danger_zone: "Zona de perigo"
+      delete_warning: "Uma vez que você excluir sua conta, não há como voltar atrás."
+      cancel_account: "Cancelar minha conta"
+    passwords:
+      title: "Esqueceu sua senha?"
+      change_title: "Alterar sua senha"
+      send_instructions: "Enviar instruções de redefinição"
+      new_password: "Nova senha"
+      confirm_password: "Confirmar nova senha"
+      change_button: "Alterar minha senha"
+    confirmations:
+      title: "Reenviar instruções de confirmação"
+      resend: "Reenviar instruções de confirmação"
+    unlocks:
+      title: "Reenviar instruções de desbloqueio"
+      resend: "Reenviar instruções de desbloqueio"
+    shared:
+      sign_in: "Entrar"
+      create_account: "Criar uma conta"
+      forgot_password: "Esqueceu sua senha?"
+      resend_confirmation: "Não recebeu instruções de confirmação?"
+      resend_unlock: "Não recebeu instruções de desbloqueio?"
+    mailer:
+      hello: "Olá "
+      welcome: "Bem-vindo(a) "
+      confirmation_body: "Você pode confirmar o email da sua conta através do link abaixo:"
+      confirm_link: "Confirmar minha conta"
+      reset_password_body: "Alguém solicitou um link para alterar sua senha. Você pode fazer isso através do link abaixo."
+      change_password_link: "Alterar minha senha"
+      reset_ignore: "Se você não solicitou isso, ignore este email."
+      reset_no_change: "Sua senha não será alterada até que você acesse o link acima e crie uma nova."
+      unlock_body: "Sua conta foi bloqueada devido a um número excessivo de tentativas de login sem sucesso."
+      unlock_instructions: "Clique no link abaixo para desbloquear sua conta:"
+      unlock_link: "Desbloquear minha conta"
+      email_changing: "Estamos entrando em contato para notificar que seu email está sendo alterado para"
+      email_changed: "Estamos entrando em contato para notificar que seu email foi alterado para"
+      password_changed: "Estamos entrando em contato para notificar que sua senha foi alterada."
+
+  errors:
+    error:
+      one: "erro"
+      other: "erros"
+    prohibited: "não foi possível salvar %{model}:"
+
+  helpers:
+    submit:
+      project:
+        create: "Criar Projeto"
+        update: "Atualizar Projeto"
+      task:
+        create: "Criar Tarefa"
+        update: "Atualizar Tarefa"

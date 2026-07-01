@@ -1,9 +1,9 @@
-<h1>Invitations</h1>
+<h1 class="dark:text-gray-100"><%= t("invitations.title") %></h1>
 
-<%= link_to "New invitation", new_organization_invitation_path(@organization) %>
+<%= link_to t("invitations.new"), new_organization_invitation_path(@organization), class: "dark:text-indigo-400" %>
 
 <ul>
   <% @invitations.each do |invitation| %>
-    <li><%= invitation.email %> - <%= invitation.role %></li>
+    <li class="dark:text-gray-300"><%= invitation.email %> - <%= invitation.role %></li>
   <% end %>
 </ul>

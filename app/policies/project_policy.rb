@@ -19,6 +19,10 @@ class ProjectPolicy < ApplicationPolicy
     user.role_in(record.organization).in?(%w[admin manager])
   end
 
+  def archive?
+    user.role_in(record.organization).in?(%w[admin manager])
+  end
+
   class Scope < Scope
     def resolve
       scope.joins(organization: :memberships)

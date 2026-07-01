@@ -1,17 +1,42 @@
-<div data-controller="kanban" class="flex gap-4 overflow-x-auto pb-4">
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("kanban.title") %></h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= @project.name %></p>
+  </div>
+  <%= link_to new_organization_project_task_path(@organization, @project), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("kanban.new_task") %>
+  <% end %>
+</div>
+
+<div data-controller="kanban" data-kanban-project-id-value="<%= @project.id %>" class="flex gap-4 overflow-x-auto pb-4" style="min-height: calc(100vh - 12rem)">
   <% Task.statuses.each do |status, _| %>
-    <div class="kanban-column flex-shrink-0 w-72 bg-gray-100 rounded-lg">
-      <div class="px-4 py-3 font-semibold text-sm text-gray-700 border-b border-gray-200">
-        <%= status.titleize %>
-        <span class="ml-2 text-xs text-gray-400">(<%= @grouped_tasks[status]&.count || 0 %>)</span>
+    <% column_tasks = @grouped_tasks[status] || [] %>
+    <div class="kanban-column flex-shrink-0 w-72 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col dark:border-gray-700 dark:bg-gray-800/50">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between rounded-t-xl dark:border-gray-700"
+           style="background: linear-gradient(135deg, <%= column_color(status) %> 0%, <%= column_color(status) %>dd 100%)">
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-semibold text-white"><%= status.humanize %></h3>
+          <span class="text-xs text-white/80 bg-white/20 rounded-full px-2 py-0.5"><%= column_tasks.count %></span>
+        </div>
+        <%= link_to new_organization_project_task_path(@organization, @project, task: { status: status }), class: "text-white/80 hover:text-white transition-colors" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <% end %>
       </div>
 
-      <div class="kanban-column-body min-h-[200px] p-2 space-y-2"
+      <div class="kanban-column-body flex-1 min-h-[200px] p-2 space-y-2 overflow-y-auto"
            data-kanban-target="column"
            data-status="<%= status %>"
            data-move-url="<%= move_organization_project_task_path(@organization, @project, ":id") %>">
-        <% (@grouped_tasks[status] || []).each do |task| %>
+        <% column_tasks.each do |task| %>
           <%= render "kanban_card", task: task %>
+        <% end %>
+
+        <% if column_tasks.empty? %>
+          <div class="flex flex-col items-center justify-center py-8 text-center">
+            <svg class="w-8 h-8 text-gray-300 mb-2 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <p class="text-xs text-gray-400 mb-2 dark:text-gray-500"><%= t("kanban.no_tasks") %></p>
+            <%= link_to t("kanban.add_one"), new_organization_project_task_path(@organization, @project, task: { status: status }), class: "text-xs text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+          </div>
         <% end %>
       </div>
     </div>

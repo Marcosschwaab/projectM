@@ -54,5 +54,17 @@ Thumbs.db
 # Ignore Kamal secrets
 .kamal/secrets
 
+# User's Claude Code / opencode configuration (separate from project)
+/claude/
+/CLAUDE.md
+/AGENTS.md
+
+# Ignore node_modules (from @rails/actioncable pin)
+node_modules/
+
+
+# Old wrong-named model
+/app/models/strategic_canva.rb
+
 /app/assets/builds/*
 !/app/assets/builds/.keep

@@ -1,0 +1,49 @@
+<div data-controller="gantt"
+     data-gantt-start-value="<%= local_assigns[:start_date] %>"
+     data-gantt-end-value="<%= local_assigns[:end_date] %>"
+     class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+  <div class="flex">
+    <div class="flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50" style="width:220px">
+      <div class="h-9 border-b border-gray-200 dark:border-gray-700 flex items-end pb-1">
+        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400 px-4"><%= local_assigns[:label_column] || t("gantt.item") %></span>
+      </div>
+      <% local_assigns[:items].each do |item| %>
+        <div class="h-10 px-4 flex items-center border-b border-gray-100 dark:border-gray-700/50">
+          <div class="min-w-0">
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate block"><%= item[:name] %></span>
+            <% if item[:assignee] %>
+              <span class="text-[10px] text-gray-400 dark:text-gray-500"><%= item[:assignee] %></span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="flex-1 overflow-x-auto">
+      <div class="min-w-[600px]">
+        <div data-gantt-target="header" class="border-b border-gray-200 dark:border-gray-700"></div>
+        <div class="relative gantt-bars-container" style="min-height: <%= local_assigns[:items].size * 40 %>px">
+          <div data-gantt-target="grid" class="absolute inset-0 flex"></div>
+          <div class="relative">
+            <% local_assigns[:items].each_with_index do |item, idx| %>
+              <div data-gantt-target="row"
+                   data-gantt-start="<%= item[:start] %>"
+                   data-gantt-end="<%= item[:end] %>"
+                   data-gantt-dependencies="<%= item[:dependencies]&.join(',') %>"
+                   class="h-10 relative border-b border-gray-100 dark:border-gray-700/50"
+                   style="z-index: <%= item[:dependencies]&.any? ? 10 : 1 %>">
+                <div data-gantt-target="bar"
+                     class="absolute inset-y-1.5 rounded-md <%= item[:color] || 'bg-indigo-500' %> hover:opacity-90 hover:shadow-md transition-all duration-200 cursor-pointer"
+                     title="<%= item[:name] %>">
+                  <div class="px-2 text-xs font-medium text-white leading-none flex items-center h-full truncate">
+                    <%= item[:name] %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

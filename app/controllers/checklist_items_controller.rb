@@ -9,9 +9,9 @@ class ChecklistItemsController < ApplicationController
     authorize @checklist_item
 
     if @checklist_item.save
-      redirect_to [ @organization, @project, @task ], notice: "Checklist item added."
+      redirect_to [ @organization, @project, @task ], notice: t("flash.checklist_item.added")
     else
-      redirect_to [ @organization, @project, @task ], alert: "Checklist item could not be created."
+      redirect_to [ @organization, @project, @task ], alert: t("flash.checklist_item.create_failed")
     end
   end
 
@@ -26,7 +26,7 @@ class ChecklistItemsController < ApplicationController
     @checklist_item = @task.checklist_items.find(params[:id])
     authorize @checklist_item
     @checklist_item.destroy!
-    redirect_to [ @organization, @project, @task ], notice: "Checklist item removed."
+    redirect_to [ @organization, @project, @task ], notice: t("flash.checklist_item.removed")
   end
 
   private
