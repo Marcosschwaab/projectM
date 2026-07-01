@@ -14,51 +14,59 @@ export default class extends Controller {
     const widget = handle.closest("[data-dashboard-target='widget']")
     if (!widget) return
 
+    const rect = widget.getBoundingClientRect()
     this.dragData = {
       widget: widget,
       startX: event.clientX,
       startY: event.clientY,
-      offsetY: event.clientY - widget.getBoundingClientRect().top,
-      placeholder: this.createPlaceholder(widget)
+      widgetStartY: rect.top,
+      placeholder: this.createPlaceholder(widget),
+      widgetRects: this.captureWidgetRects()
     }
 
     document.addEventListener("mousemove", this.boundMouseMove)
     document.addEventListener("mouseup", this.boundMouseUp)
 
-    widget.style.width = widget.offsetWidth + "px"
+    widget.style.width = rect.width + "px"
+    widget.style.height = rect.height + "px"
     widget.classList.add("dragging")
+  }
+
+  captureWidgetRects() {
+    const grid = this.gridTarget
+    return [...grid.querySelectorAll(".dashboard-grid-item")].map(el => ({
+      el,
+      rect: el.getBoundingClientRect()
+    }))
   }
 
   onMouseMove(event) {
     if (!this.dragData) return
 
     const grid = this.gridTarget
-    const widgets = [...grid.querySelectorAll("[data-dashboard-target='widget']:not(.dragging)")]
-
     const widget = this.dragData.widget
-    widget.style.transform = `translateY(${event.clientY - this.dragData.startY}px)`
+    const dy = event.clientY - this.dragData.startY
+    widget.style.transform = `translateY(${dy}px)`
 
-    const widgetRect = widget.getBoundingClientRect()
-    const widgetMidY = widgetRect.top + widgetRect.height / 2
+    const items = [...grid.querySelectorAll(".dashboard-grid-item")]
+    const draggedItem = widget.parentElement
+    const widgetMidY = this.dragData.widgetStartY + dy + widget.offsetHeight / 2
 
-    let inserted = false
-    for (const other of widgets) {
-      const otherRect = other.getBoundingClientRect()
-      const otherMidY = otherRect.top + otherRect.height / 2
-      const parent = other.parentElement
-
-      if (widgetMidY < otherMidY) {
-        parent.parentElement.insertBefore(widget.parentElement, parent)
-        inserted = true
+    let insertBefore = null
+    for (const item of items) {
+      if (item === draggedItem) continue
+      const rect = item.getBoundingClientRect()
+      const itemMidY = rect.top + rect.height / 2
+      if (widgetMidY < itemMidY) {
+        insertBefore = item
         break
       }
     }
 
-    if (!inserted) {
-      const lastParent = widgets.length > 0 ? widgets[widgets.length - 1].parentElement : null
-      if (lastParent) {
-        lastParent.parentElement.appendChild(widget.parentElement)
-      }
+    if (insertBefore && draggedItem.nextElementSibling !== insertBefore) {
+      grid.insertBefore(draggedItem, insertBefore)
+    } else if (!insertBefore) {
+      grid.appendChild(draggedItem)
     }
   }
 
@@ -69,6 +77,7 @@ export default class extends Controller {
     widget.classList.remove("dragging")
     widget.style.transform = ""
     widget.style.width = ""
+    widget.style.height = ""
 
     if (this.dragData.placeholder) {
       this.dragData.placeholder.remove()
@@ -83,8 +92,8 @@ export default class extends Controller {
 
   createPlaceholder(widget) {
     const ph = document.createElement("div")
-    ph.className = "dashboard-placeholder"
-    ph.style.cssText = "height:" + widget.offsetHeight + "px;border:2px dashed #6366f1;border-radius:12px;margin-bottom:0;opacity:0.5"
+    ph.className = "dashboard-grid-item dashboard-placeholder col-span-1 lg:col-span-1"
+    ph.style.height = widget.offsetHeight + "px"
     widget.parentElement.insertAdjacentElement("afterend", ph)
     return ph
   }
@@ -124,7 +133,14 @@ export default class extends Controller {
       }
     }).then(response => {
       if (response.ok) {
-        widget.parentElement.remove()
+        const wrapper = widget.parentElement
+        wrapper.style.transition = "all 0.3s cubic-bezier(0.4,0,0.2,1)"
+        wrapper.style.transform = "scale(0.95)"
+        wrapper.style.opacity = "0"
+        wrapper.style.maxHeight = "0"
+        wrapper.style.marginBottom = "0"
+        wrapper.style.overflow = "hidden"
+        setTimeout(() => wrapper.remove(), 300)
       }
     })
   }
@@ -274,6 +290,7 @@ export default class extends Controller {
         wrapper.classList.add(`lg:col-span-${newWidth}`)
         if (newWidth === 1) wrapper.classList.add("col-span-1")
         this.updateSettingsButtons(widget, newWidth)
+        this.animateSizeChange(widget)
       }
     })
   }
@@ -331,8 +348,18 @@ export default class extends Controller {
         wrapper.classList.add(`lg:col-span-${newWidth}`)
         if (newWidth === 1) wrapper.classList.add("col-span-1")
         this.updateSettingsButtons(widget, newWidth)
+        this.animateSizeChange(widget)
       }
     })
+  }
+
+  animateSizeChange(widget) {
+    widget.classList.remove("widget-size-change")
+    void widget.offsetWidth
+    widget.classList.add("widget-size-change")
+    widget.addEventListener("animationend", () => {
+      widget.classList.remove("widget-size-change")
+    }, { once: true })
   }
 
   updateSettingsButtons(widget, width) {
