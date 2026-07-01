@@ -190,6 +190,163 @@ export default class extends Controller {
     "overdue_tasks", "due_this_week"
   ]
 
+  startResize(event) {
+    const handle = event.currentTarget
+    const widget = handle.closest("[data-dashboard-target='widget']")
+    if (!widget) return
+
+    this.resizeData = {
+      widget: widget,
+      startX: event.clientX,
+      currentWidth: parseInt(widget.dataset.widgetWidth) || 1,
+      overlay: this.createResizeOverlay(widget)
+    }
+
+    document.addEventListener("mousemove", this.boundResizeMouseMove)
+    document.addEventListener("mouseup", this.boundResizeMouseUp)
+    document.body.classList.add("resizing")
+
+    event.preventDefault()
+  }
+
+  boundResizeMouseMove = this.onResizeMouseMove.bind(this)
+  boundResizeMouseUp = this.onResizeMouseUp.bind(this)
+
+  onResizeMouseMove(event) {
+    if (!this.resizeData) return
+
+    const grid = this.gridTarget
+    const gridRect = grid.getBoundingClientRect()
+    const gridLeft = gridRect.left
+    const gridWidth = gridRect.width
+    const colWidth = gridWidth / 3
+
+    const widgetLeft = this.resizeData.widget.getBoundingClientRect().left
+    const mouseOffsetFromWidgetLeft = event.clientX - widgetLeft
+
+    const colsFromLeft = mouseOffsetFromWidgetLeft / colWidth
+
+    let newWidth
+    if (colsFromLeft < 1.2) newWidth = 1
+    else if (colsFromLeft < 2.3) newWidth = 2
+    else newWidth = 3
+
+    newWidth = Math.max(1, Math.min(3, newWidth))
+
+    if (newWidth !== this.resizeData.currentWidth) {
+      this.resizeData.currentWidth = newWidth
+      this.updateResizeOverlay(newWidth)
+    }
+  }
+
+  onResizeMouseUp() {
+    if (!this.resizeData) return
+
+    this.removeResizeOverlay()
+    document.removeEventListener("mousemove", this.boundResizeMouseMove)
+    document.removeEventListener("mouseup", this.boundResizeMouseUp)
+    document.body.classList.remove("resizing")
+
+    const newWidth = this.resizeData.currentWidth
+    const widget = this.resizeData.widget
+    const id = widget.dataset.widgetId
+    const oldWidth = parseInt(widget.dataset.widgetWidth)
+
+    this.resizeData = null
+
+    if (newWidth === oldWidth) return
+
+    fetch(`/dashboard/widgets/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+      },
+      body: JSON.stringify({ dashboard_widget: { width: newWidth } })
+    })
+    .then(response => {
+      if (response.ok) {
+        widget.dataset.widgetWidth = newWidth
+        const wrapper = widget.parentElement
+        wrapper.className = wrapper.className
+          .replace(/lg:col-span-\d+/g, "")
+          .replace(/col-span-\d+/g, "")
+        wrapper.classList.add(`lg:col-span-${newWidth}`)
+        if (newWidth === 1) wrapper.classList.add("col-span-1")
+        this.updateSettingsButtons(widget, newWidth)
+      }
+    })
+  }
+
+  createResizeOverlay(widget) {
+    const overlay = document.createElement("div")
+    overlay.className = "dashboard-resize-overlay"
+    overlay.style.cssText = "position:absolute;inset:0;z-index:40;pointer-events:none;border-radius:12px;transition:all 0.1s ease"
+    widget.appendChild(overlay)
+    return overlay
+  }
+
+  updateResizeOverlay(width) {
+    if (!this.resizeData?.overlay) return
+    const colors = { 1: "rgba(99,102,241,0.08)", 2: "rgba(99,102,241,0.12)", 3: "rgba(99,102,241,0.16)" }
+    const labels = { 1: "1 col", 2: "2 cols", 3: "3 cols" }
+    this.resizeData.overlay.style.background = colors[width] || "transparent"
+    this.resizeData.overlay.style.boxShadow = "inset 0 0 0 2px rgba(99,102,241,0.4)"
+    this.resizeData.overlay.textContent = ""
+    const label = document.createElement("span")
+    label.style.cssText = "position:absolute;bottom:8px;right:28px;font-size:11px;font-weight:600;color:#6366f1;background:white;padding:2px 8px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1)"
+    label.textContent = labels[width] || ""
+    this.resizeData.overlay.appendChild(label)
+  }
+
+  removeResizeOverlay() {
+    if (this.resizeData?.overlay) {
+      this.resizeData.overlay.remove()
+    }
+  }
+
+  setWidth(event) {
+    const btn = event.currentTarget
+    const widget = btn.closest("[data-dashboard-target='widget']")
+    if (!widget) return
+
+    const newWidth = parseInt(btn.dataset.width)
+    const id = widget.dataset.widgetId
+
+    fetch(`/dashboard/widgets/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+      },
+      body: JSON.stringify({ dashboard_widget: { width: newWidth } })
+    })
+    .then(response => {
+      if (response.ok) {
+        widget.dataset.widgetWidth = newWidth
+        const wrapper = widget.parentElement
+        wrapper.className = wrapper.className
+          .replace(/lg:col-span-\d+/g, "")
+          .replace(/col-span-\d+/g, "")
+        wrapper.classList.add(`lg:col-span-${newWidth}`)
+        if (newWidth === 1) wrapper.classList.add("col-span-1")
+        this.updateSettingsButtons(widget, newWidth)
+      }
+    })
+  }
+
+  updateSettingsButtons(widget, width) {
+    const buttons = widget.querySelectorAll("[data-dashboard-target='settingsPanel'] [data-width]")
+    buttons.forEach(btn => {
+      const w = parseInt(btn.dataset.width)
+      if (w === width) {
+        btn.className = "flex-1 px-3 py-2 text-xs font-medium rounded-lg border transition-colors bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-600 dark:text-indigo-300"
+      } else {
+        btn.className = "flex-1 px-3 py-2 text-xs font-medium rounded-lg border transition-colors border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
+      }
+    })
+  }
+
   static i18n = {
     addWidget: "Add Widget",
     stats: "Statistics",

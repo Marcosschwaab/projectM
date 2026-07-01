@@ -351,6 +351,10 @@ en:
     tasks_count: "%{count} tasks"
     no_overdue_tasks: "No overdue tasks 🎉"
     no_active_projects: "No active projects"
+    widget_size: "Widget Size"
+    size_small: "Small"
+    size_medium: "Medium"
+    size_large: "Large"
     widgets:
       stats: "Statistics"
       completion_rate: "Completion Rate"

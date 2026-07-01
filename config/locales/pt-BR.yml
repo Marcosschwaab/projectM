@@ -351,6 +351,10 @@ pt-BR:
     tasks_count: "%{count} tarefas"
     no_overdue_tasks: "Nenhuma tarefa atrasada 🎉"
     no_active_projects: "Nenhum projeto ativo"
+    widget_size: "Tamanho do Widget"
+    size_small: "Pequeno"
+    size_medium: "Médio"
+    size_large: "Grande"
     widgets:
       stats: "Estatísticas"
       completion_rate: "Taxa de Conclusão"
