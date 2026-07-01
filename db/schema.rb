@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_170550) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -277,11 +277,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_170550) do
     t.integer "priority", default: 0
     t.decimal "progress", precision: 5, scale: 2, default: "0.0"
     t.bigint "project_id", null: false
+    t.date "recurrence_end_date"
+    t.string "recurrence_rule"
+    t.bigint "recurring_parent_id"
     t.integer "status", default: 0
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
     t.index ["project_id"], name: "index_tasks_on_project_id"
+    t.index ["recurring_parent_id"], name: "index_tasks_on_recurring_parent_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -355,6 +359,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_170550) do
   add_foreign_key "task_tags", "tags"
   add_foreign_key "task_tags", "tasks"
   add_foreign_key "tasks", "projects"
+  add_foreign_key "tasks", "tasks", column: "recurring_parent_id"
   add_foreign_key "tasks", "users", column: "assignee_id"
   add_foreign_key "webhook_deliveries", "webhooks"
   add_foreign_key "webhooks", "organizations"

@@ -118,11 +118,11 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, tag_ids: [], files: [], dependency_ids: [])
+    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [])
   end
 
   def task_params_for_new
-    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, tag_ids: [], files: [], dependency_ids: [])
+    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [])
   end
 
   def broadcast_task_move

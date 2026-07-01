@@ -222,6 +222,17 @@ pt-BR:
       actions: "Ações"
     depends_on: "Depende de"
     blocking: "Bloqueia"
+    recurrence:
+      title: "Repetir"
+      none: "Não repete"
+      daily: "Diariamente"
+      weekdays: "Dias úteis"
+      weekly: "Semanalmente"
+      biweekly: "Quinzenalmente"
+      monthly: "Mensalmente"
+      yearly: "Anualmente"
+      end_date: "Data limite"
+      until: "Até %{date}"
     dependencies: "Dependências"
     fields:
       title: "Título"

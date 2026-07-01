@@ -45,6 +45,11 @@
 
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
+      <% if task.recurring? %>
+        <span class="text-xs text-indigo-400 dark:text-indigo-500 flex items-center gap-0.5" title="<%= task.recurrence_label %>">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </span>
+      <% end %>
       <% if task.assignee %>
         <div class="w-5 h-5 bg-indigo-100 rounded-full flex items-center justify-center dark:bg-indigo-900/30">
           <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400"><%= task.assignee.name.first.upcase %></span>

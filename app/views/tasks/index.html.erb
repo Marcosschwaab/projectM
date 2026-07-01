@@ -88,7 +88,12 @@
           </td>
           <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><%= task.assignee&.name || "-" %></td>
           <td class="px-6 py-4 text-sm <%= task.due_date && task.due_date < Date.today && task.status != "done" ? "text-red-600 font-medium dark:text-red-400" : "text-gray-600 dark:text-gray-400" %>">
-            <%= task.due_date || "-" %>
+            <span class="flex items-center gap-1">
+              <% if task.recurring? %>
+                <svg class="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <% end %>
+              <%= task.due_date || "-" %>
+            </span>
           </td>
           <td class="px-6 py-4 text-right">
             <div class="flex items-center justify-end gap-2">

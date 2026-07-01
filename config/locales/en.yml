@@ -222,6 +222,17 @@ en:
       actions: "Actions"
     depends_on: "Depends on"
     blocking: "Blocking"
+    recurrence:
+      title: "Repeat"
+      none: "Does not repeat"
+      daily: "Daily"
+      weekdays: "Weekdays"
+      weekly: "Weekly"
+      biweekly: "Every 2 weeks"
+      monthly: "Monthly"
+      yearly: "Yearly"
+      end_date: "End date"
+      until: "Until %{date}"
     dependencies: "Dependencies"
     fields:
       title: "Title"
