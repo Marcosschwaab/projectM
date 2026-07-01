@@ -1,0 +1,21 @@
+<% limit = widget.settings["limit"] || 5 %>
+<% if @my_tasks.any? %>
+  <div class="space-y-2">
+    <% @my_tasks.limit(limit).each do |task| %>
+      <%= link_to [@organization, task.project, task], class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors group dark:hover:bg-gray-700/50" do %>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors dark:text-gray-100 dark:group-hover:text-indigo-400"><%= task.title %></p>
+          <p class="text-xs text-gray-400 truncate mt-0.5"><%= task.project.name %></p>
+        </div>
+        <span class="<%= status_badge_class(task.status) %> ml-3 flex-shrink-0"><%= task.status.humanize %></span>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-6">
+    <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-2">
+      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("dashboard.no_tasks_assigned") %></p>
+  </div>
+<% end %>

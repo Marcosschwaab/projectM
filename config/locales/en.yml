@@ -23,6 +23,7 @@ en:
     formats:
       default: "%b %d, %Y at %I:%M %p"
       short: "%b %d %I:%M %p"
+      long: "%B %d, %Y at %I:%M %p"
       dashboard: "%A, %B %d"
     ago: "%{time} ago"
     today: "Today"
@@ -60,6 +61,8 @@ en:
     filter: "Filter"
     clear: "Clear"
     confirm_delete: "Are you sure?"
+    settings: "Settings"
+    remove: "Remove"
     back_to_projects: "← Back to projects"
     back_to_project: "← Back to project"
     back_to_tasks: "← Back to tasks"
@@ -317,6 +320,7 @@ en:
 
   dashboard:
     title: "Dashboard"
+    add_widget: "Add Widget"
     active_projects: "Active Projects"
     done: "Done"
     open_tasks: "Open Tasks"
@@ -345,6 +349,23 @@ en:
     kpis_achieved: "%{achieved} of %{total} KPIs achieved"
     view_cycle: "View cycle"
     tasks_count: "%{count} tasks"
+    no_overdue_tasks: "No overdue tasks 🎉"
+    no_active_projects: "No active projects"
+    widgets:
+      stats: "Statistics"
+      completion_rate: "Completion Rate"
+      tasks_by_status: "Tasks by Status"
+      tasks_by_priority: "Tasks by Priority"
+      project_status: "Project Status"
+      upcoming_deadlines: "Upcoming Deadlines"
+      my_tasks_list: "My Tasks"
+      okr_progress: "OKR Progress"
+      kpis_summary: "KPIs Summary"
+      recent_activity: "Recent Activity"
+      projects_overview: "Projects Overview"
+      timeline: "Timeline"
+      overdue_tasks: "Overdue Tasks"
+      due_this_week: "Due This Week"
 
   notifications:
     title: "Notifications"

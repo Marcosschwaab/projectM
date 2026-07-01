@@ -43,7 +43,13 @@ Rails.application.routes.draw do
   end
 
   resource :my_tasks, only: %i[show], controller: :my_tasks
-  resource :dashboard, only: %i[show], controller: :dashboard
+  resource :dashboard, only: %i[show], controller: :dashboard do
+    resources :widgets, only: %i[index create update destroy], controller: "dashboard/widgets" do
+      collection do
+        patch :reorder
+      end
+    end
+  end
   resource :search, only: %i[show], controller: :searches
   resource :report, only: %i[show], controller: :reports
 

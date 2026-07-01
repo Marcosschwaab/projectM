@@ -1,0 +1,10 @@
+<% if @gantt_items.any? %>
+  <%= render "shared/gantt", items: @gantt_items, start_date: @gantt_start, end_date: @gantt_end, label_column: t("projects.title") %>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-6">
+    <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-2">
+      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("dashboard.no_active_projects") %></p>
+  </div>
+<% end %>

@@ -1,0 +1,23 @@
+<% limit = widget.settings["limit"] || 5 %>
+<% if @overdue_tasks.any? %>
+  <div class="space-y-2">
+    <% @overdue_tasks.limit(limit).each do |task| %>
+      <%= link_to [@organization, task.project, task], class: "flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors group dark:hover:bg-gray-700/50" do %>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-gray-900 truncate group-hover:text-red-600 transition-colors dark:text-gray-100 dark:group-hover:text-red-400"><%= task.title %></p>
+          <p class="text-xs text-gray-400 truncate mt-0.5"><%= task.project.name %></p>
+        </div>
+        <span class="text-xs font-semibold ml-3 px-2 py-1 rounded-full bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+          <%= l(task.due_date, format: :short) %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="flex flex-col items-center justify-center py-6">
+    <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-2">
+      <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("dashboard.no_overdue_tasks") %></p>
+  </div>
+<% end %>

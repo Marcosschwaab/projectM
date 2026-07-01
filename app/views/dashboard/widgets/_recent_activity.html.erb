@@ -1,0 +1,14 @@
+<% limit = widget.settings["limit"] || 8 %>
+<div class="divide-y divide-gray-100 dark:divide-gray-700 -mx-5 -mb-5">
+  <% @recent_activity.limit(limit).each do |activity| %>
+    <div class="px-5 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+      <div class="w-7 h-7 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center flex-shrink-0 dark:from-indigo-900/40 dark:to-purple-900/40">
+        <span class="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400"><%= activity.user.name.first.upcase %></span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm text-gray-700 dark:text-gray-300"><strong><%= activity.user.name %></strong> <span class="text-gray-500 dark:text-gray-400"><%= activity.action %></span></p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5"><%= t("time.ago", time: time_ago_in_words(activity.created_at)) %></p>
+      </div>
+    </div>
+  <% end %>
+</div>

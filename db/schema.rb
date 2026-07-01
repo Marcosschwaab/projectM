@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_164535) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_170550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_164535) do
     t.bigint "user_id", null: false
     t.index ["task_id"], name: "index_comments_on_task_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "dashboard_widgets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position", default: 0, null: false
+    t.jsonb "settings", default: {}
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.boolean "visible", default: true, null: false
+    t.string "widget_type", null: false
+    t.integer "width", default: 1, null: false
+    t.index ["user_id", "position"], name: "index_dashboard_widgets_on_user_id_and_position", unique: true
+    t.index ["user_id"], name: "index_dashboard_widgets_on_user_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -317,6 +330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_164535) do
   add_foreign_key "checklist_items", "tasks"
   add_foreign_key "comments", "tasks"
   add_foreign_key "comments", "users"
+  add_foreign_key "dashboard_widgets", "users"
   add_foreign_key "invitations", "organizations"
   add_foreign_key "invitations", "users"
   add_foreign_key "key_results", "objectives"

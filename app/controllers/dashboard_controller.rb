@@ -5,6 +5,15 @@ class DashboardController < ApplicationController
     @organization = current_user.organizations.first
     return redirect_to new_organization_path, alert: t("flash.create_organization_first") unless @organization
 
+    @widgets = policy_scope(DashboardWidget).visible.ordered
+    @widgets = DashboardWidget.defaults_for(current_user) if @widgets.empty?
+
+    load_dashboard_data
+  end
+
+  private
+
+  def load_dashboard_data
     @projects = policy_scope(Project).where(organization: @organization).includes(:assignee)
     @tasks = policy_scope(Task).where(project_id: @projects.pluck(:id)).includes(:assignee, :project)
 
@@ -17,7 +26,7 @@ class DashboardController < ApplicationController
     @recent_activity = ActivityLog.where(organization: @organization).includes(:user).order(created_at: :desc).limit(8)
 
     @status_distribution = @projects.group(:status).count
-    @task_status_distribution = @tasks_grouped = @tasks.group(:status).count
+    @task_status_distribution = @tasks.group(:status).count
     @priority_distribution = @tasks.group(:priority).count
     @tasks_by_project = @projects.left_joins(:tasks).group("projects.id", "projects.name").count("tasks.id")
     @completion_rate = @tasks.count > 0 ? ((@tasks.where(status: :done).count.to_f / @tasks.count) * 100).round(0) : 0
@@ -46,8 +55,6 @@ class DashboardController < ApplicationController
       }
     end
   end
-
-  private
 
   def project_gantt_color(status)
     case status.to_s

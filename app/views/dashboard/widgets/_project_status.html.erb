@@ -1,0 +1,18 @@
+<div class="space-y-3">
+  <% Project.statuses.each do |status_name, _| %>
+    <% count = @status_distribution[status_name] || 0 %>
+    <% pct = @projects.count > 0 ? (count.to_f / @projects.count * 100).round(0) : 0 %>
+    <div>
+      <div class="flex items-center justify-between text-xs mb-1">
+        <span class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full" style="background-color: <%= project_status_color(status_name) %>"></span>
+          <span class="text-gray-600 dark:text-gray-400"><%= status_name.humanize %></span>
+        </span>
+        <span class="font-semibold text-gray-900 dark:text-gray-100"><%= count %></span>
+      </div>
+      <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-700">
+        <div class="h-full rounded-full transition-all duration-500" style="width: <%= pct %>%; background-color: <%= project_status_color(status_name) %>"></div>
+      </div>
+    </div>
+  <% end %>
+</div>

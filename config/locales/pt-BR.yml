@@ -23,6 +23,7 @@ pt-BR:
     formats:
       default: "%d de %B de %Y às %H:%M"
       short: "%d de %b às %H:%M"
+      long: "%d de %B de %Y às %H:%M"
       dashboard: "%A, %d de %B"
     ago: "há %{time}"
     today: "Hoje"
@@ -60,6 +61,8 @@ pt-BR:
     filter: "Filtrar"
     clear: "Limpar"
     confirm_delete: "Tem certeza?"
+    settings: "Configurações"
+    remove: "Remover"
     back_to_projects: "← Voltar para projetos"
     back_to_project: "← Voltar para projeto"
     back_to_tasks: "← Voltar para tarefas"
@@ -317,6 +320,7 @@ pt-BR:
 
   dashboard:
     title: "Dashboard"
+    add_widget: "Adicionar Widget"
     active_projects: "Projetos Ativos"
     done: "Concluídos"
     open_tasks: "Tarefas Abertas"
@@ -345,6 +349,23 @@ pt-BR:
     kpis_achieved: "%{achieved} de %{total} KPIs atingidos"
     view_cycle: "Ver ciclo"
     tasks_count: "%{count} tarefas"
+    no_overdue_tasks: "Nenhuma tarefa atrasada 🎉"
+    no_active_projects: "Nenhum projeto ativo"
+    widgets:
+      stats: "Estatísticas"
+      completion_rate: "Taxa de Conclusão"
+      tasks_by_status: "Tarefas por Status"
+      tasks_by_priority: "Tarefas por Prioridade"
+      project_status: "Status dos Projetos"
+      upcoming_deadlines: "Próximos Prazos"
+      my_tasks_list: "Minhas Tarefas"
+      okr_progress: "Progresso OKR"
+      kpis_summary: "Resumo de KPIs"
+      recent_activity: "Atividade Recente"
+      projects_overview: "Visão Geral dos Projetos"
+      timeline: "Linha do Tempo"
+      overdue_tasks: "Tarefas Atrasadas"
+      due_this_week: "Vencem Esta Semana"
 
   notifications:
     title: "Notificações"

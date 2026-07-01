@@ -1,0 +1,20 @@
+<div class="flex items-center justify-center">
+  <div class="relative w-32 h-32">
+    <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="#f3f4f6" stroke-width="10" class="dark:stroke-gray-700"/>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="<%= @completion_rate >= 75 ? '#10b981' : @completion_rate >= 50 ? '#f59e0b' : '#ef4444' %>" stroke-width="10"
+              stroke-dasharray="<%= 2 * Math::PI * 52 %>"
+              stroke-dashoffset="<%= 2 * Math::PI * 52 * (1 - @completion_rate.to_f / 100) %>"
+              stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span class="text-3xl font-bold text-gray-900 dark:text-gray-100"><%= @completion_rate %>%</span>
+    </div>
+  </div>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+  <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+    <span><%= t("dashboard.tasks_completed") %></span>
+    <span class="font-semibold text-gray-900 dark:text-gray-100"><%= t("dashboard.tasks_completed_count", done: @tasks.where(status: :done).count, total: @tasks.count) %></span>
+  </div>
+</div>
