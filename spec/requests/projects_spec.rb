@@ -15,6 +15,19 @@ RSpec.describe "Projects", type: :request do
       get organization_projects_path(organization)
       expect(response).to have_http_status(:success)
     end
+
+    it "filters archived projects" do
+      archived = create(:project, organization: organization, archived: true)
+      create(:project, organization: organization, name: "Active", archived: false)
+      get organization_projects_path(organization), params: { status: "archived" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "restores an archived project" do
+      archived = create(:project, organization: organization, archived: true)
+      patch archive_organization_project_path(organization, archived)
+      expect(archived.reload.archived).to be false
+    end
   end
 
   describe "GET /organizations/:id/projects/new" do

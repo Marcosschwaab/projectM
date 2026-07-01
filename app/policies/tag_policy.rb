@@ -1,8 +1,4 @@
 class TagPolicy < ApplicationPolicy
-  def index?
-    user.member_of?(record)
-  end
-
   def create?
     user.role_in(record.organization).in?(%w[admin manager])
   end

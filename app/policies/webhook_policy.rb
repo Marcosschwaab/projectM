@@ -1,8 +1,4 @@
 class WebhookPolicy < ApplicationPolicy
-  def index?
-    user.member_of?(record)
-  end
-
   def show?
     user.member_of?(record.organization)
   end

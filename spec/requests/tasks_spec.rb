@@ -16,6 +16,48 @@ RSpec.describe "Tasks", type: :request do
       get organization_project_tasks_path(organization, project)
       expect(response).to have_http_status(:success)
     end
+
+    it "filters by assignee_id" do
+      create(:task, project: project, assignee: user)
+      get organization_project_tasks_path(organization, project), params: { assignee_id: user.id }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by priority" do
+      create(:task, project: project, priority: :high)
+      get organization_project_tasks_path(organization, project), params: { priority: "high" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by status" do
+      create(:task, project: project, status: :done)
+      get organization_project_tasks_path(organization, project), params: { status: "done" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by due_date_from" do
+      get organization_project_tasks_path(organization, project), params: { due_date_from: "2026-01-01" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by due_date_to" do
+      get organization_project_tasks_path(organization, project), params: { due_date_to: "2026-12-31" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by search query" do
+      create(:task, project: project, title: "FindMe")
+      get organization_project_tasks_path(organization, project), params: { q: "FindMe" }
+      expect(response).to have_http_status(:success)
+    end
+
+    it "filters by tag_id" do
+      tag = create(:tag, organization: organization)
+      task_with_tag = create(:task, project: project)
+      task_with_tag.tags << tag
+      get organization_project_tasks_path(organization, project), params: { tag_id: tag.id }
+      expect(response).to have_http_status(:success)
+    end
   end
 
   describe "GET /organizations/:id/projects/:id/tasks/:id" do
