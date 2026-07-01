@@ -9,6 +9,7 @@ class ChecklistItemsController < ApplicationController
     authorize @checklist_item
 
     if @checklist_item.save
+      ActivityLog.create!(action: "added checklist item to task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
       redirect_to [ @organization, @project, @task ], notice: t("flash.checklist_item.added")
     else
       redirect_to [ @organization, @project, @task ], alert: t("flash.checklist_item.create_failed")
@@ -19,13 +20,17 @@ class ChecklistItemsController < ApplicationController
     @checklist_item = @task.checklist_items.find(params[:id])
     authorize @checklist_item
     @checklist_item.update(checklist_item_params)
+    status = @checklist_item.completed? ? "completed" : "uncompleted"
+    ActivityLog.create!(action: "#{status} checklist item in task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
     redirect_to [ @organization, @project, @task ]
   end
 
   def destroy
     @checklist_item = @task.checklist_items.find(params[:id])
     authorize @checklist_item
+    content = @checklist_item.content
     @checklist_item.destroy!
+    ActivityLog.create!(action: "removed checklist item from task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
     redirect_to [ @organization, @project, @task ], notice: t("flash.checklist_item.removed")
   end
 

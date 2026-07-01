@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_155603) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_164535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,11 +47,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_155603) do
     t.datetime "created_at", null: false
     t.text "details"
     t.bigint "organization_id", null: false
+    t.bigint "project_id"
     t.bigint "trackable_id", null: false
     t.string "trackable_type", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["organization_id"], name: "index_activity_logs_on_organization_id"
+    t.index ["project_id"], name: "index_activity_logs_on_project_id"
     t.index ["trackable_type", "trackable_id"], name: "index_activity_logs_on_trackable"
     t.index ["user_id"], name: "index_activity_logs_on_user_id"
   end
@@ -310,6 +312,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_155603) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activity_logs", "organizations"
+  add_foreign_key "activity_logs", "projects"
   add_foreign_key "activity_logs", "users"
   add_foreign_key "checklist_items", "tasks"
   add_foreign_key "comments", "tasks"

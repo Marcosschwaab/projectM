@@ -10,6 +10,7 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
+      ActivityLog.create!(action: "commented on task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
       if @task.assignee && @task.assignee != current_user
         @task.assignee.notifications.create!(
           actor: current_user, action: "task_commented", notifiable: @task, organization: @organization

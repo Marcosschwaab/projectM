@@ -118,8 +118,12 @@
             </div>
             <div class="w-full bg-gray-100 rounded-full h-1.5 dark:bg-gray-700">
               <div class="h-1.5 rounded-full <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
-            </div>
-          </div>
+  </div>
+
+  <div class="mt-6">
+    <%= render "timeline", activities: @activity_logs %>
+  </div>
+</div>
         <% end %>
       </div>
     <% else %>

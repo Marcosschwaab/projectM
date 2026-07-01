@@ -24,7 +24,8 @@ class ProjectsController < ApplicationController
     @gantt_items = @gantt_tasks.map do |t|
       s = t.created_at.to_date
       e = t.due_date || s + 14
-      deps = t.dependencies.filter_map { |d| task_index[d.id] }
+      @activity_logs = ActivityLog.for_project(@project).recent.includes(:user).limit(50)
+    deps = t.dependencies.filter_map { |d| task_index[d.id] }
       {
         name: t.title,
         assignee: t.assignee&.name,
@@ -50,6 +51,7 @@ class ProjectsController < ApplicationController
     authorize @project
 
     if @project.save
+      ActivityLog.create!(action: "created project #{@project.name}", trackable: @project, user: current_user, organization: @organization, project: @project)
       redirect_to [ @organization, @project ], notice: t("flash.project.created")
     else
       render :new, status: :unprocessable_content
@@ -59,6 +61,7 @@ class ProjectsController < ApplicationController
   def update
     authorize @project
     if @project.update(project_params)
+      ActivityLog.create!(action: "updated project #{@project.name}", trackable: @project, user: current_user, organization: @organization, project: @project)
       redirect_to [ @organization, @project ], notice: t("flash.project.updated")
     else
       render :edit, status: :unprocessable_content
@@ -74,6 +77,8 @@ class ProjectsController < ApplicationController
   def archive
     authorize @project
     @project.update!(archived: !@project.archived)
+    action = @project.archived? ? "archived project #{@project.name}" : "restored project #{@project.name}"
+    ActivityLog.create!(action: action, trackable: @project, user: current_user, organization: @organization, project: @project)
     redirect_to organization_projects_path(@organization), notice: @project.archived? ? t("flash.project.archived") : t("flash.project.restored")
   end
 

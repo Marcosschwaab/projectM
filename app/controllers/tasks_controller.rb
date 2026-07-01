@@ -38,7 +38,7 @@ class TasksController < ApplicationController
     authorize @task
 
     if @task.save
-      ActivityLog.create!(action: "created task #{@task.title}", trackable: @task, user: current_user, organization: @organization)
+      ActivityLog.create!(action: "created task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
 
       if @task.assignee && @task.assignee != current_user
         @task.assignee.notifications.create!(
@@ -56,6 +56,7 @@ class TasksController < ApplicationController
     authorize @task
     prev_assignee = @task.assignee_id
     if @task.update(task_params)
+      ActivityLog.create!(action: "updated task #{@task.title}", trackable: @task, user: current_user, organization: @organization, project: @project)
       if @task.assignee && @task.assignee != current_user && (!prev_assignee || prev_assignee != @task.assignee_id)
         @task.assignee.notifications.create!(
           actor: current_user, action: "task_assigned", notifiable: @task, organization: @organization
@@ -69,7 +70,9 @@ class TasksController < ApplicationController
 
   def destroy
     authorize @task
+    title = @task.title
     @task.destroy!
+    ActivityLog.create!(action: "deleted task #{title}", trackable: @project, user: current_user, organization: @organization, project: @project)
     redirect_to organization_project_tasks_path(@organization, @project), notice: t("flash.task.destroyed")
   end
 
@@ -84,10 +87,13 @@ class TasksController < ApplicationController
     authorize @task
     prev_status = @task.status
     if @task.update(status: params[:status], position: params[:position])
-      if prev_status != @task.status && @task.assignee && @task.assignee != current_user
-        @task.assignee.notifications.create!(
-          actor: current_user, action: "task_moved", notifiable: @task, organization: @organization
-        )
+      if prev_status != @task.status
+        ActivityLog.create!(action: "moved task #{@task.title} to #{@task.status}", trackable: @task, user: current_user, organization: @organization, project: @project)
+        if @task.assignee && @task.assignee != current_user
+          @task.assignee.notifications.create!(
+            actor: current_user, action: "task_moved", notifiable: @task, organization: @organization
+          )
+        end
       end
       broadcast_task_move
       dispatch_webhook_for_move

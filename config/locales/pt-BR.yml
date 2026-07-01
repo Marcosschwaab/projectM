@@ -543,6 +543,10 @@ pt-BR:
       other: "erros"
     prohibited: "não foi possível salvar %{model}:"
 
+  activity:
+    timeline: "Linha do Tempo"
+    no_activity: "Nenhuma atividade registrada ainda. Comece criando tarefas ou adicionando comentários."
+
   helpers:
     submit:
       project:

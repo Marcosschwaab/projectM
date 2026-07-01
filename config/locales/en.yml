@@ -538,6 +538,10 @@ en:
       other: "errors"
     prohibited: "prohibited this %{model} from being saved:"
 
+  activity:
+    timeline: "Activity Timeline"
+    no_activity: "No activity recorded yet. Start by creating tasks or adding comments."
+
   helpers:
     submit:
       project:

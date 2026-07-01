@@ -169,7 +169,8 @@ projects.each do |project|
     trackable: project,
     trackable_type: "Project",
     user: project.assignee || alice,
-    organization: org
+    organization: org,
+    project: project
   )
 end
 
