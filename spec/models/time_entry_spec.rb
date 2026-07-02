@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe TimeEntry, type: :model do
+  let(:user) { create(:user) }
+
   describe "validations" do
     it "is valid with valid attributes" do
       entry = build(:time_entry, started_at: 1.hour.ago, ended_at: Time.current)
@@ -11,6 +13,12 @@ RSpec.describe TimeEntry, type: :model do
       entry = build(:time_entry, started_at: nil, ended_at: nil)
       expect(entry).not_to be_valid
       expect(entry.errors[:started_at]).to include("can't be blank")
+    end
+
+    it "validates ended_at is after started_at" do
+      entry = build(:time_entry, started_at: Time.current, ended_at: 1.hour.ago)
+      expect(entry).not_to be_valid
+      expect(entry.errors[:ended_at]).to include("must be after the start time")
     end
   end
 
@@ -38,6 +46,13 @@ RSpec.describe TimeEntry, type: :model do
       stopped = create(:time_entry, ended_at: Time.current)
       expect(TimeEntry.stopped).to contain_exactly(stopped)
     end
+
+    it "for_user filters by user" do
+      other = create(:user)
+      mine = create(:time_entry, user: user)
+      create(:time_entry, user: other)
+      expect(TimeEntry.for_user(user)).to contain_exactly(mine)
+    end
   end
 
   describe "#stop!" do
@@ -47,6 +62,18 @@ RSpec.describe TimeEntry, type: :model do
       entry.stop!
       expect(entry.ended_at).to be_present
       expect(entry.duration).to eq(120)
+    end
+  end
+
+  describe "#calculated_duration" do
+    it "returns duration for stopped entries" do
+      entry = build(:time_entry, duration: 90)
+      expect(entry.calculated_duration).to eq(90)
+    end
+
+    it "calculates from ended_at when duration is nil" do
+      entry = build(:time_entry, started_at: 3.hours.ago, ended_at: 2.hours.ago, duration: nil)
+      expect(entry.calculated_duration).to eq(60)
     end
   end
 

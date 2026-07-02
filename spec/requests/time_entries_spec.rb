@@ -39,6 +39,19 @@ RSpec.describe "TimeEntries", type: :request do
     end
   end
 
+  describe "PATCH /organizations/:id/projects/:id/tasks/:id/time_entries/:id" do
+    it "updates a time entry" do
+      entry = create(:time_entry, task: task, user: user, duration: 30, description: "Old")
+
+      patch organization_project_task_time_entry_path(organization, project, task, entry),
+            params: { time_entry: { duration: 45, description: "Updated" } }
+
+      entry.reload
+      expect(entry.duration).to eq(45)
+      expect(entry.description).to eq("Updated")
+    end
+  end
+
   describe "POST /organizations/:id/projects/:id/tasks/:id/time_entries" do
     it "creates a manual time entry" do
       expect {

@@ -1,4 +1,12 @@
 en:
+  activerecord:
+    errors:
+      models:
+        time_entry:
+          attributes:
+            ended_at:
+              after_started_at: "must be after the start time"
+
   app:
     name: "ProjectM"
     description: "Project Management Platform"
