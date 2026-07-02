@@ -18,6 +18,7 @@ class Task < ApplicationRecord
 
   has_many :task_dependencies, dependent: :destroy
   has_many :dependencies, through: :task_dependencies, source: :dependency
+  has_many :time_entries, dependent: :destroy
   has_many :incoming_dependencies, class_name: "TaskDependency", foreign_key: :dependency_id, dependent: :destroy
   has_many :dependent_tasks, through: :incoming_dependencies, source: :task
 

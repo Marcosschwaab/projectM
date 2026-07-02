@@ -21,12 +21,22 @@ Rails.application.routes.draw do
         patch :archive
       end
       resources :tasks do
+        collection do
+          patch :bulk_update
+          delete :bulk_destroy
+        end
         member do
           patch :move
           get :modal
         end
         resources :comments, only: %i[create]
         resources :checklist_items, only: %i[create update destroy]
+        resources :time_entries, only: %i[create update destroy] do
+          collection do
+            post :start
+            patch :stop
+          end
+        end
       end
       resource :kanban, only: %i[show], controller: :kanban
       resource :strategic_canvas, only: %i[show update], controller: :strategic_canvases

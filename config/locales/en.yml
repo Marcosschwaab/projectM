@@ -60,9 +60,11 @@ en:
     restore: "Restore"
     filter: "Filter"
     clear: "Clear"
+    apply: "Apply"
     confirm_delete: "Are you sure?"
     settings: "Settings"
     remove: "Remove"
+    you: "You"
     back_to_projects: "← Back to projects"
     back_to_project: "← Back to project"
     back_to_tasks: "← Back to tasks"
@@ -99,6 +101,9 @@ en:
       created: "Task was successfully created."
       updated: "Task was successfully updated."
       destroyed: "Task was successfully destroyed."
+      bulk_updated: "%{count} tasks updated."
+      bulk_destroyed: "%{count} tasks deleted."
+      bulk_no_changes: "No changes to apply."
     okr_cycle:
       created: "OKR cycle created."
       updated: "OKR cycle updated."
@@ -141,6 +146,14 @@ en:
       created: "Webhook created."
       updated: "Webhook updated."
       destroyed: "Webhook deleted."
+    time_entry:
+      started: "Timer started."
+      stopped: "Timer stopped (%{duration})."
+      created: "Time entry created."
+      create_failed: "Could not create time entry."
+      updated: "Time entry updated."
+      update_failed: "Could not update time entry."
+      deleted: "Time entry deleted."
 
   projects:
     title: "Projects"
@@ -215,6 +228,7 @@ en:
       status: "Status"
       due_date: "Due date"
       due_from: "Due from"
+      due_to: "Due to"
       search: "Search tasks..."
       all_assignees: "All assignees"
       all_priorities: "All priorities"
@@ -234,12 +248,32 @@ en:
       end_date: "End date"
       until: "Until %{date}"
     dependencies: "Dependencies"
+    bulk:
+      selected: "%{count} selected"
+      select_all: "Select all"
+      clear: "Clear selection"
+      status: "Change status"
+      priority: "Change priority"
+      assignee: "Change assignee"
+      delete: "Delete selected"
+      confirm_delete: "Are you sure you want to delete %{count} tasks?"
     fields:
       title: "Title"
       status: "Status"
       priority: "Priority"
       assignee: "Assignee"
       due_date: "Due date"
+    search_members: "Search members..."
+    time_tracking: "Time Tracking"
+    start_timer: "Start"
+    stop_timer: "Stop"
+    total_time: "Total time"
+    time_entries: "Time entries"
+    no_time_entries: "No time entries yet."
+    manual_entry: "Manual entry"
+    add_time: "Add time"
+    duration: "Duration"
+    date: "Date"
 
   okrs:
     title: "OKR Cycles"
@@ -590,6 +624,12 @@ en:
     all_projects: "All Projects"
     empty: "No tasks assigned to you yet"
     empty_hint: "Tasks will appear here when someone assigns them to you"
+    group_by: "Group by"
+    table: "Table"
+    status: "Status"
+
+  form:
+    optional: "optional"
 
   helpers:
     submit:

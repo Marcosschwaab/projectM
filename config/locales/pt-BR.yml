@@ -60,9 +60,11 @@ pt-BR:
     restore: "Restaurar"
     filter: "Filtrar"
     clear: "Limpar"
+    apply: "Aplicar"
     confirm_delete: "Tem certeza?"
     settings: "Configurações"
     remove: "Remover"
+    you: "Você"
     back_to_projects: "← Voltar para projetos"
     back_to_project: "← Voltar para projeto"
     back_to_tasks: "← Voltar para tarefas"
@@ -99,6 +101,9 @@ pt-BR:
       created: "Tarefa foi criada com sucesso."
       updated: "Tarefa foi atualizada com sucesso."
       destroyed: "Tarefa foi excluída com sucesso."
+      bulk_updated: "%{count} tarefas atualizadas."
+      bulk_destroyed: "%{count} tarefas excluídas."
+      bulk_no_changes: "Nenhuma alteração para aplicar."
     okr_cycle:
       created: "Ciclo OKR criado."
       updated: "Ciclo OKR atualizado."
@@ -141,6 +146,14 @@ pt-BR:
       created: "Webhook criado."
       updated: "Webhook atualizado."
       destroyed: "Webhook excluído."
+    time_entry:
+      started: "Cronômetro iniciado."
+      stopped: "Cronômetro parado (%{duration})."
+      created: "Registro de tempo criado."
+      create_failed: "Não foi possível criar o registro de tempo."
+      updated: "Registro de tempo atualizado."
+      update_failed: "Não foi possível atualizar o registro de tempo."
+      deleted: "Registro de tempo excluído."
 
   projects:
     title: "Projetos"
@@ -215,6 +228,7 @@ pt-BR:
       status: "Status"
       due_date: "Data limite"
       due_from: "Data início"
+      due_to: "Data fim"
       search: "Pesquisar tarefas..."
       all_assignees: "Todos responsáveis"
       all_priorities: "Todas prioridades"
@@ -234,12 +248,32 @@ pt-BR:
       end_date: "Data limite"
       until: "Até %{date}"
     dependencies: "Dependências"
+    bulk:
+      selected: "%{count} selecionadas"
+      select_all: "Selecionar todas"
+      clear: "Limpar seleção"
+      status: "Alterar status"
+      priority: "Alterar prioridade"
+      assignee: "Alterar responsável"
+      delete: "Excluir selecionadas"
+      confirm_delete: "Tem certeza que deseja excluir %{count} tarefas?"
     fields:
       title: "Título"
       status: "Status"
       priority: "Prioridade"
       assignee: "Responsável"
       due_date: "Data limite"
+    search_members: "Buscar membros..."
+    time_tracking: "Controle de Tempo"
+    start_timer: "Iniciar"
+    stop_timer: "Parar"
+    total_time: "Tempo total"
+    time_entries: "Registros de tempo"
+    no_time_entries: "Nenhum registro de tempo ainda."
+    manual_entry: "Registro manual"
+    add_time: "Adicionar tempo"
+    duration: "Duração"
+    date: "Data"
 
   okrs:
     title: "Ciclos de OKR"
@@ -595,6 +629,12 @@ pt-BR:
     all_projects: "Todos os Projetos"
     empty: "Nenhuma tarefa atribuída a você ainda"
     empty_hint: "Tarefas aparecerão aqui quando alguém as atribuir a você"
+    group_by: "Agrupar por"
+    table: "Tabela"
+    status: "Status"
+
+  form:
+    optional: "opcional"
 
   helpers:
     submit:

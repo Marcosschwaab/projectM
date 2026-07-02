@@ -114,6 +114,96 @@
     </div>
   <% end %>
 
+  <div class="mb-5">
+    <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("tasks.time_tracking") %></h3>
+
+    <div data-controller="timer"
+         data-timer-running-value="<%= task.time_entries.running.for_user(current_user).any? %>"
+         data-timer-started-at-value="<%= task.time_entries.running.for_user(current_user).last&.started_at&.iso8601 %>">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="text-2xl font-mono font-bold text-gray-900 dark:text-gray-100" data-timer-target="display">
+          <% if (running = task.time_entries.running.for_user(current_user).last) %>
+            <%= format("%02d:%02d:%02d", ((Time.current - running.started_at) / 3600).floor, ((Time.current - running.started_at) % 3600 / 60).floor, (Time.current - running.started_at) % 60) %>
+          <% else %>
+            00:00:00
+          <% end %>
+        </div>
+
+        <%= button_to start_organization_project_task_time_entries_path(organization, project, task),
+              method: :post, data: { timer_target: "startButton", action: "timer#startTimer" },
+              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? 'hidden' : ''} bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+          <%= t("tasks.start_timer") %>
+        <% end %>
+
+        <%= button_to stop_organization_project_task_time_entries_path(organization, project, task),
+              method: :patch, data: { timer_target: "stopButton", action: "timer#stopTimer" },
+              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? '' : 'hidden'} bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 cursor-pointer border-none dark:bg-red-500 dark:hover:bg-red-600" do %>
+          <%= t("tasks.stop_timer") %>
+        <% end %>
+      </div>
+    </div>
+
+    <% total_minutes = task.time_entries.stopped.sum(:duration) %>
+    <% if total_minutes > 0 %>
+      <p class="text-sm text-gray-500 mb-3 dark:text-gray-400">
+        <%= t("tasks.total_time") %>: <%= format("%dh %dm", total_minutes / 60, total_minutes % 60) %>
+      </p>
+    <% end %>
+
+    <details class="group mb-3">
+      <summary class="text-sm text-indigo-600 hover:text-indigo-700 cursor-pointer font-medium list-none flex items-center gap-1 dark:text-indigo-400 dark:hover:text-indigo-300">
+        <svg class="w-4 h-4 group-open:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <%= t("tasks.add_time") %>
+      </summary>
+      <%= form_with(model: [organization, project, task, task.time_entries.build], class: "mt-2 p-3 bg-gray-50 rounded-lg space-y-2 dark:bg-gray-700/50") do |f| %>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <%= f.label :started_at, t("tasks.date"), class: "block text-xs text-gray-500 mb-1 dark:text-gray-400" %>
+            <%= f.datetime_field :started_at, class: "w-full px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          </div>
+          <div>
+            <%= f.label :duration, t("tasks.duration"), class: "block text-xs text-gray-500 mb-1 dark:text-gray-400" %>
+            <%= f.number_field :duration, placeholder: "min", min: 1, class: "w-full px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          </div>
+          <div class="self-end">
+            <%= f.submit t("actions.add"), class: "px-3 py-1.5 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+          </div>
+        </div>
+        <div>
+          <%= f.text_field :description, placeholder: "Description (optional)", class: "w-full px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        </div>
+      <% end %>
+    </details>
+
+    <% if task.time_entries.stopped.any? %>
+      <div class="space-y-1 max-h-40 overflow-y-auto">
+        <% task.time_entries.stopped.recent.limit(20).each do |entry| %>
+          <div class="flex items-center justify-between py-1.5 px-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-700 dark:text-gray-300 truncate">
+                <%= entry.user == current_user ? t("actions.you") : entry.user.name %>
+                <% if entry.description.present? %>
+                  <span class="text-gray-400 dark:text-gray-500">&middot; <%= entry.description %></span>
+                <% end %>
+              </p>
+              <p class="text-xs text-gray-400 dark:text-gray-500"><%= l(entry.started_at, format: :short) %></p>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= entry.formatted_duration %></span>
+              <% if entry.user == current_user %>
+                <%= button_to [organization, project, task, entry], method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-gray-400 hover:text-red-500 dark:hover:text-red-400" do %>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("tasks.no_time_entries") %></p>
+    <% end %>
+  </div>
+
   <div data-controller="comments" data-comments-task-id-value="<%= task.id %>">
     <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("tasks.comments") %></h3>
     <div class="space-y-4 mb-4 max-h-60 overflow-y-auto" data-comments-target="list">

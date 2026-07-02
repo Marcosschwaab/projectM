@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :invitations, dependent: :nullify
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :dashboard_widgets, dependent: :destroy
+  has_many :time_entries, dependent: :destroy
 
   def member_of?(organization)
     organization_memberships.exists?(organization: organization)
