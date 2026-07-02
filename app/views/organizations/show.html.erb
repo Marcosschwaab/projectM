@@ -36,6 +36,18 @@
   </div>
 </div>
 
+<div class="flex items-center gap-3 mb-6">
+  <%= link_to organization_tags_path(@organization), class: "px-3 py-1.5 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" do %>
+    <%= t("tags.title") %>
+  <% end %>
+  <%= link_to organization_webhooks_path(@organization), class: "px-3 py-1.5 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" do %>
+    <%= t("webhooks.title") %>
+  <% end %>
+  <%= link_to organization_custom_fields_path(@organization), class: "px-3 py-1.5 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" do %>
+    <%= t("custom_fields.title") %>
+  <% end %>
+</div>
+
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
   <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between dark:border-gray-700">
     <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= t("organizations.members") %></h2>

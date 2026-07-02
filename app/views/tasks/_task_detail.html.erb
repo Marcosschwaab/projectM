@@ -38,6 +38,8 @@
       <%= task.due_date || "-" %>
     </p>
   </div>
+  <%= render "custom_fields/display_values", task: task %>
+
   <% if task.recurring? %>
     <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
       <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.recurrence.title") %></p>

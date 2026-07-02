@@ -2,6 +2,12 @@ en:
   activerecord:
     errors:
       models:
+        custom_field_value:
+          attributes:
+            value:
+              not_a_number: "must be a number"
+              invalid_date: "must be a valid date"
+              not_in_options: "is not a valid option"
         time_entry:
           attributes:
             ended_at:
@@ -84,6 +90,7 @@ en:
     back_to_tags: "← Back to tags"
     back_to_webhooks: "← Back to webhooks"
     back_to_kpis: "← Back to KPIs"
+    back_to_custom_fields: "← Back to custom fields"
 
   topbar:
     search_placeholder: "Search..."
@@ -150,6 +157,10 @@ en:
       created: "Tag created."
       updated: "Tag updated."
       destroyed: "Tag deleted."
+    custom_field:
+      created: "Custom field created."
+      updated: "Custom field updated."
+      destroyed: "Custom field deleted."
     webhook:
       created: "Webhook created."
       updated: "Webhook updated."
@@ -638,6 +649,25 @@ en:
 
   form:
     optional: "optional"
+
+  custom_fields:
+    title: "Custom Fields"
+    singular: "Custom field"
+    new: "New Field"
+    edit: "Edit Field"
+    no_fields: "No custom fields yet. Create one to add extra fields to tasks."
+    required_yes: "Required"
+    required_no: "Optional"
+    options_hint: "Comma-separated list of options (only for Select type)"
+    fields:
+      name: "Name"
+      type: "Type"
+      required: "Required"
+    types:
+      text: "Text"
+      number: "Number"
+      date: "Date"
+      select: "Select"
 
   helpers:
     submit:

@@ -1,0 +1,9 @@
+<% task.custom_field_values.includes(:custom_field).each do |value| %>
+  <% next unless value.custom_field %>
+  <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= value.custom_field.name %></p>
+    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+      <%= value.custom_field.select_type? ? value.value : value.value %>
+    </p>
+  </div>
+<% end %>

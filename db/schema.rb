@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
     t.bigint "user_id", null: false
     t.index ["task_id"], name: "index_comments_on_task_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "custom_field_values", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "custom_field_id", null: false
+    t.bigint "customizable_id", null: false
+    t.string "customizable_type", null: false
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.index ["custom_field_id", "customizable_type", "customizable_id"], name: "idx_cfv_on_field_and_customizable", unique: true
+    t.index ["custom_field_id"], name: "index_custom_field_values_on_custom_field_id"
+    t.index ["customizable_type", "customizable_id"], name: "index_custom_field_values_on_customizable"
+  end
+
+  create_table "custom_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "field_type", default: "text", null: false
+    t.string "name", null: false
+    t.jsonb "options", default: []
+    t.bigint "organization_id", null: false
+    t.boolean "required", default: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_custom_fields_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_custom_fields_on_organization_id"
   end
 
   create_table "dashboard_widgets", force: :cascade do |t|
@@ -288,6 +312,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
     t.index ["recurring_parent_id"], name: "index_tasks_on_recurring_parent_id"
   end
 
+  create_table "time_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.integer "duration"
+    t.datetime "ended_at"
+    t.datetime "started_at", null: false
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["ended_at"], name: "index_time_entries_on_ended_at"
+    t.index ["task_id", "user_id"], name: "index_time_entries_on_task_id_and_user_id"
+    t.index ["task_id"], name: "index_time_entries_on_task_id"
+    t.index ["user_id", "started_at"], name: "index_time_entries_on_user_id_and_started_at"
+    t.index ["user_id"], name: "index_time_entries_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -334,6 +374,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
   add_foreign_key "checklist_items", "tasks"
   add_foreign_key "comments", "tasks"
   add_foreign_key "comments", "users"
+  add_foreign_key "custom_field_values", "custom_fields"
+  add_foreign_key "custom_fields", "organizations"
   add_foreign_key "dashboard_widgets", "users"
   add_foreign_key "invitations", "organizations"
   add_foreign_key "invitations", "users"
@@ -361,6 +403,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_172911) do
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "tasks", column: "recurring_parent_id"
   add_foreign_key "tasks", "users", column: "assignee_id"
+  add_foreign_key "time_entries", "tasks"
+  add_foreign_key "time_entries", "users"
   add_foreign_key "webhook_deliveries", "webhooks"
   add_foreign_key "webhooks", "organizations"
 end

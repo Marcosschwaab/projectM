@@ -2,6 +2,12 @@ pt-BR:
   activerecord:
     errors:
       models:
+        custom_field_value:
+          attributes:
+            value:
+              not_a_number: "deve ser um número"
+              invalid_date: "deve ser uma data válida"
+              not_in_options: "não é uma opção válida"
         time_entry:
           attributes:
             ended_at:
@@ -84,6 +90,7 @@ pt-BR:
     back_to_tags: "← Voltar para tags"
     back_to_webhooks: "← Voltar para webhooks"
     back_to_kpis: "← Voltar para KPIs"
+    back_to_custom_fields: "← Voltar para campos personalizados"
 
   topbar:
     search_placeholder: "Pesquisar..."
@@ -150,6 +157,10 @@ pt-BR:
       created: "Tag criada."
       updated: "Tag atualizada."
       destroyed: "Tag excluída."
+    custom_field:
+      created: "Campo personalizado criado."
+      updated: "Campo personalizado atualizado."
+      destroyed: "Campo personalizado excluído."
     webhook:
       created: "Webhook criado."
       updated: "Webhook atualizado."
@@ -643,6 +654,25 @@ pt-BR:
 
   form:
     optional: "opcional"
+
+  custom_fields:
+    title: "Campos Personalizados"
+    singular: "Campo personalizado"
+    new: "Novo Campo"
+    edit: "Editar Campo"
+    no_fields: "Nenhum campo personalizado ainda. Crie um para adicionar campos extras às tarefas."
+    required_yes: "Obrigatório"
+    required_no: "Opcional"
+    options_hint: "Lista separada por vírgulas (apenas para tipo Select)"
+    fields:
+      name: "Nome"
+      type: "Tipo"
+      required: "Obrigatório"
+    types:
+      text: "Texto"
+      number: "Número"
+      date: "Data"
+      select: "Seleção"
 
   helpers:
     submit:

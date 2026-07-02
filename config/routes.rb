@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :invitations, only: %i[new create index]
     resources :tags
     resources :webhooks
+    resources :custom_fields
     resources :kpis
     resources :okr_cycles do
       resources :objectives do

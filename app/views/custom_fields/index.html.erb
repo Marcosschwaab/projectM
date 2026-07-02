@@ -1,0 +1,50 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("custom_fields.title") %></h1>
+  <%= link_to new_organization_custom_field_path(@organization), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("custom_fields.new") %>
+  <% end %>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+  <table class="w-full">
+    <thead>
+      <tr class="bg-gray-50 dark:bg-gray-700">
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("custom_fields.fields.name") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("custom_fields.fields.type") %></th>
+        <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("custom_fields.fields.required") %></th>
+        <th class="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tags.fields.actions") %></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+      <% @custom_fields.each do |field| %>
+        <tr class="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+          <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100"><%= field.name %></td>
+          <td class="px-6 py-4">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-200">
+              <%= t("custom_fields.types.#{field.field_type}") %>
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <% if field.required %>
+              <span class="text-xs font-medium text-red-600 dark:text-red-400"><%= t("custom_fields.required_yes") %></span>
+            <% else %>
+              <span class="text-xs text-gray-400 dark:text-gray-500"><%= t("custom_fields.required_no") %></span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-3">
+              <%= link_to t("actions.edit"), edit_organization_custom_field_path(@organization, field), class: "text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+              <%= button_to t("actions.delete"), organization_custom_field_path(@organization, field), method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-xs text-red-600 hover:text-red-700 bg-transparent border-none cursor-pointer dark:text-red-400 dark:hover:text-red-300" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @custom_fields.empty? %>
+    <div class="p-8 text-center">
+      <p class="text-gray-500 dark:text-gray-400"><%= t("custom_fields.no_fields") %></p>
+    </div>
+  <% end %>
+</div>

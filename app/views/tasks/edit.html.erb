@@ -79,6 +79,11 @@
           <%= render "shared/attachments", attachable: @task %>
         </div>
 
+        <% org_custom_fields = @organization.custom_fields.order(:name) %>
+        <% if org_custom_fields.any? %>
+          <%= render "custom_fields/form_fields", fields: org_custom_fields, task: @task %>
+        <% end %>
+
         <div>
           <%= f.label :tag_ids, t("tags.title"), class: "block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300" %>
           <div class="flex flex-wrap gap-2">

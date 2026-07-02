@@ -83,6 +83,40 @@ class TasksController < ApplicationController
     render layout: false
   end
 
+  def bulk_update
+    task_ids = params[:task_ids].to_s.split(",")
+    @tasks = policy_scope(Task).where(project: @project, id: task_ids)
+    return head :unprocessable_content if @tasks.empty?
+
+    authorize @tasks.first, :bulk_update?
+
+    updates = {}
+    updates[:status] = params[:status] if params[:status].present?
+    updates[:priority] = params[:priority] if params[:priority].present?
+    updates[:assignee_id] = params[:assignee_id] if params[:assignee_id].present?
+
+    if updates.any?
+      @tasks.update_all(updates)
+      ActivityLog.create!(action: "bulk updated #{@tasks.size} tasks", trackable: @project, user: current_user, organization: @organization, project: @project)
+      redirect_to organization_project_tasks_path(@organization, @project), notice: t("flash.task.bulk_updated", count: @tasks.size)
+    else
+      redirect_to organization_project_tasks_path(@organization, @project), alert: t("flash.task.bulk_no_changes")
+    end
+  end
+
+  def bulk_destroy
+    task_ids = params[:task_ids].to_s.split(",")
+    @tasks = policy_scope(Task).where(project: @project, id: task_ids)
+    return head :unprocessable_content if @tasks.empty?
+
+    authorize @tasks.first, :bulk_destroy?
+
+    count = @tasks.size
+    @tasks.destroy_all
+    ActivityLog.create!(action: "bulk deleted #{count} tasks", trackable: @project, user: current_user, organization: @organization, project: @project)
+    redirect_to organization_project_tasks_path(@organization, @project), notice: t("flash.task.bulk_destroyed", count: count)
+  end
+
   def move
     authorize @task
     prev_status = @task.status
@@ -118,11 +152,11 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [])
+    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:custom_field_id, :value])
   end
 
   def task_params_for_new
-    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [])
+    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:custom_field_id, :value])
   end
 
   def broadcast_task_move
