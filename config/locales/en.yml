@@ -1,5 +1,59 @@
 en:
   activerecord:
+    attributes:
+      project:
+        name: "Name"
+        description: "Description"
+        category: "Category"
+        priority: "Priority"
+        start_date: "Start Date"
+        end_date: "End Date"
+        status: "Status"
+      okr_cycle:
+        title: "Title"
+        start_date: "Start Date"
+        end_date: "End Date"
+        status: "Status"
+      kpi:
+        name: "Name"
+        description: "Description"
+        category: "Category"
+        frequency: "Frequency"
+        unit: "Unit"
+      objective:
+        title: "Title"
+        description: "Description"
+      key_result:
+        title: "Title"
+        description: "Description"
+        unit: "Unit"
+      organization:
+        name: "Name"
+        description: "Description"
+      webhook:
+        name: "Name"
+        url: "URL"
+        events: "Events"
+        active: "Active"
+      tag:
+        name: "Name"
+        color: "Color"
+      custom_field:
+        name: "Name"
+        field_type: "Field Type"
+        options: "Options"
+        required: "Required"
+      task:
+        title: "Title"
+        description: "Description"
+        status: "Status"
+        priority: "Priority"
+        due_date: "Due Date"
+      invitation:
+        email: "Email"
+        role: "Role"
+      project_matrix:
+        name: "Name"
     errors:
       models:
         custom_field_value:
@@ -54,6 +108,14 @@ en:
     organizations: "Organizations"
     settings: "Settings"
     sign_out: "Sign out"
+    section_main: "Main"
+    section_organization: "Organization"
+    overview: "Overview"
+    tasks: "Tasks"
+    kanban: "Kanban"
+    strategic_canvas: "Canvas"
+    matrices: "Matrices"
+    eap: "EAP / WBS"
 
   actions:
     new: "New %{model}"
@@ -87,6 +149,8 @@ en:
     back_to_cycle: "← Back to cycle"
     back_to_organizations: "← Back to organizations"
     back_to_organization: "← Back to organization"
+    back_to_matrices: "← Back to matrices"
+    back_to_matrix: "← Back to matrix"
     back_to_tags: "← Back to tags"
     back_to_webhooks: "← Back to webhooks"
     back_to_kpis: "← Back to KPIs"
@@ -123,6 +187,10 @@ en:
       created: "OKR cycle created."
       updated: "OKR cycle updated."
       deleted: "OKR cycle deleted."
+    kanban_column:
+      created: "Column created."
+      updated: "Column updated."
+      destroyed: "Column deleted."
     objective:
       added: "Objective added."
       create_failed: "Failed to create objective."
@@ -140,6 +208,7 @@ en:
     comment:
       added: "Comment added."
       create_failed: "Comment could not be created."
+      deleted: "Comment deleted."
     kpi:
       created: "KPI created."
       updated: "KPI updated."
@@ -173,9 +242,21 @@ en:
       updated: "Time entry updated."
       update_failed: "Could not update time entry."
       deleted: "Time entry deleted."
+    matrix:
+      created: "Matrix created."
+      updated: "Matrix updated."
+      destroyed: "Matrix deleted."
+    eap:
+      created: "WBS item added."
+      updated: "WBS item updated."
+      destroyed: "WBS item deleted."
 
   projects:
     title: "Projects"
+    form:
+      tabs:
+        general: "General"
+        responsibles: "Responsibles"
     new: "New Project"
     edit: "Edit Project"
     active: "Active"
@@ -207,6 +288,48 @@ en:
       behind: "Behind"
       on_hold: "On Hold"
       completed: "Completed"
+    categories:
+      software: "Software"
+      marketing: "Marketing"
+      infrastructure: "Infrastructure"
+      business: "Business"
+      other: "Other"
+    team:
+      title: "Team Roles"
+      sponsor: "Sponsor"
+      manager: "Manager"
+      responsible: "Responsible"
+      members: "Team Members"
+    approval:
+      title: "Approval Settings"
+      hint: "Select who can approve project items:"
+      roles:
+        sponsor: "Sponsor"
+        manager: "Manager"
+        responsible: "Responsible (Assignee)"
+      all_team: "All team members can approve"
+      display_roles:
+        sponsor: "Sponsor can approve"
+        manager: "Manager can approve"
+        responsible: "Responsible can approve"
+        all_team: "All team members can approve"
+    situation:
+      title: "Current Situation"
+      percent_complete: "% Complete"
+      percent_ideal: "% Ideal"
+      idc: "Cost Performance Index (IDC)"
+      idp: "Schedule Performance Index (IDP)"
+      task_rate: "Task Completion Rate"
+    financial:
+      title: "Financial"
+      nd: "n/d"
+      proposal_investment_estimated: "Estimated Proposal Investment"
+      project_investment_estimated: "Estimated Project Investment"
+      budget_estimated: "Estimated Budget"
+      budget_actual: "Actual Budget"
+      return_estimated: "Estimated Return"
+      return_actual: "Actual Return"
+      of_budget: "of budget"
     fields:
       name: "Name"
       status: "Status"
@@ -496,6 +619,39 @@ en:
     next_steps: "Next Steps"
     next_steps_placeholder: "What needs to happen next?"
 
+  matrices:
+    title: "Matrices"
+    new: "New Matrix"
+    edit: "Edit Matrix"
+    name: "Name"
+    columns: "Columns"
+    rows: "Rows"
+    new_column: "New column name..."
+    new_row: "New row name..."
+    no_matrices: "No matrices yet."
+    create_first: "Create your first matrix"
+    empty: "This matrix is empty. Add columns and rows to get started."
+    edit_structure: "Edit structure"
+
+  eap:
+    title: "WBS Diagram"
+    add_item: "Add WBS Item"
+    item_name: "Item name"
+    status: "Status"
+    parent: "Parent item"
+    root_level: "Root level"
+    responsible: "Responsible"
+    start_date: "Start date"
+    end_date: "End date"
+    add: "Add"
+    empty: "No WBS items yet. Add the first one below."
+    statuses:
+      on_time: "On Time"
+      at_risk: "At Risk"
+      overdue: "Overdue"
+      suspended: "Suspended"
+      milestone: "Milestone"
+
   reports:
     title: "Reports"
     projects_completed: "Projects Completed"
@@ -510,10 +666,13 @@ en:
 
   kanban:
     title: "Kanban"
-    new_task: "New task"
-    no_tasks: "No tasks"
-    add_one: "Add one"
+    new_task: "New Task"
     quick_add_placeholder: "Task title..."
+    no_tasks: "No tasks"
+    manage_columns: "Manage Columns"
+    add_column: "Add Column"
+    column_name_placeholder: "Column name"
+    column_status_placeholder: "Status key"
 
   searches:
     title: "Search Results"

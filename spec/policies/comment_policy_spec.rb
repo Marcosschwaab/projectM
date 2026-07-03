@@ -23,4 +23,16 @@ RSpec.describe CommentPolicy do
 
     it { is_expected.to forbid_action(:create) }
   end
+
+  describe "destroy" do
+    let(:own_comment) { build(:comment, task: task, user: user) }
+
+    it "permits own comment" do
+      expect(described_class.new(user, own_comment)).to permit_action(:destroy)
+    end
+
+    it "forbids another user's comment" do
+      expect(described_class.new(user, comment)).to forbid_action(:destroy)
+    end
+  end
 end

@@ -23,6 +23,14 @@ class TaskPolicy < ApplicationPolicy
     update?
   end
 
+  def bulk_update?
+    user.member_of?(record.project.organization)
+  end
+
+  def bulk_destroy?
+    user.role_in(record.project.organization).in?(%w[admin manager])
+  end
+
   def destroy?
     user.role_in(record.project.organization).in?(%w[admin manager])
   end

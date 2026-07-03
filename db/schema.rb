@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_03_042744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -129,6 +129,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
     t.index ["user_id"], name: "index_invitations_on_user_id"
   end
 
+  create_table "kanban_columns", force: :cascade do |t|
+    t.string "color", null: false
+    t.datetime "created_at", null: false
+    t.string "label", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "project_id", null: false
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "position"], name: "index_kanban_columns_on_project_id_and_position"
+    t.index ["project_id"], name: "index_kanban_columns_on_project_id"
+  end
+
   create_table "key_results", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.decimal "current_value", precision: 10, scale: 2, default: "0.0"
@@ -162,6 +174,37 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
     t.index ["organization_id"], name: "index_kpis_on_organization_id"
     t.index ["owner_id"], name: "index_kpis_on_owner_id"
     t.index ["project_id"], name: "index_kpis_on_project_id"
+  end
+
+  create_table "matrix_cells", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "matrix_column_id", null: false
+    t.bigint "matrix_row_id", null: false
+    t.datetime "updated_at", null: false
+    t.text "value", default: ""
+    t.index ["matrix_column_id", "matrix_row_id"], name: "index_matrix_cells_on_matrix_column_id_and_matrix_row_id", unique: true
+    t.index ["matrix_column_id"], name: "index_matrix_cells_on_matrix_column_id"
+    t.index ["matrix_row_id"], name: "index_matrix_cells_on_matrix_row_id"
+  end
+
+  create_table "matrix_columns", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "project_matrix_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_matrix_id", "position"], name: "index_matrix_columns_on_project_matrix_id_and_position", unique: true
+    t.index ["project_matrix_id"], name: "index_matrix_columns_on_project_matrix_id"
+  end
+
+  create_table "matrix_rows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "project_matrix_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_matrix_id", "position"], name: "index_matrix_rows_on_project_matrix_id_and_position", unique: true
+    t.index ["project_matrix_id"], name: "index_matrix_rows_on_project_matrix_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -226,23 +269,57 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "project_matrices", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", default: "", null: false
+    t.bigint "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "name"], name: "index_project_matrices_on_project_id_and_name", unique: true
+    t.index ["project_id"], name: "index_project_matrices_on_project_id"
+  end
+
+  create_table "project_members", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["project_id", "user_id"], name: "index_project_members_on_project_id_and_user_id", unique: true
+    t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id"], name: "index_project_members_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
+    t.boolean "approval_all_team", default: false
+    t.string "approval_roles", default: [], array: true
     t.boolean "archived", default: false
     t.bigint "assignee_id"
+    t.decimal "budget_actual", precision: 15, scale: 2, default: "0.0"
+    t.decimal "budget_estimated", precision: 15, scale: 2, default: "0.0"
+    t.string "category"
     t.string "color", default: "#6366f1"
     t.datetime "created_at", null: false
     t.text "description"
     t.date "end_date"
     t.string "icon", default: "folder"
+    t.bigint "manager_id"
     t.string "name", null: false
     t.bigint "organization_id", null: false
     t.integer "priority", default: 0
     t.decimal "progress", precision: 5, scale: 2, default: "0.0"
+    t.decimal "project_investment_estimated", precision: 15, scale: 2, default: "0.0"
+    t.decimal "proposal_investment_estimated", precision: 15, scale: 2, default: "0.0"
+    t.decimal "return_actual", precision: 15, scale: 2, default: "0.0"
+    t.decimal "return_estimated", precision: 15, scale: 2, default: "0.0"
+    t.bigint "sponsor_id"
     t.date "start_date"
     t.integer "status", default: 0
     t.datetime "updated_at", null: false
+    t.index ["approval_roles"], name: "index_projects_on_approval_roles", using: :gin
     t.index ["assignee_id"], name: "index_projects_on_assignee_id"
+    t.index ["manager_id"], name: "index_projects_on_manager_id"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
+    t.index ["sponsor_id"], name: "index_projects_on_sponsor_id"
   end
 
   create_table "strategic_canvases", force: :cascade do |t|
@@ -297,6 +374,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
     t.datetime "created_at", null: false
     t.text "description"
     t.date "due_date"
+    t.decimal "estimated_hours", precision: 12, scale: 2, default: "0.0"
     t.integer "position", default: 0
     t.integer "priority", default: 0
     t.decimal "progress", precision: 5, scale: 2, default: "0.0"
@@ -304,7 +382,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
     t.date "recurrence_end_date"
     t.string "recurrence_rule"
     t.bigint "recurring_parent_id"
-    t.integer "status", default: 0
+    t.string "status", default: "backlog"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
@@ -379,10 +457,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
   add_foreign_key "dashboard_widgets", "users"
   add_foreign_key "invitations", "organizations"
   add_foreign_key "invitations", "users"
+  add_foreign_key "kanban_columns", "projects"
   add_foreign_key "key_results", "objectives"
   add_foreign_key "kpis", "organizations"
   add_foreign_key "kpis", "projects"
   add_foreign_key "kpis", "users", column: "owner_id"
+  add_foreign_key "matrix_cells", "matrix_columns"
+  add_foreign_key "matrix_cells", "matrix_rows"
+  add_foreign_key "matrix_columns", "project_matrices"
+  add_foreign_key "matrix_rows", "project_matrices"
   add_foreign_key "notifications", "organizations"
   add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "notifications", "users", column: "recipient_id"
@@ -392,8 +475,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_010607) do
   add_foreign_key "okr_cycles", "organizations"
   add_foreign_key "organization_memberships", "organizations"
   add_foreign_key "organization_memberships", "users"
+  add_foreign_key "project_matrices", "projects"
+  add_foreign_key "project_members", "projects"
+  add_foreign_key "project_members", "users"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects", "users", column: "assignee_id"
+  add_foreign_key "projects", "users", column: "manager_id"
+  add_foreign_key "projects", "users", column: "sponsor_id"
   add_foreign_key "strategic_canvases", "projects"
   add_foreign_key "tags", "organizations"
   add_foreign_key "task_dependencies", "tasks"

@@ -1,24 +1,27 @@
-<div class="mb-6">
-  <%= link_to organization_projects_path(@organization), class: "text-sm text-indigo-600 hover:text-indigo-700 mb-4 inline-block dark:text-indigo-400 dark:hover:text-indigo-300" do %>
-    <%= t("actions.back_to_projects") %>
-  <% end %>
-</div>
+<%= render "shared/project_nav" %>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 dark:bg-gray-800 dark:border-gray-700">
   <div class="flex items-start justify-between mb-4">
     <div class="flex items-center gap-3">
       <span class="w-4 h-4 rounded-full flex-shrink-0" style="background-color: <%= @project.color || "#6366f1" %>"></span>
       <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @project.name %></h1>
+      <% if @project.category.present? %>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"><%= Project::CATEGORIES.include?(@project.category) ? t("projects.categories.#{@project.category}") : @project.category.humanize %></span>
+      <% end %>
     </div>
     <div class="flex items-center gap-2">
       <span class="<%= project_status_badge_class(@project.status) %>"><%= @project.status&.humanize %></span>
       <span class="<%= priority_class(@project.priority) %>"><%= @project.priority&.humanize %></span>
+      <%= link_to edit_organization_project_path(@organization, @project), class: "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-400 dark:hover:bg-gray-700" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        <%= t("actions.edit") %>
+      <% end %>
     </div>
   </div>
 
   <p class="text-gray-600 mb-6 dark:text-gray-400"><%= @project.description %></p>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
     <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
       <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("projects.assignee") %></p>
       <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= @project.assignee&.name || t("projects.unassigned") %></p>
@@ -35,15 +38,41 @@
       <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("projects.end_date") %></p>
       <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= @project.end_date || "-" %></p>
     </div>
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("projects.team.sponsor") %></p>
+      <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= @project.sponsor&.name || t("projects.unassigned") %></p>
+    </div>
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("projects.team.manager") %></p>
+      <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= @project.manager&.name || t("projects.unassigned") %></p>
+    </div>
   </div>
+
+  <% if @project.members.any? %>
+    <div class="flex flex-wrap gap-2 mb-4">
+      <% @project.members.each do |member| %>
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
+          <%= member.name %>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @project.approval_role_list.any? %>
+    <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
+      <p class="text-xs font-medium text-amber-800 dark:text-amber-300"><%= t("projects.approval.title") %></p>
+      <p class="text-xs text-amber-700 dark:text-amber-400 mt-1">
+        <%= @project.approval_role_list.map { |r| t("projects.approval.display_roles.#{r}") }.join(", ") %>
+      </p>
+    </div>
+  <% end %>
 </div>
 
-<div class="flex items-center gap-3 mb-4">
-  <%= link_to t("actions.edit"), edit_organization_project_path(@organization, @project), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
-  <%= link_to @project.archived? ? t("actions.restore") : t("actions.archive"), archive_organization_project_path(@organization, @project), data: { turbo_method: :patch }, class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" %>
-  <%= link_to t("projects.kanban_link"), organization_project_kanban_path(@organization, @project), class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" %>
-  <%= link_to t("strategic_canvas.title"), organization_project_strategic_canvas_path(@organization, @project), class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" %>
+<div class="mb-6">
+  <%= render "projects/financial", project: @project %>
 </div>
+
+
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 dark:bg-gray-800 dark:border-gray-700">
   <h2 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100"><%= t("tasks.title") %></h2>
@@ -118,12 +147,8 @@
             </div>
             <div class="w-full bg-gray-100 rounded-full h-1.5 dark:bg-gray-700">
               <div class="h-1.5 rounded-full <%= progress >= 100 ? 'bg-green-500' : progress >= 75 ? 'bg-blue-500' : progress >= 50 ? 'bg-yellow-500' : 'bg-red-500' %>" style="width: <%= [progress, 100].min %>%"></div>
-  </div>
-
-  <div class="mt-6">
-    <%= render "timeline", activities: @activity_logs %>
-  </div>
-</div>
+            </div>
+          </div>
         <% end %>
       </div>
     <% else %>
@@ -131,4 +156,12 @@
       <p class="text-xs text-gray-400 mt-1"><%= link_to t("projects.create_kpis_link"), new_organization_kpi_path(@organization, kpi: { project_id: @project.id }), class: "text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" %> <%= t("projects.create_kpis_hint") %></p>
     <% end %>
   </div>
+</div>
+
+<div class="mt-6">
+  <%= render "projects/situation_panel", project: @project %>
+</div>
+
+<div class="mt-6">
+  <%= render "timeline", activities: @activity_logs %>
 </div>

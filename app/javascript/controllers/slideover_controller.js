@@ -9,7 +9,7 @@ export default class extends Controller {
 
   open(event) {
     event.preventDefault()
-    const url = event.currentTarget.href || event.currentTarget.dataset.url
+    const url = event.currentTarget.dataset.url || event.currentTarget.href
     const title = event.currentTarget.dataset.modalTitle || "Task"
 
     if (this.titleTarget) this.titleTarget.textContent = title

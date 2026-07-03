@@ -1,0 +1,20 @@
+<% data = @tasks_by_project.sort_by { |_, v| -v }.first(10) %>
+<% max_val = data.map(&:last).max || 1 %>
+
+<div class="space-y-2">
+  <% data.each do |(id, name), count| %>
+    <% pct = (count.to_f / max_val * 100).round(1) %>
+    <div>
+      <div class="flex items-center justify-between text-xs mb-1">
+        <span class="text-gray-600 truncate dark:text-gray-400"><%= name %></span>
+        <span class="font-semibold text-gray-900 dark:text-gray-100 ml-2"><%= count %></span>
+      </div>
+      <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-700">
+        <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: <%= pct %>%"></div>
+      </div>
+    </div>
+  <% end %>
+  <% if data.empty? %>
+    <p class="text-sm text-gray-400 text-center py-4 dark:text-gray-500"><%= t("dashboard.no_projects") %></p>
+  <% end %>
+</div>

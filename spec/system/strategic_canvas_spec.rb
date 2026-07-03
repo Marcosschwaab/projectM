@@ -10,7 +10,7 @@ RSpec.describe "Strategic Canvas", type: :system do
     sign_in_as(user)
     click_link "Projects"
     click_link "Strategic Project"
-    click_link "Strategic Canvas"
+    click_link "Canvas"
 
     expect(page).to have_text("Strategic Canvas")
 

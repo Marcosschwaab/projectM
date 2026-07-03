@@ -1,0 +1,7 @@
+{
+  "files": ["app/views/**/*.html.erb"],
+  "insertBefore": "</body>",
+  "commentSyntax": { "open": "<%#", "close": "%>" },
+  "cspChecked": true,
+  "framework": "rails-importmap"
+}

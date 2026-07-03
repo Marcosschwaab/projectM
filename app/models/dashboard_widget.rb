@@ -4,6 +4,7 @@ class DashboardWidget < ApplicationRecord
     project_status upcoming_deadlines my_tasks_list okr_progress
     kpis_summary recent_activity projects_overview timeline
     overdue_tasks due_this_week
+    burndown tasks_per_project workload weekly_velocity
   ].freeze
 
   WIDGET_WIDTHS = [1, 2, 3].freeze

@@ -19,14 +19,14 @@
   </div>
 <% end %>
 
-<div class="grid grid-cols-2 gap-3 mb-5">
+<div class="grid grid-cols-2 gap-4 mb-6">
   <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
-    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.status") %></p>
-    <span class="<%= status_badge_class(task.status) %>"><%= task.status&.humanize %></span>
+    <p class="text-xs text-gray-500 mb-1.5 dark:text-gray-400"><%= t("tasks.fields.status") %></p>
+    <%= status_badge(task.status) %>
   </div>
   <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
-    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.priority") %></p>
-    <span class="<%= priority_class(task.priority) %>"><%= task.priority&.humanize %></span>
+    <p class="text-xs text-gray-500 mb-1.5 dark:text-gray-400"><%= t("tasks.fields.priority") %></p>
+    <%= priority_badge(task.priority) %>
   </div>
   <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
     <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("tasks.fields.assignee") %></p>
@@ -56,16 +56,17 @@
 
 <div class="mb-5">
   <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("tasks.checklist") %></h3>
-  <div class="space-y-2 mb-3">
-    <% task.checklist_items.each do |item| %>
-      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
-        <%= form_with(model: [organization, project, task, item], class: "flex items-center gap-3 w-full") do |f| %>
-          <%= f.check_box :completed, onchange: "this.form.submit()", class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:text-indigo-400" %>
-          <span class="text-sm <%= item.completed? ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-300" %>"><%= item.content %></span>
-        <% end %>
-      </div>
-    <% end %>
-    <% if task.checklist_items.empty? %>
+<% items = task.checklist_items.select(&:persisted?) %>
+<div class="space-y-2 mb-3">
+  <% items.each do |item| %>
+    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
+      <%= form_with(model: [organization, project, task, item], class: "flex items-center gap-3 w-full") do |f| %>
+        <%= f.check_box :completed, onchange: "this.form.submit()", class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:text-indigo-400" %>
+        <span class="text-sm <%= item.completed? ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-300" %>"><%= item.content %></span>
+      <% end %>
+    </div>
+  <% end %>
+  <% if items.empty? %>
       <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("tasks.no_checklist_items") %></p>
     <% end %>
   </div>
@@ -133,13 +134,13 @@
 
         <%= button_to start_organization_project_task_time_entries_path(organization, project, task),
               method: :post, data: { timer_target: "startButton", action: "timer#startTimer" },
-              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? 'hidden' : ''} bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? 'hidden' : ''} bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer border-none dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors" do %>
           <%= t("tasks.start_timer") %>
         <% end %>
 
         <%= button_to stop_organization_project_task_time_entries_path(organization, project, task),
               method: :patch, data: { timer_target: "stopButton", action: "timer#stopTimer" },
-              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? '' : 'hidden'} bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 cursor-pointer border-none dark:bg-red-500 dark:hover:bg-red-600" do %>
+              class: "px-3 py-1.5 #{task.time_entries.running.for_user(current_user).any? ? '' : 'hidden'} bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 cursor-pointer border-none dark:bg-red-500 dark:hover:bg-red-600 transition-colors" do %>
           <%= t("tasks.stop_timer") %>
         <% end %>
       </div>
@@ -193,7 +194,7 @@
             <div class="flex items-center gap-2 flex-shrink-0">
               <span class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= entry.formatted_duration %></span>
               <% if entry.user == current_user %>
-                <%= button_to [organization, project, task, entry], method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-gray-400 hover:text-red-500 dark:hover:text-red-400" do %>
+                <%= button_to [organization, project, task, entry], method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-gray-400 hover:text-red-500 dark:hover:text-red-400 cursor-pointer transition-colors" do %>
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 <% end %>
               <% end %>

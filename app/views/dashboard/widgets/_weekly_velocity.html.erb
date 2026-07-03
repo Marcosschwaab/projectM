@@ -1,0 +1,28 @@
+<% data = @weekly_velocity || [] %>
+<% max_val = data.map { |w| [w[:done], w[:created]].max }.max || 1 %>
+
+<div class="flex items-center justify-between mb-3">
+  <div class="flex items-center gap-3 text-xs">
+    <span class="flex items-center gap-1 text-emerald-500"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> <%= t("dashboard.charts.done") %></span>
+    <span class="flex items-center gap-1 text-indigo-400"><span class="w-2 h-2 rounded-full bg-indigo-400"></span> <%= t("dashboard.charts.created") %></span>
+  </div>
+</div>
+<div class="flex items-end gap-1.5 h-28">
+  <% data.each do |w| %>
+    <div class="flex-1 flex flex-col items-center gap-px justify-end h-full">
+      <div class="w-full bg-indigo-400/30 rounded-t transition-all duration-200 hover:bg-indigo-400/50 relative group"
+           style="height: <%= (w[:created].to_f / max_val * 100).clamp(2, 100) %>%">
+        <div class="absolute -top-5 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap z-10"><%= t("dashboard.charts.created") %>: <%= w[:created] %></div>
+      </div>
+      <div class="w-full bg-emerald-500/40 rounded-t transition-all duration-200 hover:bg-emerald-500/60 relative group"
+           style="height: <%= (w[:done].to_f / max_val * 100).clamp(2, 100) %>%">
+        <div class="absolute -top-5 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap z-10"><%= t("dashboard.charts.done") %>: <%= w[:done] %></div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="flex justify-between mt-1">
+  <% data.each do |w| %>
+    <span class="text-[8px] text-gray-400 dark:text-gray-500 text-center flex-1 truncate"><%= w[:week] %></span>
+  <% end %>
+</div>

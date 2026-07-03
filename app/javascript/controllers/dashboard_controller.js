@@ -111,8 +111,8 @@ export default class extends Controller {
   }
 
   toggleSettings(event) {
-    const panel = event.currentTarget.closest("[data-dashboard-target='widget']")
-      ?.querySelector("[data-dashboard-target='settingsPanel']")
+    const widget = event.currentTarget.closest("[data-dashboard-target='widget']")
+    const panel = widget?.parentElement?.querySelector("[data-dashboard-target='settingsPanel']")
     if (!panel) return
     panel.classList.toggle("hidden")
 
@@ -203,7 +203,8 @@ export default class extends Controller {
     "stats", "completion_rate", "tasks_by_status", "tasks_by_priority",
     "project_status", "upcoming_deadlines", "my_tasks_list", "okr_progress",
     "kpis_summary", "recent_activity", "projects_overview", "timeline",
-    "overdue_tasks", "due_this_week"
+    "overdue_tasks", "due_this_week",
+    "burndown", "tasks_per_project", "workload", "weekly_velocity"
   ]
 
   startResize(event) {
@@ -389,6 +390,10 @@ export default class extends Controller {
     projects_overview: "Projects Overview",
     timeline: "Timeline",
     overdue_tasks: "Overdue Tasks",
-    due_this_week: "Due This Week"
+    due_this_week: "Due This Week",
+    burndown: "Burndown",
+    tasks_per_project: "Tasks per Project",
+    workload: "Workload",
+    weekly_velocity: "Weekly Velocity"
   }
 }

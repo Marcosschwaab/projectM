@@ -29,9 +29,11 @@ class Task < ApplicationRecord
   validates :recurrence_rule, inclusion: { in: RECURRENCE_RULES, allow_nil: true, allow_blank: true }
 
   enum :priority, { low: 0, medium: 1, high: 2, urgent: 3 }
-  enum :status, { backlog: 0, todo: 1, in_progress: 2, in_review: 3, done: 4 }
+  enum :status, { backlog: "backlog", todo: "todo", in_progress: "in_progress", in_review: "in_review", done: "done" }, validate: false
 
-  scope :by_status, -> { order(status: :asc, position: :asc) }
+  before_save :set_progress_for_done
+
+  scope :by_status, -> { order(Arel.sql("CASE tasks.status WHEN 'backlog' THEN 0 WHEN 'todo' THEN 1 WHEN 'in_progress' THEN 2 WHEN 'in_review' THEN 3 WHEN 'done' THEN 4 ELSE 5 END"), :position) }
   scope :recurring, -> { where.not(recurrence_rule: [nil, ""]) }
   scope :recurring_active, -> { recurring.where("recurrence_end_date IS NULL OR recurrence_end_date > ?", Date.today) }
 
@@ -52,6 +54,10 @@ class Task < ApplicationRecord
   end
 
   private
+
+  def set_progress_for_done
+    self.progress = 100 if status == "done" && progress.to_f < 100
+  end
 
   def dispatch_webhooks_for_create
     dispatch_webhook_event("task.created", webhook_payload_base)

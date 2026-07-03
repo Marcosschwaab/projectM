@@ -1,5 +1,59 @@
 pt-BR:
   activerecord:
+    attributes:
+      project:
+        name: "Nome"
+        description: "Descrição"
+        category: "Categoria"
+        priority: "Prioridade"
+        start_date: "Data de Início"
+        end_date: "Data de Término"
+        status: "Status"
+      okr_cycle:
+        title: "Título"
+        start_date: "Data de Início"
+        end_date: "Data de Término"
+        status: "Status"
+      kpi:
+        name: "Nome"
+        description: "Descrição"
+        category: "Categoria"
+        frequency: "Frequência"
+        unit: "Unidade"
+      objective:
+        title: "Título"
+        description: "Descrição"
+      key_result:
+        title: "Título"
+        description: "Descrição"
+        unit: "Unidade"
+      organization:
+        name: "Nome"
+        description: "Descrição"
+      webhook:
+        name: "Nome"
+        url: "URL"
+        events: "Eventos"
+        active: "Ativo"
+      tag:
+        name: "Nome"
+        color: "Cor"
+      custom_field:
+        name: "Nome"
+        field_type: "Tipo de Campo"
+        options: "Opções"
+        required: "Obrigatório"
+      task:
+        title: "Título"
+        description: "Descrição"
+        status: "Status"
+        priority: "Prioridade"
+        due_date: "Data de Vencimento"
+      invitation:
+        email: "E-mail"
+        role: "Função"
+      project_matrix:
+        name: "Nome"
     errors:
       models:
         custom_field_value:
@@ -27,18 +81,18 @@ pt-BR:
     month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
     abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
     formats:
-      default: "%d de %B de %Y"
-      short: "%d de %b"
+      default: "%d/%m/%Y"
+      short: "%d/%m"
       long: "%d de %B de %Y"
-      dashboard: "%A, %d de %B"
-      month_year: "%B de %Y"
+      dashboard: "%A, %d/%m"
+      month_year: "%m/%Y"
 
   time:
     formats:
-      default: "%d de %B de %Y às %H:%M"
-      short: "%d de %b às %H:%M"
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
       long: "%d de %B de %Y às %H:%M"
-      dashboard: "%A, %d de %B"
+      dashboard: "%A, %d/%m"
     ago: "há %{time}"
     today: "Hoje"
 
@@ -54,6 +108,14 @@ pt-BR:
     organizations: "Organizações"
     settings: "Configurações"
     sign_out: "Sair"
+    section_main: "Principal"
+    section_organization: "Organização"
+    overview: "Visão Geral"
+    tasks: "Tarefas"
+    kanban: "Kanban"
+    strategic_canvas: "Canvas"
+    matrices: "Matrizes"
+    eap: "EAP / WBS"
 
   actions:
     new: "Novo %{model}"
@@ -80,7 +142,9 @@ pt-BR:
     remove: "Remover"
     you: "Você"
     back_to_projects: "← Voltar para projetos"
-    back_to_project: "← Voltar para projeto"
+    back_to_project: "← Voltar para o projeto"
+    back_to_matrices: "← Voltar para matrizes"
+    back_to_matrix: "← Voltar para matriz"
     back_to_tasks: "← Voltar para tarefas"
     back_to_task: "← Voltar para tarefa"
     back_to_cycles: "← Ciclos"
@@ -123,6 +187,10 @@ pt-BR:
       created: "Ciclo OKR criado."
       updated: "Ciclo OKR atualizado."
       deleted: "Ciclo OKR excluído."
+    kanban_column:
+      created: "Coluna criada."
+      updated: "Coluna atualizada."
+      destroyed: "Coluna excluída."
     objective:
       added: "Objetivo adicionado."
       create_failed: "Falha ao criar objetivo."
@@ -140,6 +208,7 @@ pt-BR:
     comment:
       added: "Comentário adicionado."
       create_failed: "Não foi possível criar o comentário."
+      deleted: "Comentário excluído."
     kpi:
       created: "KPI criado."
       updated: "KPI atualizado."
@@ -173,9 +242,21 @@ pt-BR:
       updated: "Registro de tempo atualizado."
       update_failed: "Não foi possível atualizar o registro de tempo."
       deleted: "Registro de tempo excluído."
+    matrix:
+      created: "Matriz criada."
+      updated: "Matriz atualizada."
+      destroyed: "Matriz excluída."
+    eap:
+      created: "Item EAP adicionado."
+      updated: "Item EAP atualizado."
+      destroyed: "Item EAP excluído."
 
   projects:
     title: "Projetos"
+    form:
+      tabs:
+        general: "Geral"
+        responsibles: "Responsáveis"
     new: "Novo Projeto"
     edit: "Editar Projeto"
     active: "Ativos"
@@ -207,6 +288,48 @@ pt-BR:
       behind: "Atrasado"
       on_hold: "Pausado"
       completed: "Concluído"
+    categories:
+      software: "Software"
+      marketing: "Marketing"
+      infrastructure: "Infraestrutura"
+      business: "Negócios"
+      other: "Outro"
+    team:
+      title: "Papéis da Equipe"
+      sponsor: "Patrocinador"
+      manager: "Gerente"
+      responsible: "Responsável"
+      members: "Membros da Equipe"
+    approval:
+      title: "Configurações de Aprovação"
+      hint: "Selecione quem pode aprovar itens do projeto:"
+      roles:
+        sponsor: "Patrocinador"
+        manager: "Gerente"
+        responsible: "Responsável (Assignee)"
+      all_team: "Todos os membros da equipe podem aprovar"
+      display_roles:
+        sponsor: "Patrocinador pode aprovar"
+        manager: "Gerente pode aprovar"
+        responsible: "Responsável pode aprovar"
+        all_team: "Todos os membros da equipe podem aprovar"
+    situation:
+      title: "Situação Atual"
+      percent_complete: "% Concluído"
+      percent_ideal: "% Ideal"
+      idc: "Índice de Desempenho de Custo (IDC)"
+      idp: "Índice de Desempenho de Prazo (IDP)"
+      task_rate: "Taxa de Realização das Tarefas"
+    financial:
+      title: "Financeiro"
+      nd: "n/d"
+      proposal_investment_estimated: "Investimento Estimado da Proposta"
+      project_investment_estimated: "Investimento Estimado do Projeto"
+      budget_estimated: "Orçamento Estimado"
+      budget_actual: "Orçamento Realizado"
+      return_estimated: "Retorno Estimado"
+      return_actual: "Retorno Realizado"
+      of_budget: "do orçamento"
     fields:
       name: "Nome"
       status: "Status"
@@ -496,6 +619,39 @@ pt-BR:
     next_steps: "Próximos Passos"
     next_steps_placeholder: "O que precisa acontecer a seguir?"
 
+  matrices:
+    title: "Matrizes"
+    new: "Nova Matriz"
+    edit: "Editar Matriz"
+    name: "Nome"
+    columns: "Colunas"
+    rows: "Linhas"
+    new_column: "Nome da nova coluna..."
+    new_row: "Nome da nova linha..."
+    no_matrices: "Nenhuma matriz ainda."
+    create_first: "Crie sua primeira matriz"
+    empty: "Esta matriz está vazia. Adicione colunas e linhas para começar."
+    edit_structure: "Editar estrutura"
+
+  eap:
+    title: "Diagrama EAP"
+    add_item: "Adicionar Item EAP"
+    item_name: "Nome do item"
+    status: "Status"
+    parent: "Item pai"
+    root_level: "Nível raiz"
+    responsible: "Responsável"
+    start_date: "Data de início"
+    end_date: "Data de término"
+    add: "Adicionar"
+    empty: "Nenhum item EAP ainda. Adicione o primeiro abaixo."
+    statuses:
+      on_time: "Dentro do Prazo"
+      at_risk: "Prazo Comprometido"
+      overdue: "Fora do Prazo"
+      suspended: "Suspensa"
+      milestone: "Marco"
+
   reports:
     title: "Relatórios"
     projects_completed: "Projetos Concluídos"
@@ -510,10 +666,13 @@ pt-BR:
 
   kanban:
     title: "Kanban"
-    new_task: "Nova tarefa"
-    no_tasks: "Nenhuma tarefa"
-    add_one: "Adicionar"
+    new_task: "Nova Tarefa"
     quick_add_placeholder: "Título da tarefa..."
+    no_tasks: "Nenhuma tarefa"
+    manage_columns: "Gerenciar Colunas"
+    add_column: "Adicionar Coluna"
+    column_name_placeholder: "Nome da coluna"
+    column_status_placeholder: "Chave do status"
 
   searches:
     title: "Resultados da Busca"
@@ -674,7 +833,59 @@ pt-BR:
       date: "Data"
       select: "Seleção"
 
+  devise:
+    sessions:
+      signed_in: "Autenticado com sucesso."
+      signed_out: "Sessão encerrada com sucesso."
+      already_signed_out: "Sessão encerrada com sucesso."
+    passwords:
+      send_instructions: "Você receberá um e-mail com instruções sobre como redefinir sua senha em alguns minutos."
+      send_paranoid_instructions: "Se o seu endereço de e-mail existir em nosso banco de dados, você receberá um e-mail de recuperação de senha em alguns minutos."
+      updated: "Sua senha foi alterada com sucesso. Você agora está autenticado."
+      updated_not_active: "Sua senha foi alterada com sucesso."
+    confirmations:
+      send_instructions: "Você receberá um e-mail com instruções sobre como confirmar seu e-mail em alguns minutos."
+      send_paranoid_instructions: "Se o seu endereço de e-mail existir em nosso banco de dados, você receberá um e-mail com instruções sobre como confirmar seu e-mail em alguns minutos."
+      confirmed: "Seu e-mail foi confirmado com sucesso."
+    registrations:
+      signed_up: "Bem-vindo! Você se registrou com sucesso."
+      signed_up_but_unconfirmed: "Uma mensagem com um link de confirmação foi enviada para seu e-mail. Siga o link para ativar sua conta."
+      signed_up_but_inactive: "Você se registrou com sucesso. No entanto, não foi possível fazer login porque sua conta ainda não foi ativada."
+      signed_up_but_locked: "Você se registrou com sucesso. No entanto, não foi possível fazer login porque sua conta está bloqueada."
+      updated: "Sua conta foi atualizada com sucesso."
+      updated_but_not_signed_in: "Sua conta foi atualizada com sucesso, mas como você alterou sua senha, é necessário fazer login novamente."
+      destroy_anonymized: "Sua conta foi cancelada com sucesso. Esperamos vê-lo novamente em breve."
+    unlocks:
+      send_instructions: "Você receberá um e-mail com instruções sobre como desbloquear sua conta em alguns minutos."
+      send_paranoid_instructions: "Se sua conta existir, você receberá um e-mail com instruções sobre como desbloqueá-la em alguns minutos."
+      unlocked: "Sua conta foi desbloqueada com sucesso. Faça login para continuar."
+    omniauth_callbacks:
+      success: "Autenticado com sucesso via %{kind}."
+      failure: "Não foi possível autenticar via %{kind} porque \"%{reason}\"."
+    failure:
+      already_authenticated: "Você já está autenticado."
+      unauthenticated: "Você precisa fazer login ou se registrar antes de continuar."
+      unconfirmed: "Você precisa confirmar seu e-mail antes de continuar."
+      locked: "Sua conta está bloqueada."
+      not_found_in_database: "%{authentication_keys} ou senha inválidos."
+      invalid: "%{authentication_keys} ou senha inválidos."
+      invalid_token: "Token de autenticação inválido."
+      timeout: "Sua sessão expirou. Faça login novamente para continuar."
+      inactive: "Sua conta ainda não foi ativada."
+
   helpers:
+    page_entries_info:
+      entry:
+        zero: "itens"
+        one: "item"
+        other: "itens"
+      one_page:
+        display_entries:
+          zero: "Nenhum(a) %{entry_name} encontrado(a)"
+          one: "Exibindo <b>1</b> %{entry_name}"
+          other: "Exibindo <b>todos os %{count}</b> %{entry_name}"
+      more_pages:
+        display_entries: "Exibindo %{entry_name} <b>%{first}&nbsp;-&nbsp;%{last}</b> de <b>%{total}</b>"
     submit:
       project:
         create: "Criar Projeto"

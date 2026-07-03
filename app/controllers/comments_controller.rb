@@ -4,6 +4,14 @@ class CommentsController < ApplicationController
   before_action :set_project
   before_action :set_task
 
+  def destroy
+    @comment = @task.comments.find(params[:id])
+    authorize @comment
+
+    @comment.destroy!
+    redirect_to [@organization, @project, @task], notice: t("flash.comment.deleted")
+  end
+
   def create
     @comment = @task.comments.build(comment_params)
     @comment.user = current_user

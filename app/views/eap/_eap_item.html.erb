@@ -1,0 +1,42 @@
+<% status_color = { "on_time" => "border-l-green-500 bg-green-50 dark:bg-green-900/10",
+                    "at_risk" => "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/10",
+                    "overdue" => "border-l-red-500 bg-red-50 dark:bg-red-900/10",
+                    "suspended" => "border-l-gray-400 bg-gray-50 dark:bg-gray-800",
+                    "milestone" => "border-l-purple-500 bg-purple-50 dark:bg-purple-900/10" } %>
+<% dot_color = { "on_time" => "bg-green-500",
+                 "at_risk" => "bg-yellow-500",
+                 "overdue" => "bg-red-500",
+                 "suspended" => "bg-gray-400",
+                 "milestone" => "bg-purple-500" } %>
+<% status_styles = { "on_time" => "text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/30",
+                     "at_risk" => "text-yellow-700 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/30",
+                     "overdue" => "text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/30",
+                     "suspended" => "text-gray-500 bg-gray-100 dark:text-gray-400 dark:bg-gray-700",
+                     "milestone" => "text-purple-700 bg-purple-100 dark:text-purple-300 dark:bg-purple-900/30" } %>
+
+<div class="<%= level > 0 ? 'ml-6 mt-2' : '' %>">
+  <%= link_to organization_project_task_path(@organization, @project, item[:id]), class: "flex items-center gap-3 p-3 rounded-lg border border-gray-200 border-l-4 dark:border-gray-700 #{status_color[item[:status]]} hover:shadow-sm transition-shadow" do %>
+    <span class="w-3 h-3 rounded-full flex-shrink-0 <%= dot_color[item[:status]] %>"></span>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= item[:name] %></span>
+        <span class="text-xs px-2 py-0.5 rounded-full <%= status_styles[item[:status]] %>"><%= t("eap.statuses.#{item[:status]}") %></span>
+        <span class="text-xs text-gray-400">(<%= item[:progress] %>%</span>
+      </div>
+      <div class="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <% if item[:assignee] %>
+          <span><%= item[:assignee] %></span>
+        <% end %>
+        <% if item[:start_date] %>
+          <span><%= l(item[:start_date]) %></span>
+        <% end %>
+        <% if item[:end_date] %>
+          <span>→ <%= l(item[:end_date]) %></span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <% children&.each do |child| %>
+    <%= render "eap/eap_item", item: child, children: @items_by_parent[child[:id]], level: level + 1 %>
+  <% end %>
+</div>

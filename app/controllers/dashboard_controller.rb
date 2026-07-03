@@ -38,6 +38,25 @@ class DashboardController < ApplicationController
     @kpi_achieved = @kpis.count { |k| k.calculate_progress >= 100 }
     @kpi_total = @kpis.size
 
+    @burndown_data = (0..29).map do |i|
+      day = i.days.ago.to_date
+      created = Task.where(project_id: @projects.pluck(:id)).where("DATE(tasks.created_at) = ?", day).count
+      done = Task.where(project_id: @projects.pluck(:id)).where(status: :done).where("DATE(tasks.updated_at) = ?", day).count
+      { date: day, created: created, done: done, remaining: @tasks.where("DATE(tasks.created_at) <= ?", day).where.not(status: :done).count }
+    end.reverse
+
+    @workload_data = User.where(id: @tasks.select(:assignee_id).distinct).map do |user|
+      { name: user.name, total: @tasks.where(assignee_id: user.id).count, done: @tasks.where(assignee_id: user.id, status: :done).count }
+    end.sort_by { |w| -w[:total] }
+
+    @weekly_velocity = (0..7).map do |i|
+      week_start = (i.weeks.ago).beginning_of_week
+      week_end = week_start.end_of_week
+      done = Task.where(project_id: @projects.pluck(:id)).where(status: :done).where(updated_at: week_start..week_end).count
+      total_created = Task.where(project_id: @projects.pluck(:id)).where(created_at: week_start..week_end).count
+      { week: week_start.strftime("%b %d"), done: done, created: total_created }
+    end.reverse
+
     @gantt_projects = @projects.active.order(:start_date)
     now = Date.today
     @gantt_start = @gantt_projects.map { |p| p.start_date || p.created_at.to_date }.min || now

@@ -10,8 +10,8 @@ RSpec.describe "OKR Cycles", type: :system do
     click_link "OKRs"
     click_link "New Cycle"
     fill_in "Title", with: "Q1 2026"
-    fill_in "Start date", with: Date.current
-    fill_in "End date", with: 3.months.from_now
+    fill_in "Start Date", with: Date.current
+    fill_in "End Date", with: 3.months.from_now
     click_button "Create cycle"
 
     expect(page).to have_text("OKR cycle created.")

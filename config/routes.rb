@@ -30,7 +30,7 @@ Rails.application.routes.draw do
           patch :move
           get :modal
         end
-        resources :comments, only: %i[create]
+        resources :comments, only: %i[create destroy]
         resources :checklist_items, only: %i[create update destroy]
         resources :time_entries, only: %i[create update destroy] do
           collection do
@@ -40,7 +40,10 @@ Rails.application.routes.draw do
         end
       end
       resource :kanban, only: %i[show], controller: :kanban
+      resources :kanban_columns, only: %i[index create update destroy]
       resource :strategic_canvas, only: %i[show update], controller: :strategic_canvases
+      resources :project_matrices, only: %i[index show new edit create update destroy]
+      resource :eap, only: %i[show], controller: :eap
     end
   end
 

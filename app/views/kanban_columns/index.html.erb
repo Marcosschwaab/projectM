@@ -1,0 +1,36 @@
+<%= turbo_frame_tag "kanban_columns" do %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= t("kanban.manage_columns") %></h2>
+      <%= link_to organization_project_kanban_path(@organization, @project), class: "text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300" do %>
+        &larr; <%= t("actions.back") %>
+      <% end %>
+    </div>
+
+    <div class="space-y-3 mb-6">
+      <% @columns.each_with_index do |col, _i| %>
+        <%= form_with model: [@organization, @project, col], class: "flex items-center gap-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50" do |f| %>
+          <%= f.text_field :label, class: "flex-1 px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          <%= f.color_field :color, class: "w-8 h-8 rounded cursor-pointer border border-gray-300 dark:border-gray-600" %>
+          <%= f.hidden_field :status %>
+          <%= f.submit t("actions.save"), class: "px-3 py-1.5 text-xs font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+          <%= link_to organization_project_kanban_column_path(@organization, @project, col),
+                      data: { turbo_method: :delete, turbo_confirm: t("actions.confirm_delete") },
+                      class: "p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <h3 class="text-sm font-medium text-gray-700 mb-2 dark:text-gray-300"><%= t("kanban.add_column") %></h3>
+      <%= form_with model: [@organization, @project, KanbanColumn.new], class: "flex items-center gap-2" do |f| %>
+        <%= f.text_field :label, placeholder: t("kanban.column_name_placeholder"), required: true, class: "flex-1 px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        <%= f.text_field :status, placeholder: t("kanban.column_status_placeholder"), required: true, class: "flex-1 px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        <%= f.color_field :color, value: "#6366f1", class: "w-8 h-8 rounded cursor-pointer border border-gray-300 dark:border-gray-600" %>
+        <%= f.submit t("actions.add"), class: "px-3 py-1.5 text-xs font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

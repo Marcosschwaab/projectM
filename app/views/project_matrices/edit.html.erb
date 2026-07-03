@@ -1,0 +1,79 @@
+<div class="mb-6">
+  <%= link_to organization_project_project_matrix_path(@organization, @project, @matrix), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+    <%= t("actions.back_to_matrix") %>
+  <% end %>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6 dark:text-gray-100"><%= t("matrices.edit") %> — <%= @matrix.name %></h1>
+
+  <%= form_with url: organization_project_project_matrix_path(@organization, @project, @matrix), method: :patch, data: { turbo: false }, local: true do |f| %>
+    <div class="mb-4">
+      <%= label_tag :name, t("matrices.name"), class: "block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300" %>
+      <%= text_field_tag "project_matrix[name]", @matrix.name, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+    </div>
+
+    <div class="overflow-x-auto mb-6">
+      <table class="min-w-full border-collapse border border-gray-300 dark:border-gray-600">
+        <thead>
+          <tr>
+            <th class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1 w-8"></th>
+            <% @matrix.matrix_columns.each do |col| %>
+              <th class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1">
+                <%= text_field_tag "columns[][name]", col.name, class: "w-full px-2 py-1 text-xs border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                <%= hidden_field_tag "columns[][id]", col.id %>
+                <label class="flex items-center gap-1 mt-1 text-xs text-red-500 cursor-pointer">
+                  <%= check_box_tag "columns[][_destroy]", "1", false, class: "w-3 h-3" %>
+                  <%= t("actions.remove") %>
+                </label>
+              </th>
+            <% end %>
+            <th class="border border-gray-300 dark:border-gray-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 w-32">
+              <%= text_field_tag "columns[][name]", "", placeholder: t("matrices.new_column"), class: "w-full px-2 py-1 text-xs border border-green-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @matrix.matrix_rows.each do |row| %>
+            <tr>
+              <td class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1">
+                <label class="flex items-center gap-1 text-xs text-red-500 cursor-pointer">
+                  <%= check_box_tag "rows[][_destroy]", "1", false, class: "w-3 h-3" %>
+                </label>
+              </td>
+              <td class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1" colspan="<%= @matrix.matrix_columns.size %>">
+                <div class="flex items-center gap-2">
+                  <%= text_field_tag "rows[][name]", row.name, class: "flex-1 px-2 py-1 text-xs border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                  <%= hidden_field_tag "rows[][id]", row.id %>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-gray-500"><%= row.name %></td>
+              <% @matrix.matrix_columns.each do |col| %>
+                <% cell = @matrix.matrix_cells.find { |c| c.matrix_column_id == col.id && c.matrix_row_id == row.id } %>
+                <td class="border border-gray-300 dark:border-gray-600 px-2 py-1">
+                  <%= text_field_tag "cells[#{row.id}][#{col.id}]", cell&.value, class: "w-full px-2 py-1 text-sm border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+                </td>
+              <% end %>
+              <td class="border border-gray-300 dark:border-gray-600 bg-green-50 dark:bg-green-900/20 px-2 py-1"></td>
+            </tr>
+          <% end %>
+
+          <%# New row %>
+          <tr>
+            <td class="border border-gray-300 dark:border-gray-600 bg-green-50 dark:bg-green-900/20 px-2 py-1"></td>
+            <td class="border border-gray-300 dark:border-gray-600 bg-green-50 dark:bg-green-900/20 px-2 py-1" colspan="<%= @matrix.matrix_columns.size %>">
+              <%= text_field_tag "rows[][name]", "", placeholder: t("matrices.new_row"), class: "w-full px-2 py-1 text-xs border border-green-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <%= f.submit t("actions.save"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer" %>
+      <%= link_to t("actions.cancel"), [@organization, @project, @matrix], class: "px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg text-sm dark:border-gray-600 dark:text-gray-300" %>
+    </div>
+  <% end %>
+</div>

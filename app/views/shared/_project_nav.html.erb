@@ -1,0 +1,25 @@
+<% controller_match = ->(name) { controller_name == name || controller_name == name.singularize } %>
+
+<% tabs = [
+  { label: t("nav.overview"), path: organization_project_path(@organization, @project), controllers: ["projects"] },
+  { label: t("nav.tasks"), path: organization_project_tasks_path(@organization, @project), controllers: ["tasks"] },
+  { label: t("nav.kanban"), path: organization_project_kanban_path(@organization, @project), controllers: ["kanban"] },
+  { label: t("nav.strategic_canvas"), path: organization_project_strategic_canvas_path(@organization, @project), controllers: ["strategic_canvases"] },
+  { label: t("nav.matrices"), path: organization_project_project_matrices_path(@organization, @project), controllers: ["project_matrices"] },
+  { label: t("nav.eap"), path: organization_project_eap_path(@organization, @project), controllers: ["eap"] },
+] %>
+
+<nav class="flex gap-1 border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto" role="tablist">
+  <% tabs.each do |tab| %>
+    <% is_active = tab[:controllers].any? { |c| controller_match.call(c) } %>
+    <%= link_to tab[:path],
+        class: "px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition-colors #{
+          is_active ? 'border-indigo-600 text-indigo-700 dark:border-indigo-400 dark:text-indigo-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600'
+        }",
+        role: "tab",
+        aria: { selected: is_active, current: is_active ? "page" : nil } do %>
+      <%= tab[:label] %>
+    <% end %>
+  <% end %>
+</nav>

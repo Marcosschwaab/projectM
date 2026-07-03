@@ -1,3 +1,5 @@
+<%= render "shared/project_nav" %>
+
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("tasks.title") %></h1>
   <%= link_to new_organization_project_task_path(@organization, @project), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
@@ -76,76 +78,73 @@
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
     <table class="w-full">
       <thead>
-        <tr class="bg-gray-50 dark:bg-gray-700">
+        <tr class="border-b border-gray-200 dark:border-gray-700">
           <th class="px-4 py-3 w-10">
             <input type="checkbox" data-bulk_select-target="selectAll" data-action="bulk_select#toggleAll"
                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700">
           </th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.title") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.depends_on") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tags.title") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.status") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.priority") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.assignee") %></th>
-          <th class="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.fields.due_date") %></th>
-          <th class="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("tasks.filters.actions") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tasks.fields.title") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tags.title") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tasks.fields.status") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tasks.fields.priority") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tasks.fields.due_date") %></th>
+          <th class="text-center px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("tasks.fields.assignee") %></th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
         <% @tasks.each do |task| %>
-          <tr class="hover:bg-gray-50 transition-colors dark:hover:bg-gray-700/50">
-            <td class="px-4 py-4">
+          <tr class="hover:bg-gray-50/80 transition-colors dark:hover:bg-gray-700/30">
+            <td class="px-4 py-3.5">
               <input type="checkbox" value="<%= task.id %>" data-bulk_select-target="checkbox" data-action="bulk_select#toggle"
                      class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700">
             </td>
-            <td class="px-6 py-4">
-              <%= link_to [@organization, @project, task], class: "text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400" do %>
-                <%= task.title %>
-              <% end %>
-            </td>
-            <td class="px-6 py-4">
-              <% if task.dependencies.any? %>
-                <div class="flex -space-x-1">
-                  <% task.dependencies.each do |dep| %>
-                    <span class="w-5 h-5 rounded-full text-[9px] font-bold flex items-center justify-center border-2 border-white <%= dep.status == "done" ? "bg-green-500 text-white" : "bg-yellow-500 text-white" %> dark:border-gray-800" title="<%= dep.title %>"><%= dep.title.first.upcase %></span>
-                  <% end %>
-                </div>
-              <% else %>
-                <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
-              <% end %>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <% task.tags.each do |tag| %>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style="background-color: <%= tag.color %>20; color: <%= tag.color %>">
-                    <%= tag.name %>
-                  </span>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center gap-2">
+                <% if task.dependencies.any? %>
+                  <div class="flex -space-x-0.5 flex-shrink-0">
+                    <% task.dependencies.each do |dep| %>
+                      <span class="w-4 h-4 rounded-full text-[7px] font-bold flex items-center justify-center border border-white <%= dep.status == "done" ? "bg-emerald-500 text-white" : "bg-amber-400 text-white" %> dark:border-gray-800" title="<%= dep.title %>"><%= dep.title.first.upcase %></span>
+                    <% end %>
+                  </div>
                 <% end %>
-                <% if task.tags.empty? %>
-                  <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
+                <%= link_to [@organization, @project, task], class: "text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400" do %>
+                  <%= task.title %>
                 <% end %>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="<%= status_badge_class(task.status) %>"><%= task.status&.humanize %></span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="<%= priority_class(task.priority) %>"><%= task.priority&.humanize %></span>
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><%= task.assignee&.name || "-" %></td>
-            <td class="px-6 py-4 text-sm <%= task.due_date && task.due_date < Date.today && task.status != "done" ? "text-red-600 font-medium dark:text-red-400" : "text-gray-600 dark:text-gray-400" %>">
-              <span class="flex items-center gap-1">
                 <% if task.recurring? %>
                   <svg class="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 <% end %>
-                <%= task.due_date || "-" %>
-              </span>
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <%= link_to t("actions.edit"), edit_organization_project_task_path(@organization, @project, task), class: "text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" %>
-                <%= button_to t("actions.delete"), [@organization, @project, task], method: :delete, data: { turbo_confirm: t("actions.confirm_delete") }, class: "text-xs text-red-600 hover:text-red-700 bg-transparent border-none cursor-pointer dark:text-red-400 dark:hover:text-red-300" %>
               </div>
+            </td>
+            <td class="px-5 py-3.5">
+              <% if task.tags.any? %>
+                <div class="flex items-center gap-1 flex-wrap">
+                  <% task.tags.each do |tag| %>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium leading-tight" style="background-color: <%= tag.color %>18; color: <%= tag.color %>">
+                      <%= tag.name %>
+                    </span>
+                  <% end %>
+                </div>
+              <% else %>
+                <span class="text-xs text-gray-300 dark:text-gray-600">—</span>
+              <% end %>
+            </td>
+            <td class="px-5 py-3.5">
+              <%= status_badge(task.status) %>
+            </td>
+            <td class="px-5 py-3.5">
+              <%= priority_badge(task.priority) %>
+            </td>
+            <td class="px-5 py-3.5 text-sm <%= task.due_date && task.due_date < Date.today && task.status != "done" ? "text-red-600 font-medium dark:text-red-400" : "text-gray-500 dark:text-gray-400" %>">
+              <%= task.due_date || "<span class='text-gray-300 dark:text-gray-600'>—</span>".html_safe %>
+            </td>
+            <td class="px-5 py-3.5 text-center">
+              <% if task.assignee %>
+                <div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/40" title="<%= task.assignee.name %>">
+                  <span class="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400"><%= task.assignee.name.first.upcase %></span>
+                </div>
+              <% else %>
+                <span class="text-xs text-gray-300 dark:text-gray-600">—</span>
+              <% end %>
             </td>
           </tr>
         <% end %>
@@ -153,8 +152,9 @@
     </table>
 
     <% if @tasks.empty? %>
-      <div class="p-8 text-center">
-        <p class="text-gray-500 dark:text-gray-400"><%= t("tasks.no_tasks_found") %></p>
+      <div class="flex flex-col items-center justify-center py-12">
+        <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <p class="text-sm text-gray-400 dark:text-gray-500"><%= t("tasks.no_tasks_found") %></p>
       </div>
     <% end %>
   </div>

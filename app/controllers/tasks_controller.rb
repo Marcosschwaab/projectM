@@ -9,7 +9,7 @@ class TasksController < ApplicationController
 
     @tasks = @tasks.where(assignee_id: params[:assignee_id]) if params[:assignee_id].present?
     @tasks = @tasks.where(priority: Task.priorities[params[:priority]]) if params[:priority].present?
-    @tasks = @tasks.where(status: Task.statuses[params[:status]]) if params[:status].present?
+    @tasks = @tasks.where(status: params[:status]) if params[:status].present?
     @tasks = @tasks.where("tasks.due_date >= ?", Date.parse(params[:due_date_from])) if params[:due_date_from].present?
     @tasks = @tasks.where("tasks.due_date <= ?", Date.parse(params[:due_date_to])) if params[:due_date_to].present?
     @tasks = @tasks.where("tasks.title ILIKE ?", "%#{params[:q]}%") if params[:q].present?
@@ -21,7 +21,7 @@ class TasksController < ApplicationController
   def show
     authorize @task
     @comment = @task.comments.build
-    @checklist_item = @task.checklist_items.build
+    @checklist_item = ChecklistItem.new(task: @task)
   end
 
   def new
@@ -79,7 +79,7 @@ class TasksController < ApplicationController
   def modal
     authorize @task
     @comment = @task.comments.build
-    @checklist_item = @task.checklist_items.build
+    @checklist_item = ChecklistItem.new(task: @task)
     render layout: false
   end
 
@@ -152,11 +152,11 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:custom_field_id, :value])
+    params.require(:task).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :estimated_hours, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
   end
 
   def task_params_for_new
-    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:custom_field_id, :value])
+    params.fetch(:task, {}).permit(:title, :description, :assignee_id, :priority, :status, :due_date, :estimated_hours, :recurrence_rule, :recurrence_end_date, tag_ids: [], files: [], dependency_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
   end
 
   def broadcast_task_move

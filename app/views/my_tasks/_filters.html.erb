@@ -1,0 +1,22 @@
+<%= form_with url: my_tasks_path, method: :get, data: { controller: "my-tasks" } do |f| %>
+  <%= hidden_field_tag :group_by, @group_by if @group_by %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 mt-5">
+    <div class="p-4 pb-0 flex items-center justify-between">
+      <span class="text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"><%= t("actions.filter") %></span>
+      <% if params.slice(:q, :project_id, :priority, :status, :due_date_from, :due_date_to).values.any?(&:present?) %>
+        <%= link_to t("actions.clear"), my_tasks_path(group_by: @group_by), class: "text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+      <% end %>
+    </div>
+    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+      <%= f.search_field :q, value: params[:q], placeholder: t("tasks.filters.search"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      <%= f.select :project_id, options_from_collection_for_select(@projects, :id, :name, params[:project_id]), { include_blank: t("my_tasks.all_projects") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      <%= f.select :priority, options_for_select(Task.priorities.keys.map { |k| [k.humanize, k] }, params[:priority]), { include_blank: t("tasks.filters.all_priorities") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      <%= f.select :status, options_for_select(Task.statuses.keys.map { |k| [k.humanize, k] }, params[:status]), { include_blank: t("tasks.filters.all_statuses") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      <%= f.date_field :due_date_from, value: params[:due_date_from], placeholder: t("tasks.filters.due_from"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+      <%= f.date_field :due_date_to, value: params[:due_date_to], placeholder: t("tasks.filters.due_to"), class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+    </div>
+    <div class="px-4 pb-4">
+      <%= f.submit t("actions.filter"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+    </div>
+  </div>
+<% end %>

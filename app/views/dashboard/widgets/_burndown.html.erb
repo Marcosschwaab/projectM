@@ -1,0 +1,22 @@
+<% data = @burndown_data || [] %>
+<% max_val = data.map { |d| d[:remaining] }.max || 1 %>
+<% data_slice = data.each_slice([data.size / 10, 1].max).map(&:first) %>
+
+<div class="flex items-center justify-between mb-3">
+  <span class="text-xs text-gray-400 dark:text-gray-500"><%= t("dashboard.charts.last_30_days") %></span>
+  <div class="flex items-center gap-3 text-xs">
+    <span class="flex items-center gap-1 text-indigo-500"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> <%= t("dashboard.charts.remaining") %></span>
+  </div>
+</div>
+<div class="flex items-end gap-px h-28">
+  <% data.each do |d| %>
+    <div class="flex-1 relative group">
+      <div class="w-full bg-indigo-500/20 rounded-t transition-all duration-200 hover:bg-indigo-500/40" 
+           style="height: <%= (d[:remaining].to_f / max_val * 100).clamp(1, 100) %>%">
+        <div class="absolute -top-5 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap z-10">
+          <%= d[:date].strftime("%b %d") %>: <%= d[:remaining] %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

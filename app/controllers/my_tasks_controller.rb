@@ -5,7 +5,7 @@ class MyTasksController < ApplicationController
     @tasks = policy_scope(Task).where(assignee: current_user).includes(:project, :assignee, :tags).order(created_at: :desc)
 
     @tasks = @tasks.where(priority: Task.priorities[params[:priority]]) if params[:priority].present?
-    @tasks = @tasks.where(status: Task.statuses[params[:status]]) if params[:status].present?
+    @tasks = @tasks.where(status: params[:status]) if params[:status].present?
     @tasks = @tasks.where(project_id: params[:project_id]) if params[:project_id].present?
     @tasks = @tasks.where("tasks.due_date >= ?", Date.parse(params[:due_date_from])) if params[:due_date_from].present?
     @tasks = @tasks.where("tasks.due_date <= ?", Date.parse(params[:due_date_to])) if params[:due_date_to].present?
@@ -15,5 +15,22 @@ class MyTasksController < ApplicationController
     @overdue_count = @tasks.where("tasks.due_date < ?", Date.today).where.not(status: :done).count
     @done_count = @tasks.where(status: :done).count
     @total_count = @tasks.count
+    @group_by = params[:group_by].presence
+    @grouped_tasks = group_tasks(@tasks, @group_by) if @group_by
+  end
+
+  private
+
+  def group_tasks(tasks, group_by)
+    case group_by
+    when "project"
+      tasks.group_by { |t| [t.project_id, t.project.name] }
+    when "priority"
+      tasks.group_by { |t| t.priority || "none" }
+    when "status"
+      tasks.group_by { |t| t.status || "none" }
+    else
+      {}
+    end
   end
 end

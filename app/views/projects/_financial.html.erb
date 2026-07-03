@@ -1,0 +1,52 @@
+<% p = project %>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+  <h2 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100"><%= t("projects.financial.title") %></h2>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("projects.financial.proposal_investment_estimated") %></p>
+      <p class="text-sm font-medium mt-1 <%= p.proposal_investment_estimated.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.proposal_investment_estimated.to_f > 0 ? number_to_currency(p.proposal_investment_estimated) : t("projects.financial.nd") %>
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2"><%= t("projects.financial.project_investment_estimated") %></p>
+      <p class="text-sm font-medium <%= p.project_investment_estimated.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.project_investment_estimated.to_f > 0 ? number_to_currency(p.project_investment_estimated) : t("projects.financial.nd") %>
+      </p>
+    </div>
+
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("projects.financial.budget_estimated") %></p>
+      <p class="text-sm font-medium mt-1 <%= p.budget_estimated.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.budget_estimated.to_f > 0 ? number_to_currency(p.budget_estimated) : t("projects.financial.nd") %>
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2"><%= t("projects.financial.budget_actual") %></p>
+      <p class="text-sm font-medium <%= p.budget_actual.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.budget_actual.to_f > 0 ? number_to_currency(p.budget_actual) : t("projects.financial.nd") %>
+      </p>
+      <% if p.budget_estimated.to_f > 0 && p.budget_actual.to_f > 0 %>
+        <% budget_pct = (p.budget_actual.to_f / p.budget_estimated.to_f * 100).round(0) %>
+        <div class="mt-2">
+          <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-600">
+            <div class="h-1.5 rounded-full <%= budget_pct <= 100 ? 'bg-green-500' : 'bg-red-500' %>" style="width: <%= [budget_pct, 100].min %>%"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-0.5"><%= budget_pct %>% <%= t("projects.financial.of_budget") %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("projects.financial.return_estimated") %></p>
+      <p class="text-sm font-medium mt-1 <%= p.return_estimated.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.return_estimated.to_f > 0 ? number_to_currency(p.return_estimated) : t("projects.financial.nd") %>
+      </p>
+    </div>
+    <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+      <p class="text-xs text-gray-500 dark:text-gray-400"><%= t("projects.financial.return_actual") %></p>
+      <p class="text-sm font-medium mt-1 <%= p.return_actual.to_f > 0 ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500' %>">
+        <%= p.return_actual.to_f > 0 ? number_to_currency(p.return_actual) : t("projects.financial.nd") %>
+      </p>
+    </div>
+  </div>
+</div>

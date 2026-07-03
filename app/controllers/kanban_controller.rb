@@ -5,6 +5,7 @@ class KanbanController < ApplicationController
 
   def show
     authorize @project, :show?
+    @columns = @project.kanban_columns.ordered
     @tasks = policy_scope(Task)
       .where(project: @project)
       .includes(:assignee, :checklist_items)
