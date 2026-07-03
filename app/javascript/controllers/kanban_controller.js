@@ -9,8 +9,10 @@ export default class extends Controller {
     this.dragCard = null
     this.dragPlaceholder = null
     this.autoScrollInterval = null
+    this._movingTaskIds = new Set()
     this.bindEvents()
     this.subscribeToChannel()
+    this.updateColumnCounts()
   }
 
   disconnect() {
@@ -27,10 +29,13 @@ export default class extends Controller {
       {
         received: (data) => {
           if (data.action === "move") {
-            const card = this.element.querySelector(`[data-task-id="${data.task_id}"]`)
+            const taskId = String(data.task_id)
+            if (this._movingTaskIds.has(taskId)) return
+            const card = this.element.querySelector(`[data-task-id="${taskId}"]`)
             if (card) card.remove()
-            const column = this.element.querySelector(`[data-status="${data.status}"] .kanban-column-body`)
+            const column = this.element.querySelector(`.kanban-column-body[data-status="${data.status}"]`)
             if (column) column.insertAdjacentHTML("beforeend", data.html)
+            this.updateColumnCounts()
           } else if (data.action === "update") {
             const card = this.element.querySelector(`[data-task-id="${data.task_id}"]`)
             if (card) card.outerHTML = data.html
@@ -113,7 +118,7 @@ export default class extends Controller {
   onDrop = (event) => {
     event.preventDefault()
     const column = event.target.closest(".kanban-column-body")
-    if (!column || !this.dragCard) return
+    if (!column) return
 
     column.classList.remove("bg-indigo-50/50", "ring-2", "ring-indigo-300")
     this.removePlaceholder()
@@ -123,35 +128,43 @@ export default class extends Controller {
     const newStatus = column.dataset.status
     const insertBefore = this.getInsertBefore(column, event.clientY)
 
+    this._movingTaskIds.add(taskId)
+
+    const card = this.element.querySelector(`[data-task-id="${taskId}"]`)
+    if (!card) {
+      this._movingTaskIds.delete(taskId)
+      return
+    }
+
+    card.classList.remove("opacity-30", "scale-95")
+
+    if (insertBefore) {
+      column.insertBefore(card, insertBefore)
+    } else {
+      column.appendChild(card)
+    }
+
+    card.classList.add("kanban-card-inserted")
+    setTimeout(() => card.classList.remove("kanban-card-inserted"), 400)
+    this.updateColumnCounts()
+
     fetch(column.dataset.moveUrl.replace(":id", taskId), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
       },
-      body: JSON.stringify({ status: newStatus, position: insertBefore ? [...column.children].indexOf(insertBefore) : column.children.length })
+      body: JSON.stringify({ status: newStatus, position: [...column.querySelectorAll(".kanban-card")].indexOf(card) })
     })
     .then(response => response.json())
     .then(data => {
-      if (data.success) {
-        const card = this.element.querySelector(`[data-task-id="${taskId}"]`)
-        if (card) {
-          card.classList.remove("opacity-30", "scale-95")
-          if (insertBefore) {
-            column.insertBefore(card, insertBefore)
-          } else {
-            column.appendChild(card)
-          }
-          card.classList.add("kanban-card-inserted")
-          setTimeout(() => card.classList.remove("kanban-card-inserted"), 400)
-        }
-        this.updateColumnCounts()
-      } else {
-        if (this.dragCard) this.dragCard.classList.remove("opacity-30", "scale-95")
+      if (!data.success) {
+        location.reload()
       }
+      this._movingTaskIds.delete(taskId)
     })
     .catch(() => {
-      if (this.dragCard) this.dragCard.classList.remove("opacity-30", "scale-95")
+      this._movingTaskIds.delete(taskId)
     })
   }
 
@@ -218,6 +231,8 @@ export default class extends Controller {
       const count = col.querySelectorAll(".kanban-card").length
       const badge = col.closest(".kanban-column")?.querySelector(".kanban-count")
       if (badge) badge.textContent = count
+      const emptyState = col.querySelector(".kanban-empty-state")
+      if (emptyState) emptyState.classList.toggle("hidden", count > 0)
     })
   }
 

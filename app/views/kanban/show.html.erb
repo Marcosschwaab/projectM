@@ -65,12 +65,10 @@
           <%= render "kanban_card", task: task %>
         <% end %>
 
-        <% if column_tasks.empty? %>
-          <div class="flex flex-col items-center justify-center py-6 text-center">
-            <svg class="w-6 h-6 text-gray-300 mb-1.5 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            <p class="text-[11px] text-gray-400 dark:text-gray-500"><%= t("kanban.no_tasks") %></p>
-          </div>
-        <% end %>
+        <div class="kanban-empty-state pointer-events-none flex flex-col items-center justify-center py-6 text-center <%= "hidden" if column_tasks.any? %>">
+          <svg class="w-6 h-6 text-gray-300 mb-1.5 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <p class="text-[11px] text-gray-400 dark:text-gray-500"><%= t("kanban.no_tasks") %></p>
+        </div>
 
         <div class="kanban-quick-add hidden pt-1">
           <%= form_with url: organization_project_tasks_path(@organization, @project), scope: :task, class: "flex flex-col gap-1.5", data: { action: "submit->kanban#submitQuickAdd" } do |f| %>
