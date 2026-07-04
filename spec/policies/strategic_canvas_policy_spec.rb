@@ -10,6 +10,7 @@ RSpec.describe StrategicCanvasPolicy do
 
   before do
     create(:organization_membership, user: user, organization: organization, role: :member)
+    create(:project_member, user: user, project: project, role: :member)
   end
 
   describe "permissions for members" do

@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       end
       resource :kanban, only: %i[show], controller: :kanban
       resources :kanban_columns, only: %i[index create update destroy]
+      resources :risks
       resource :strategic_canvas, only: %i[show update], controller: :strategic_canvases
       resources :project_matrices, only: %i[index show new edit create update destroy]
       resource :eap, only: %i[show], controller: :eap

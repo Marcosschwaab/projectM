@@ -4,7 +4,8 @@ export default class extends Controller {
   static targets = ["input", "dropdown", "selected", "hiddenFields"]
   static values = {
     members: Array,
-    selected: { type: Array, default: [] }
+    selected: { type: Array, default: [] },
+    fieldName: { type: String, default: "project[project_member_ids][]" }
   }
 
   connect() {
@@ -109,7 +110,7 @@ export default class extends Controller {
 
   renderHiddenFields() {
     this.hiddenFieldsTarget.innerHTML = Array.from(this.selectedIds).map(id =>
-      `<input type="hidden" name="project[project_member_ids][]" value="${id}" autocomplete="off">`
+      `<input type="hidden" name="${this.fieldNameValue}" value="${id}" autocomplete="off">`
     ).join("")
   }
 

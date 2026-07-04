@@ -14,6 +14,7 @@ class Project < ApplicationRecord
   has_many :project_members, dependent: :destroy
   has_many :members, through: :project_members, source: :user
   has_many :project_matrices, dependent: :destroy
+  has_many :risks, dependent: :destroy
   has_many :kanban_columns, -> { ordered }, dependent: :destroy, inverse_of: :project
   has_many :custom_field_values, as: :customizable, dependent: :destroy
   accepts_nested_attributes_for :custom_field_values

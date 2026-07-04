@@ -1,13 +1,13 @@
 class ChecklistItemPolicy < ApplicationPolicy
   def create?
-    user.member_of?(record.task.project.organization)
+    user.can_access_project?(record.task.project)
   end
 
   def update?
-    user.member_of?(record.task.project.organization)
+    user.can_access_project?(record.task.project)
   end
 
   def destroy?
-    user.member_of?(record.task.project.organization)
+    user.can_access_project?(record.task.project)
   end
 end

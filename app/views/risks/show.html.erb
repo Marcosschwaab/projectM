@@ -1,0 +1,70 @@
+<%= render "shared/project_nav" %>
+
+<div class="mb-6">
+  <%= link_to organization_project_risks_path(@organization, @project), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+    <%= t("risks.back_to_risks") %>
+  <% end %>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @risk.name %></h1>
+          <% if @risk.description.present? %>
+            <p class="text-gray-600 mt-2 dark:text-gray-400"><%= @risk.description %></p>
+          <% end %>
+        </div>
+        <%= link_to edit_organization_project_risk_path(@organization, @project, @risk), class: "px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-400 dark:hover:bg-gray-700" do %>
+          <%= t("actions.edit") %>
+        <% end %>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+          <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("risks.severity") %></p>
+          <p class="text-lg font-bold" style="color: <%= risk_severity_color(@risk.severity_label) %>"><%= t("risks.severity_levels.#{@risk.severity_label}") %> (<%= @risk.severity %>)</p>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+          <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("risks.fields.probability") %></p>
+          <p class="text-lg font-bold text-gray-900 dark:text-gray-100"><%= @risk.probability %> — <%= t("risks.probability.#{@risk.probability_label}") %></p>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-lg dark:bg-gray-700/50">
+          <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("risks.fields.impact") %></p>
+          <p class="text-lg font-bold text-gray-900 dark:text-gray-100"><%= @risk.impact %> — <%= t("risks.impact.#{@risk.impact_label}") %></p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <span class="<%= risk_status_badge_class(@risk.status) %> px-2 py-0.5 rounded-full text-xs font-medium"><%= t("risks.statuses.#{@risk.status}") %></span>
+        <% if @risk.owner %>
+          <span><%= t("risks.fields.owner") %>: <%= @risk.owner.name %></span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+        <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("risks.plan_tabs.mitigation") %></h3>
+        <% if @risk.mitigation_plan.present? %>
+          <p class="text-sm text-gray-600 dark:text-gray-400"><%= simple_format @risk.mitigation_plan %></p>
+        <% else %>
+          <p class="text-sm text-gray-400 dark:text-gray-500 italic"><%= t("risks.plan_tabs.no_mitigation") %></p>
+        <% end %>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+        <h3 class="text-sm font-semibold text-gray-900 mb-3 dark:text-gray-100"><%= t("risks.plan_tabs.contingency") %></h3>
+        <% if @risk.contingency_plan.present? %>
+          <p class="text-sm text-gray-600 dark:text-gray-400"><%= simple_format @risk.contingency_plan %></p>
+        <% else %>
+          <p class="text-sm text-gray-400 dark:text-gray-500 italic"><%= t("risks.plan_tabs.no_contingency") %></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= render "risk_matrix", risks: [@risk] %>
+  </div>
+</div>

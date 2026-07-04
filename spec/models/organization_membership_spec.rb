@@ -37,7 +37,7 @@ RSpec.describe OrganizationMembership, type: :model do
 
   describe "enums" do
     it "defines roles" do
-      expect(OrganizationMembership.roles).to include("member", "manager", "admin")
+      expect(OrganizationMembership.roles).to include("member", "manager", "admin", "super_admin")
     end
   end
 end

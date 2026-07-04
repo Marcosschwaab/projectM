@@ -14,6 +14,15 @@ en:
         start_date: "Start Date"
         end_date: "End Date"
         status: "Status"
+      risk:
+        name: "Name"
+        description: "Description"
+        probability: "Probability"
+        impact: "Impact"
+        status: "Status"
+        mitigation_plan: "Mitigation Plan"
+        contingency_plan: "Contingency Plan"
+        owner: "Owner"
       kpi:
         name: "Name"
         description: "Description"
@@ -114,6 +123,7 @@ en:
     tasks: "Tasks"
     kanban: "Kanban"
     strategic_canvas: "Canvas"
+    risks: "Risks"
     matrices: "Matrices"
     eap: "EAP / WBS"
 
@@ -217,6 +227,10 @@ en:
       created: "Organization was successfully created."
       updated: "Organization was successfully updated."
       destroyed: "Organization was successfully destroyed."
+    risk:
+      created: "Risk created."
+      updated: "Risk updated."
+      destroyed: "Risk deleted."
     canvas:
       updated: "Canvas updated."
     invitation:
@@ -300,6 +314,9 @@ en:
       manager: "Manager"
       responsible: "Responsible"
       members: "Team Members"
+      project_managers: "Project Managers"
+      project_managers_hint: "Can see all projects (read-only) and fully manage this project"
+      members_hint: "Can only access this project"
     approval:
       title: "Approval Settings"
       hint: "Select who can approve project items:"
@@ -632,6 +649,61 @@ en:
     create_first: "Create your first matrix"
     empty: "This matrix is empty. Add columns and rows to get started."
     edit_structure: "Edit structure"
+
+  risks:
+    title: "Risks"
+    new: "New Risk"
+    edit: "Edit Risk"
+    no_risks: "No risks registered yet."
+    severity: "Severity"
+    severity_levels:
+      low: "Low"
+      medium: "Medium"
+      high: "High"
+      critical: "Critical"
+    probability:
+      very_low: "Very Low (1)"
+      low: "Low (2)"
+      medium: "Medium (3)"
+      high: "High (4)"
+      very_high: "Very High (5)"
+    impact:
+      very_low: "Very Low (1)"
+      low: "Low (2)"
+      medium: "Medium (3)"
+      high: "High (4)"
+      very_high: "Very High (5)"
+    statuses:
+      identified: "Identified"
+      assessing: "Assessing"
+      mitigating: "Mitigating"
+      monitored: "Monitored"
+      closed: "Closed"
+    matrix:
+      title: "Risk Matrix"
+      probability_vs_impact: "Probability vs Impact"
+      very_low: "VL"
+      low: "L"
+      medium: "M"
+      high: "H"
+      very_high: "VH"
+    fields:
+      name: "Name"
+      description: "Description"
+      probability: "Probability"
+      impact: "Impact"
+      status: "Status"
+      owner: "Owner"
+      mitigation_plan: "Mitigation Plan"
+      contingency_plan: "Contingency Plan"
+    delete_confirm: "Delete this risk?"
+    back_to_risks: "← Back to risks"
+    detail: "Risk Detail"
+    plan_tabs:
+      mitigation: "Mitigation"
+      contingency: "Contingency"
+      no_mitigation: "No mitigation plan defined."
+      no_contingency: "No contingency plan defined."
 
   eap:
     title: "WBS Diagram"

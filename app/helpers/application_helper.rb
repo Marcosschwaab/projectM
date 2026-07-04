@@ -136,6 +136,37 @@ module ApplicationHelper
     end
   end
 
+  def risk_severity_class(severity)
+    case severity.to_s
+    when "critical" then "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+    when "high" then "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
+    when "medium" then "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+    when "low" then "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+    else "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+    end
+  end
+
+  def risk_severity_color(severity)
+    case severity.to_s
+    when "critical" then "#ef4444"
+    when "high" then "#f97316"
+    when "medium" then "#eab308"
+    when "low" then "#22c55e"
+    else "#6b7280"
+    end
+  end
+
+  def risk_status_badge_class(status)
+    case status.to_s
+    when "identified" then "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+    when "assessing" then "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+    when "mitigating" then "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+    when "monitored" then "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
+    when "closed" then "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+    else "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+    end
+  end
+
   def project_status_badge_class(status)
     case status.to_s
     when "on_track" then "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"

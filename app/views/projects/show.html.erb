@@ -48,12 +48,29 @@
     </div>
   </div>
 
-  <% if @project.members.any? %>
-    <div class="flex flex-wrap gap-2 mb-4">
-      <% @project.members.each do |member| %>
-        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
-          <%= member.name %>
-        </span>
+  <% if @project.project_members.includes(:user).any? %>
+    <div class="space-y-2 mb-4">
+      <% managers = @project.project_members.where(role: :manager).includes(:user) %>
+      <% if managers.any? %>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs text-gray-500 dark:text-gray-400 self-center"><%= t("projects.team.project_managers") %>:</span>
+          <% managers.each do |pm| %>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+              <%= pm.user.name %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+      <% members = @project.project_members.where(role: :member).includes(:user) %>
+      <% if members.any? %>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs text-gray-500 dark:text-gray-400 self-center"><%= t("projects.team.members") %>:</span>
+          <% members.each do |pm| %>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
+              <%= pm.user.name %>
+            </span>
+          <% end %>
+        </div>
       <% end %>
     </div>
   <% end %>
@@ -161,6 +178,37 @@
 <div class="mt-6">
   <%= render "projects/situation_panel", project: @project %>
 </div>
+
+<% if @project.risks.any? %>
+  <div class="mt-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= t("risks.title") %></h2>
+        <%= link_to organization_project_risks_path(@organization, @project), class: "text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+          <%= t("actions.view_all") %>
+        <% end %>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <% @project.risks.by_severity.limit(8).each do |risk| %>
+          <%= link_to [@organization, @project, risk], class: "block p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:hover:border-gray-600 dark:hover:bg-gray-700/50" do %>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate"><%= risk.name %></span>
+              <span class="text-xs font-semibold px-1.5 py-0.5 rounded <%= risk_severity_class(risk.severity_label) %>"><%= risk.severity %></span>
+            </div>
+            <span class="<%= risk_status_badge_class(risk.status) %> px-1.5 py-0.5 rounded-full text-[10px] font-medium"><%= t("risks.statuses.#{risk.status}") %></span>
+          <% end %>
+        <% end %>
+      </div>
+      <% if @project.risks.count > 8 %>
+        <div class="mt-3 text-center">
+          <%= link_to organization_project_risks_path(@organization, @project), class: "text-sm text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
+            <%= t("actions.view_all") %> (<%= @project.risks.count %>)
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 
 <div class="mt-6">
   <%= render "timeline", activities: @activity_logs %>

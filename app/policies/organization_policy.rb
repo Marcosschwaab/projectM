@@ -12,15 +12,15 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def update?
-    user.role_in(record).in?(%w[admin manager])
+    user.role_in(record).in?(%w[admin manager super_admin])
   end
 
   def destroy?
-    user.role_in(record) == "admin"
+    user.role_in(record).in?(%w[admin super_admin])
   end
 
   def manage_members?
-    user.role_in(record).in?(%w[admin manager])
+    user.role_in(record).in?(%w[admin manager super_admin])
   end
 
   class Scope < Scope

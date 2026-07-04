@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_03_042744) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -322,6 +322,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_042744) do
     t.index ["sponsor_id"], name: "index_projects_on_sponsor_id"
   end
 
+  create_table "risks", force: :cascade do |t|
+    t.text "contingency_plan"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.integer "impact", default: 1, null: false
+    t.text "mitigation_plan"
+    t.string "name", null: false
+    t.bigint "owner_id"
+    t.integer "probability", default: 1, null: false
+    t.bigint "project_id", null: false
+    t.string "status", default: "identified", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_risks_on_owner_id"
+    t.index ["project_id", "status"], name: "index_risks_on_project_id_and_status"
+    t.index ["project_id"], name: "index_risks_on_project_id"
+    t.index ["status"], name: "index_risks_on_status"
+  end
+
   create_table "strategic_canvases", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "goal"
@@ -482,6 +500,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_042744) do
   add_foreign_key "projects", "users", column: "assignee_id"
   add_foreign_key "projects", "users", column: "manager_id"
   add_foreign_key "projects", "users", column: "sponsor_id"
+  add_foreign_key "risks", "projects"
+  add_foreign_key "risks", "users", column: "owner_id"
   add_foreign_key "strategic_canvases", "projects"
   add_foreign_key "tags", "organizations"
   add_foreign_key "task_dependencies", "tasks"

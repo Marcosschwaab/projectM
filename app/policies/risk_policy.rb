@@ -1,10 +1,30 @@
-class StrategicCanvasPolicy < ApplicationPolicy
+class RiskPolicy < ApplicationPolicy
+  def index?
+    user.can_access_project?(record.project)
+  end
+
   def show?
     user.can_access_project?(record.project)
   end
 
+  def create?
+    super_admin? || org_admin_or_manager? || user.project_manager?(record.project)
+  end
+
+  def new?
+    create?
+  end
+
   def update?
-    user.can_access_project?(record.project)
+    super_admin? || org_admin_or_manager? || user.project_manager?(record.project)
+  end
+
+  def edit?
+    update?
+  end
+
+  def destroy?
+    super_admin? || org_admin?
   end
 
   class Scope < Scope

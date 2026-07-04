@@ -7,6 +7,7 @@ RSpec.describe "MyTasks", type: :request do
 
   before do
     create(:organization_membership, user: user, organization: organization, role: :member)
+    create(:project_member, user: user, project: project, role: :member)
     sign_in user
   end
 
@@ -26,6 +27,7 @@ RSpec.describe "MyTasks", type: :request do
 
     it "filters by project" do
       other_project = create(:project, organization: organization)
+      create(:project_member, user: user, project: other_project, role: :member)
       task_in_project = create(:task, project: project, assignee: user)
       task_in_other = create(:task, project: other_project, assignee: user)
       get my_tasks_path, params: { project_id: project.id }

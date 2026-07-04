@@ -1,0 +1,91 @@
+<%= render "shared/project_nav" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("risks.title") %></h1>
+  <%= link_to new_organization_project_risk_path(@organization, @project), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" do %>
+    + <%= t("risks.new") %>
+  <% end %>
+</div>
+
+<% if @risks.empty? %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center dark:bg-gray-800 dark:border-gray-700">
+    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    <p class="text-gray-500 mb-4 dark:text-gray-400"><%= t("risks.no_risks") %></p>
+    <%= link_to t("risks.new"), new_organization_project_risk_path(@organization, @project), class: "text-indigo-600 hover:text-indigo-700 font-medium dark:text-indigo-400 dark:hover:text-indigo-300" %>
+  </div>
+<% else %>
+  <%= form_with url: organization_project_risks_path(@organization, @project), method: :get, class: "mb-6" do |f| %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div>
+          <%= f.select :status, options_for_select(Risk::STATUSES.map { |s| [t("risks.statuses.#{s}"), s] }, params[:status]), { include_blank: t("tasks.filters.all_statuses") }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+        </div>
+        <div>
+          <span data-controller="searchable-select" data-searchable-select-placeholder-value="<%= t("tasks.search_members") %>">
+            <%= f.select :owner_id, options_from_collection_for_select(@organization.members, :id, :name, params[:owner_id]), { include_blank: t("risks.fields.owner") }, data: { searchable_select_target: "select" }, class: "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" %>
+          </span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 mt-3">
+        <%= f.submit t("actions.filter"), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        <%= link_to t("actions.clear"), organization_project_risks_path(@organization, @project), class: "px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700/50" %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= render "risk_matrix", risks: @risks %>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b border-gray-200 dark:border-gray-700">
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.fields.name") %></th>
+          <th class="text-center px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.probability") %></th>
+          <th class="text-center px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.impact") %></th>
+          <th class="text-center px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.severity") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.fields.status") %></th>
+          <th class="text-left px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("risks.fields.owner") %></th>
+          <th class="text-right px-5 py-3 text-xs font-semibold text-gray-600 dark:text-gray-400"><%= t("actions.edit") %></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+        <% @risks.each do |risk| %>
+          <tr class="hover:bg-gray-50/80 transition-colors dark:hover:bg-gray-700/30">
+            <td class="px-5 py-3.5">
+              <%= link_to [@organization, @project, risk], class: "text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-gray-100 dark:hover:text-indigo-400" do %>
+                <%= risk.name %>
+              <% end %>
+            </td>
+            <td class="px-5 py-3.5 text-center">
+              <% prob_color = risk.probability >= 4 ? "text-red-600 dark:text-red-400" : risk.probability >= 3 ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400" %>
+              <span class="text-sm font-semibold <%= prob_color %>"><%= risk.probability %></span>
+            </td>
+            <td class="px-5 py-3.5 text-center">
+              <% imp_color = risk.impact >= 4 ? "text-red-600 dark:text-red-400" : risk.impact >= 3 ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400" %>
+              <span class="text-sm font-semibold <%= imp_color %>"><%= risk.impact %></span>
+            </td>
+            <td class="px-5 py-3.5 text-center">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium <%= risk_severity_class(risk.severity_label) %>">
+                <%= t("risks.severity_levels.#{risk.severity_label}") %> (<%= risk.severity %>)
+              </span>
+            </td>
+            <td class="px-5 py-3.5">
+              <span class="<%= risk_status_badge_class(risk.status) %> px-2 py-0.5 rounded-full text-xs font-medium"><%= t("risks.statuses.#{risk.status}") %></span>
+            </td>
+            <td class="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400"><%= risk.owner&.name || "—" %></td>
+            <td class="px-5 py-3.5 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <%= link_to edit_organization_project_risk_path(@organization, @project, risk), class: "p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <% end %>
+                <%= button_to organization_project_risk_path(@organization, @project, risk), method: :delete, data: { turbo_confirm: t("risks.delete_confirm") }, class: "p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 cursor-pointer transition-colors" do %>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

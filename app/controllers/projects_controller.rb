@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = @organization.projects.build(project_params.except(:project_member_ids))
+    @project = @organization.projects.build(project_params.except(:project_member_ids, :project_manager_ids))
     authorize @project
     sync_project_members(@project)
 
@@ -64,7 +64,7 @@ class ProjectsController < ApplicationController
 
   def update
     authorize @project
-    @project.assign_attributes(project_params.except(:project_member_ids))
+    @project.assign_attributes(project_params.except(:project_member_ids, :project_manager_ids))
     sync_project_members(@project)
     if @project.save
       ActivityLog.create!(action: "updated project #{@project.name}", trackable: @project, user: current_user, organization: @organization, project: @project)
@@ -99,18 +99,33 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :description, :priority, :status, :assignee_id, :color, :icon, :start_date, :end_date, :category, :sponsor_id, :manager_id, :approval_all_team, :proposal_investment_estimated, :project_investment_estimated, :budget_estimated, :budget_actual, :return_estimated, :return_actual, approval_roles: [], project_member_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
+    params.require(:project).permit(:name, :description, :priority, :status, :assignee_id, :color, :icon, :start_date, :end_date, :category, :sponsor_id, :manager_id, :approval_all_team, :proposal_investment_estimated, :project_investment_estimated, :budget_estimated, :budget_actual, :return_estimated, :return_actual, approval_roles: [], project_member_ids: [], project_manager_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
   end
 
   def sync_project_members(project)
-    if params[:project][:project_member_ids].present?
-      user_ids = params[:project][:project_member_ids].reject(&:blank?).map(&:to_i)
-      existing_ids = project.project_members.pluck(:user_id)
-      to_add = user_ids - existing_ids
-      to_remove = existing_ids - user_ids
-      to_add.each { |uid| project.project_members.build(user_id: uid) }
-      project.project_members.where(user_id: to_remove).destroy_all
+    member_ids = (params.dig(:project, :project_member_ids) || []).reject(&:blank?).map(&:to_i)
+    manager_ids = (params.dig(:project, :project_manager_ids) || []).reject(&:blank?).map(&:to_i)
+    all_ids = member_ids + manager_ids
+
+    existing = project.project_members.includes(:user).index_by(&:user_id)
+
+    to_remove = existing.keys - all_ids
+    to_add_members = member_ids - existing.keys
+    to_add_managers = manager_ids - existing.keys
+
+    existing.each do |uid, pm|
+      next if to_remove.include?(uid)
+      if manager_ids.include?(uid) && pm.member?
+        pm.update_column(:role, "manager")
+      elsif member_ids.include?(uid) && pm.manager?
+        pm.update_column(:role, "member")
+      end
     end
+
+    to_add_members.each { |uid| project.project_members.build(user_id: uid, role: "member") }
+    to_add_managers.each { |uid| project.project_members.build(user_id: uid, role: "manager") }
+
+    project.project_members.where(user_id: to_remove).destroy_all
   end
 
   def status_gantt_color(status)

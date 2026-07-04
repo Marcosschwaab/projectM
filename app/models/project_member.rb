@@ -2,5 +2,8 @@ class ProjectMember < ApplicationRecord
   belongs_to :project
   belongs_to :user
 
+  enum :role, { member: "member", manager: "manager" }
+
+  validates :role, presence: true
   validates :user_id, uniqueness: { scope: :project_id, message: "is already a team member" }
 end

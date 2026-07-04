@@ -300,6 +300,9 @@ pt-BR:
       manager: "Gerente"
       responsible: "Responsável"
       members: "Membros da Equipe"
+      project_managers: "Gerentes do Projeto"
+      project_managers_hint: "Podem ver todos os projetos (somente leitura) e gerenciar completamente este projeto"
+      members_hint: "Podem acessar apenas este projeto"
     approval:
       title: "Configurações de Aprovação"
       hint: "Selecione quem pode aprovar itens do projeto:"
