@@ -1,4 +1,5 @@
-puts "Limpando dados existentes..."
+puts "Cleaning existing data..."
+# Delete in dependency order to avoid FK violations
 ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{[
   "webhook_deliveries", "webhooks",
   "notifications", "activity_logs",
@@ -9,80 +10,45 @@ ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{[
   "key_results", "objectives", "okr_cycles", "kpis",
   "project_members",
   "tasks",
-  "projects", "programs",
+  "projects",
   "custom_fields",
   "dashboard_widgets",
   "organization_memberships",
   "users"
 ].join(", ")} CASCADE")
 
-puts "Criando usuários..."
+puts "Creating users..."
 users = [
-  { name: "Alice Souza", email: "alice@example.com", password: "password123" },
-  { name: "Carlos Oliveira", email: "carlos@example.com", password: "password123" },
-  { name: "Fernanda Lima", email: "fernanda@example.com", password: "password123" },
-  { name: "Rafael Santos", email: "rafael@example.com", password: "password123" },
-  { name: "Juliana Costa", email: "juliana@example.com", password: "password123" },
-  { name: "Pedro Almeida", email: "pedro@example.com", password: "password123" },
-  { name: "Marina Barbosa", email: "marina@example.com", password: "password123" },
-  { name: "Thiago Pereira", email: "thiago@example.com", password: "password123" }
+  { name: "Alice Johnson", email: "alice@example.com", password: "password123" },
+  { name: "Bob Smith", email: "bob@example.com", password: "password123" },
+  { name: "Carol Williams", email: "carol@example.com", password: "password123" },
+  { name: "Dave Brown", email: "dave@example.com", password: "password123" },
+  { name: "Eve Davis", email: "eve@example.com", password: "password123" }
 ].map { |attrs| User.create!(attrs) }
 
-puts "Criando organização..."
-org = Organization.create!(name: "TechSolutions Brasil", description: "Empresa de tecnologia focada em transformação digital")
+puts "Creating organization..."
+org = Organization.create!(name: "Acme Corp", description: "A fictional company for demonstration purposes")
 
-puts "Adicionando membros..."
-alice, carlos, fernanda, rafael, juliana, pedro, marina, thiago = users
+puts "Adding members..."
+alice, bob, carol, dave, eve = users
 
 org.memberships.create!(user: alice, role: :admin)
-org.memberships.create!(user: carlos, role: :manager)
-org.memberships.create!(user: fernanda, role: :member)
-org.memberships.create!(user: rafael, role: :member)
-org.memberships.create!(user: juliana, role: :member)
-org.memberships.create!(user: pedro, role: :member)
-org.memberships.create!(user: marina, role: :member)
-org.memberships.create!(user: thiago, role: :member)
+org.memberships.create!(user: bob, role: :manager)
+org.memberships.create!(user: carol, role: :member)
+org.memberships.create!(user: dave, role: :member)
+org.memberships.create!(user: eve, role: :member)
 
-puts "Criando campos personalizados..."
-cf_text = org.custom_fields.create!(name: "Justificativa de Prioridade", field_type: "text", required: false)
-cf_risk = org.custom_fields.create!(name: "Nível de Risco", field_type: "select", options: %w[Baixo Médio Alto Crítico], required: true)
+puts "Creating custom fields..."
+cf_text = org.custom_fields.create!(name: "Priority Justification", field_type: "text", required: false)
+cf_risk = org.custom_fields.create!(name: "Risk Level", field_type: "select", options: %w[Low Medium High Critical], required: true)
 
-puts "Criando programas (portfólios)..."
-programas_data = [
-  {
-    name: "Transformação Digital",
-    description: "Iniciativas de modernização e transformação digital da empresa",
-    status: :on_track, color: "#6366f1",
-    start_date: Date.new(2026, 1, 1), end_date: Date.new(2026, 12, 31),
-    budget: 1_500_000
-  },
-  {
-    name: "Inovação em Produtos",
-    description: "Novos produtos e funcionalidades para expansão de mercado",
-    status: :at_risk, color: "#ef4444",
-    start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 11, 30),
-    budget: 2_200_000
-  },
-  {
-    name: "Infraestrutura & Qualidade",
-    description: "Melhorias de infraestrutura, segurança e qualidade de software",
-    status: :on_track, color: "#10b981",
-    start_date: Date.new(2026, 2, 1), end_date: Date.new(2026, 10, 31),
-    budget: 800_000
-  }
-]
-
-programas = programas_data.map { |attrs| org.programs.create!(attrs) }
-transformacao, inovacao, infraestrutura = programas
-
-puts "Criando projetos..."
+puts "Creating projects..."
 projects_data = [
   {
-    name: "Redesign do Site Institucional",
-    description: "Modernização completa do site da empresa com design system próprio",
+    name: "Website Redesign",
+    description: "Complete overhaul of the company website with modern design principles",
     priority: :high, status: :on_track, color: "#6366f1", icon: "globe",
-    assignee: alice, category: "software", sponsor: carlos, manager: fernanda,
-    program: transformacao,
+    assignee: alice, category: "software", sponsor: bob, manager: carol,
     approval_roles: ["sponsor", "manager"], approval_all_team: false,
     start_date: Date.new(2026, 5, 1), end_date: Date.new(2026, 8, 31),
     proposal_investment_estimated: 50_000, project_investment_estimated: 45_000,
@@ -90,11 +56,10 @@ projects_data = [
     return_estimated: 80_000, return_actual: 0
   },
   {
-    name: "Aplicativo Mobile v2",
-    description: "Nova versão do aplicativo com funcionalidades offline e modo escuro",
+    name: "Mobile App v2",
+    description: "Version 2 of the mobile application with new features",
     priority: :urgent, status: :at_risk, color: "#ef4444", icon: "smartphone",
-    assignee: carlos, category: "software", sponsor: alice, manager: rafael,
-    program: inovacao,
+    assignee: bob, category: "software", sponsor: alice, manager: dave,
     approval_roles: ["sponsor", "manager", "responsible"], approval_all_team: false,
     start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 7, 15),
     proposal_investment_estimated: 120_000, project_investment_estimated: 100_000,
@@ -102,11 +67,10 @@ projects_data = [
     return_estimated: 200_000, return_actual: 15_000
   },
   {
-    name: "Migração para Nuvem",
-    description: "Migração de dados legados para infraestrutura cloud-native",
+    name: "Data Migration",
+    description: "Migrate legacy data to new cloud infrastructure",
     priority: :medium, status: :on_track, color: "#f59e0b", icon: "database",
-    assignee: fernanda, category: "infrastructure", sponsor: alice, manager: carlos,
-    program: infraestrutura,
+    assignee: carol, category: "infrastructure", sponsor: alice, manager: bob,
     approval_roles: ["manager"], approval_all_team: true,
     start_date: Date.new(2026, 6, 1), end_date: Date.new(2026, 9, 30),
     proposal_investment_estimated: 30_000, project_investment_estimated: 28_000,
@@ -114,11 +78,10 @@ projects_data = [
     return_estimated: 50_000, return_actual: 0
   },
   {
-    name: "Integração com APIs",
-    description: "Integrações com gateways de pagamento e plataformas de analytics",
+    name: "API Integration",
+    description: "Third-party API integrations for payment and analytics",
     priority: :high, status: :behind, color: "#10b981", icon: "link",
-    assignee: rafael, category: "software", sponsor: alice, manager: juliana,
-    program: inovacao,
+    assignee: dave, category: "software", sponsor: alice, manager: eve,
     approval_roles: [], approval_all_team: true,
     start_date: Date.new(2026, 4, 15), end_date: Date.new(2026, 7, 1),
     proposal_investment_estimated: 15_000, project_investment_estimated: 15_000,
@@ -126,11 +89,10 @@ projects_data = [
     return_estimated: 30_000, return_actual: 5_000
   },
   {
-    name: "Ferramentas Internas",
-    description: "Desenvolvimento de ferramentas para a equipe de operações",
+    name: "Internal Tools",
+    description: "Build internal tooling for operations team",
     priority: :low, status: :on_hold, color: "#8b5cf6", icon: "wrench",
-    assignee: juliana, category: "other", sponsor: nil, manager: alice,
-    program: transformacao,
+    assignee: eve, category: "other", sponsor: nil, manager: alice,
     approval_roles: ["responsible"], approval_all_team: false,
     start_date: Date.new(2026, 7, 1), end_date: Date.new(2026, 10, 31),
     proposal_investment_estimated: 0, project_investment_estimated: 0,
@@ -138,121 +100,67 @@ projects_data = [
     return_estimated: 0, return_actual: 0
   },
   {
-    name: "Auditoria de Segurança",
-    description: "Auditoria completa de segurança e testes de penetração",
+    name: "Security Audit",
+    description: "Comprehensive security audit and penetration testing",
     priority: :urgent, status: :completed, color: "#06b6d4", icon: "shield",
-    assignee: alice, category: "business", sponsor: carlos, manager: fernanda,
-    program: infraestrutura,
+    assignee: alice, category: "business", sponsor: bob, manager: carol,
     approval_roles: ["sponsor", "manager", "responsible"], approval_all_team: false,
     start_date: Date.new(2026, 1, 10), end_date: Date.new(2026, 3, 20),
     proposal_investment_estimated: 25_000, project_investment_estimated: 22_000,
     budget_estimated: 22_000, budget_actual: 21_500,
     return_estimated: 60_000, return_actual: 60_000
-  },
-  {
-    name: "Plataforma de E-commerce",
-    description: "Nova plataforma de e-commerce B2B com catálogo dinâmico",
-    priority: :high, status: :on_track, color: "#f97316", icon: "shopping-cart",
-    assignee: pedro, category: "software", sponsor: alice, manager: carlos,
-    program: inovacao,
-    approval_roles: ["sponsor", "responsible"], approval_all_team: false,
-    start_date: Date.new(2026, 4, 1), end_date: Date.new(2026, 9, 30),
-    proposal_investment_estimated: 200_000, project_investment_estimated: 180_000,
-    budget_estimated: 180_000, budget_actual: 95_000,
-    return_estimated: 350_000, return_actual: 20_000
-  },
-  {
-    name: "Monitoramento & Observabilidade",
-    description: "Implementação de stack de monitoramento com dashboards em tempo real",
-    priority: :medium, status: :behind, color: "#14b8a6", icon: "activity",
-    assignee: marina, category: "infrastructure", sponsor: carlos, manager: rafael,
-    program: infraestrutura,
-    approval_roles: ["manager", "responsible"], approval_all_team: false,
-    start_date: Date.new(2026, 5, 15), end_date: Date.new(2026, 8, 15),
-    proposal_investment_estimated: 40_000, project_investment_estimated: 35_000,
-    budget_estimated: 35_000, budget_actual: 8_000,
-    return_estimated: 60_000, return_actual: 0
-  },
-  {
-    name: "Treinamento & Documentação",
-    description: "Criação de trilhas de aprendizado e documentação técnica",
-    priority: :low, status: :on_hold, color: "#a855f7", icon: "book",
-    assignee: thiago, category: "business", sponsor: alice, manager: juliana,
-    program: transformacao,
-    approval_roles: ["manager"], approval_all_team: true,
-    start_date: Date.new(2026, 8, 1), end_date: Date.new(2026, 11, 30),
-    proposal_investment_estimated: 10_000, project_investment_estimated: 10_000,
-    budget_estimated: 10_000, budget_actual: 0,
-    return_estimated: 15_000, return_actual: 0
   }
 ]
 
 projects = projects_data.map do |attrs|
   p = org.projects.create!(attrs)
-
-  # Criar project members com roles variados
-  all_members = org.members.where.not(id: [p.assignee_id, p.sponsor_id, p.manager_id].compact)
-  eligible_managers = all_members.to_a.sample(rand(1..2))
-  eligible_members = (all_members - eligible_managers).sample(rand(1..3))
-
-  eligible_managers.each { |m| p.project_members.create!(user: m, role: :manager) }
-  eligible_members.each { |m| p.project_members.create!(user: m, role: :member) }
-
-  p.custom_field_values.create!(custom_field: cf_text, value: "Iniciativa estratégica para #{p.program&.name&.downcase || 'crescimento'}")
-  p.custom_field_values.create!(custom_field: cf_risk, value: %w[Baixo Médio Alto Crítico].sample)
+  # Add team members
+  org.members.where.not(id: [p.assignee_id, p.sponsor_id, p.manager_id].compact).sample(2).each do |member|
+    p.project_members.create!(user: member)
+  end
+  # Custom field values
+  p.custom_field_values.create!(custom_field: cf_text, value: "Strategic initiative for Q3 growth")
+  p.custom_field_values.create!(custom_field: cf_risk, value: "Medium")
   p
 end
 
-puts "Criando tarefas..."
+puts "Creating tasks with estimated hours..."
 tasks_data = [
-  { title: "Criar mockup da homepage", project: projects[0], assignee: alice, priority: :high, status: :done, estimated_hours: 16, due_date: Date.new(2026, 5, 15) },
-  { title: "Implementar navegação responsiva", project: projects[0], assignee: carlos, priority: :high, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 6, 10) },
-  { title: "Criar formulário de contato", project: projects[0], assignee: fernanda, priority: :medium, status: :todo, estimated_hours: 8, due_date: Date.new(2026, 7, 1) },
-  { title: "Otimizar imagens", project: projects[0], assignee: rafael, priority: :low, status: :backlog, estimated_hours: 4, due_date: Date.new(2026, 7, 15) },
-  { title: "Melhorias de SEO", project: projects[0], assignee: juliana, priority: :medium, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 9, 1) },
+  { title: "Design homepage mockup", project: projects[0], assignee: alice, priority: :high, status: :done, estimated_hours: 16, due_date: Date.new(2026, 5, 15) },
+  { title: "Implement responsive navigation", project: projects[0], assignee: bob, priority: :high, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 6, 10) },
+  { title: "Create contact form", project: projects[0], assignee: carol, priority: :medium, status: :todo, estimated_hours: 8, due_date: Date.new(2026, 7, 1) },
+  { title: "Optimize images", project: projects[0], assignee: dave, priority: :low, status: :backlog, estimated_hours: 4, due_date: Date.new(2026, 7, 15) },
+  { title: "SEO improvements", project: projects[0], assignee: eve, priority: :medium, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 9, 1) },
 
-  { title: "Configurar pipeline CI/CD", project: projects[1], assignee: alice, priority: :urgent, status: :in_progress, estimated_hours: 20, due_date: Date.new(2026, 6, 20) },
-  { title: "Implementar notificações push", project: projects[1], assignee: carlos, priority: :high, status: :in_review, estimated_hours: 32, due_date: Date.new(2026, 7, 5) },
-  { title: "Adicionar suporte a modo escuro", project: projects[1], assignee: fernanda, priority: :medium, status: :todo, estimated_hours: 16, due_date: Date.new(2026, 8, 1) },
-  { title: "Otimização de performance", project: projects[1], assignee: rafael, priority: :high, status: :backlog, estimated_hours: 24, due_date: Date.new(2026, 9, 10) },
-  { title: "Suporte offline", project: projects[1], assignee: juliana, priority: :medium, status: :backlog, estimated_hours: 40, due_date: Date.new(2026, 10, 1) },
+  { title: "Setup CI/CD pipeline", project: projects[1], assignee: alice, priority: :urgent, status: :in_progress, estimated_hours: 20, due_date: Date.new(2026, 6, 20) },
+  { title: "Implement push notifications", project: projects[1], assignee: bob, priority: :high, status: :in_review, estimated_hours: 32, due_date: Date.new(2026, 7, 5) },
+  { title: "Add dark mode support", project: projects[1], assignee: carol, priority: :medium, status: :todo, estimated_hours: 16, due_date: Date.new(2026, 8, 1) },
+  { title: "Performance optimization", project: projects[1], assignee: dave, priority: :high, status: :backlog, estimated_hours: 24, due_date: Date.new(2026, 9, 10) },
+  { title: "Offline mode support", project: projects[1], assignee: eve, priority: :medium, status: :backlog, estimated_hours: 40, due_date: Date.new(2026, 10, 1) },
 
-  { title: "Exportar dados legados", project: projects[2], assignee: fernanda, priority: :medium, status: :done, estimated_hours: 40, due_date: Date.new(2026, 6, 30) },
-  { title: "Validar integridade dos dados", project: projects[2], assignee: alice, priority: :high, status: :in_progress, estimated_hours: 16, due_date: Date.new(2026, 7, 15) },
-  { title: "Transformar formato dos dados", project: projects[2], assignee: carlos, priority: :high, status: :todo, estimated_hours: 24, due_date: Date.new(2026, 8, 10) },
-  { title: "Carregar dados na nuvem", project: projects[2], assignee: rafael, priority: :high, status: :backlog, estimated_hours: 32, due_date: Date.new(2026, 9, 5) },
-  { title: "Verificar completude da migração", project: projects[2], assignee: juliana, priority: :medium, status: :backlog, estimated_hours: 8, due_date: Date.new(2026, 10, 1) },
+  { title: "Export legacy data", project: projects[2], assignee: carol, priority: :medium, status: :done, estimated_hours: 40, due_date: Date.new(2026, 6, 30) },
+  { title: "Validate data integrity", project: projects[2], assignee: alice, priority: :high, status: :in_progress, estimated_hours: 16, due_date: Date.new(2026, 7, 15) },
+  { title: "Transform data format", project: projects[2], assignee: bob, priority: :high, status: :todo, estimated_hours: 24, due_date: Date.new(2026, 8, 10) },
+  { title: "Load data to cloud", project: projects[2], assignee: dave, priority: :high, status: :backlog, estimated_hours: 32, due_date: Date.new(2026, 9, 5) },
+  { title: "Verify migration completeness", project: projects[2], assignee: eve, priority: :medium, status: :backlog, estimated_hours: 8, due_date: Date.new(2026, 10, 1) },
 
-  { title: "Configurar integração Stripe", project: projects[3], assignee: rafael, priority: :high, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 6, 15) },
-  { title: "Configurar SDK de analytics", project: projects[3], assignee: juliana, priority: :medium, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 6, 28) },
-  { title: "Testar webhooks de pagamento", project: projects[3], assignee: alice, priority: :high, status: :todo, estimated_hours: 8, due_date: Date.new(2026, 7, 5) },
-  { title: "Documentar APIs", project: projects[3], assignee: carlos, priority: :low, status: :backlog, estimated_hours: 6, due_date: Date.new(2026, 7, 20) },
+  { title: "Setup Stripe integration", project: projects[3], assignee: dave, priority: :high, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 6, 15) },
+  { title: "Configure analytics SDK", project: projects[3], assignee: eve, priority: :medium, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 6, 28) },
+  { title: "Test payment webhooks", project: projects[3], assignee: alice, priority: :high, status: :todo, estimated_hours: 8, due_date: Date.new(2026, 7, 5) },
+  { title: "Build API documentation", project: projects[3], assignee: bob, priority: :low, status: :backlog, estimated_hours: 6, due_date: Date.new(2026, 7, 20) },
 
-  { title: "Criar dashboard de deploys", project: projects[4], assignee: juliana, priority: :low, status: :todo, estimated_hours: 20, due_date: Date.new(2026, 9, 1) },
-  { title: "Configurar alertas de monitoramento", project: projects[4], assignee: alice, priority: :low, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 10, 15) },
+  { title: "Build deployment dashboard", project: projects[4], assignee: eve, priority: :low, status: :todo, estimated_hours: 20, due_date: Date.new(2026, 9, 1) },
+  { title: "Create monitoring alerts", project: projects[4], assignee: alice, priority: :low, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 10, 15) },
 
-  { title: "Executar varredura de vulnerabilidades", project: projects[5], assignee: alice, priority: :urgent, status: :done, estimated_hours: 8, due_date: Date.new(2026, 1, 25) },
-  { title: "Revisar controles de acesso", project: projects[5], assignee: carlos, priority: :urgent, status: :done, estimated_hours: 12, due_date: Date.new(2026, 2, 10) },
-  { title: "Testes de penetração", project: projects[5], assignee: fernanda, priority: :urgent, status: :done, estimated_hours: 24, due_date: Date.new(2026, 3, 1) },
-  { title: "Plano de remediação", project: projects[5], assignee: rafael, priority: :urgent, status: :done, estimated_hours: 16, due_date: Date.new(2026, 3, 15) },
-
-  { title: "Modelar catálogo de produtos", project: projects[6], assignee: pedro, priority: :high, status: :done, estimated_hours: 32, due_date: Date.new(2026, 5, 15) },
-  { title: "Implementar carrinho de compras", project: projects[6], assignee: marina, priority: :high, status: :in_progress, estimated_hours: 40, due_date: Date.new(2026, 6, 30) },
-  { title: "Integrar gateway de pagamento", project: projects[6], assignee: thiago, priority: :urgent, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 7, 15) },
-  { title: "Desenvolver painel do vendedor", project: projects[6], assignee: alice, priority: :medium, status: :todo, estimated_hours: 30, due_date: Date.new(2026, 8, 15) },
-
-  { title: "Configurar Prometheus + Grafana", project: projects[7], assignee: marina, priority: :high, status: :in_progress, estimated_hours: 24, due_date: Date.new(2026, 6, 20) },
-  { title: "Criar dashboards operacionais", project: projects[7], assignee: thiago, priority: :medium, status: :todo, estimated_hours: 16, due_date: Date.new(2026, 7, 10) },
-  { title: "Configurar alertas automáticos", project: projects[7], assignee: pedro, priority: :high, status: :backlog, estimated_hours: 12, due_date: Date.new(2026, 7, 30) },
-
-  { title: "Criar trilha de onboarding", project: projects[8], assignee: thiago, priority: :medium, status: :todo, estimated_hours: 20, due_date: Date.new(2026, 9, 1) },
-  { title: "Documentar arquitetura do sistema", project: projects[8], assignee: juliana, priority: :low, status: :backlog, estimated_hours: 16, due_date: Date.new(2026, 10, 15) },
-  { title: "Gravar video-tutoriais", project: projects[8], assignee: pedro, priority: :low, status: :backlog, estimated_hours: 24, due_date: Date.new(2026, 11, 1) }
+  { title: "Run vulnerability scan", project: projects[5], assignee: alice, priority: :urgent, status: :done, estimated_hours: 8, due_date: Date.new(2026, 1, 25) },
+  { title: "Review access controls", project: projects[5], assignee: bob, priority: :urgent, status: :done, estimated_hours: 12, due_date: Date.new(2026, 2, 10) },
+  { title: "Penetration testing", project: projects[5], assignee: carol, priority: :urgent, status: :done, estimated_hours: 24, due_date: Date.new(2026, 3, 1) },
+  { title: "Remediation plan", project: projects[5], assignee: dave, priority: :urgent, status: :done, estimated_hours: 16, due_date: Date.new(2026, 3, 15) }
 ]
 
 tasks = tasks_data.map { |attrs| Task.create!(attrs) }
 
-puts "Atualizando progresso das tarefas..."
+puts "Updating task progress based on status..."
 tasks.each do |task|
   case task.status
   when "done" then task.update_column(:progress, 100)
@@ -263,50 +171,51 @@ tasks.each do |task|
   end
 end
 
-puts "Criando dependências entre tarefas..."
+puts "Setting task dependencies..."
+# Website Redesign: contact form depends on navigation
 tasks[2].dependencies << tasks[1]
+# Mobile App: dark mode depends on CI/CD; offline depends on performance
 tasks[7].dependencies << tasks[5]
 tasks[9].dependencies << tasks[8]
+# Data Migration: transform depends on export; load depends on transform; verify depends on load
 tasks[12].dependencies << tasks[10]
 tasks[13].dependencies << tasks[12]
 tasks[14].dependencies << tasks[13]
+# API: webhooks depend on stripe; docs depend on webhooks
 tasks[17].dependencies << tasks[15]
 tasks[18].dependencies << tasks[17]
+# Security: penetration depends on vuln scan; remediation depends on penetration
 tasks[22].dependencies << tasks[20]
 tasks[23].dependencies << tasks[22]
-tasks[26].dependencies << tasks[25]
-tasks[27].dependencies << tasks[26]
 
-puts "Criando apontamentos de horas..."
-TimeEntry.create!(task: tasks[0], user: alice, duration: 14, started_at: 2.days.ago.change(hour: 9), description: "Layout da homepage")
-TimeEntry.create!(task: tasks[0], user: alice, duration: 120, started_at: 1.day.ago.change(hour: 10), description: "Refinamento do mockup")
-TimeEntry.create!(task: tasks[1], user: carlos, duration: 480, started_at: 3.days.ago.change(hour: 8), description: "Implementação da navegação")
-TimeEntry.create!(task: tasks[5], user: alice, duration: 360, started_at: 5.days.ago.change(hour: 9), description: "Setup do CI/CD")
-TimeEntry.create!(task: tasks[6], user: carlos, duration: 240, started_at: 4.days.ago.change(hour: 14), description: "Serviço de notificações push")
-TimeEntry.create!(task: tasks[10], user: fernanda, duration: 600, started_at: 7.days.ago.change(hour: 8), description: "Scripts de exportação")
-TimeEntry.create!(task: tasks[11], user: alice, duration: 120, started_at: 1.day.ago.change(hour: 13), description: "Validação de dados")
-TimeEntry.create!(task: tasks[15], user: rafael, duration: 360, started_at: 2.days.ago.change(hour: 9), description: "Setup Stripe")
-TimeEntry.create!(task: tasks[25], user: pedro, duration: 480, started_at: 3.days.ago.change(hour: 8), description: "Modelagem do catálogo")
-TimeEntry.create!(task: tasks[26], user: marina, duration: 300, started_at: 1.day.ago.change(hour: 10), description: "Implementação do carrinho")
-TimeEntry.create!(task: tasks[27], user: thiago, duration: 180, started_at: 12.hours.ago.change(hour: 14), description: "Integração com gateway")
+puts "Adding time entries (for IDC/IDP calculation)..."
+TimeEntry.create!(task: tasks[0], user: alice, duration: 14, started_at: 2.days.ago.change(hour: 9), description: "Homepage layout design")
+TimeEntry.create!(task: tasks[0], user: alice, duration: 120, started_at: 1.day.ago.change(hour: 10), description: "Homepage mockup refinement")
+TimeEntry.create!(task: tasks[1], user: bob, duration: 480, started_at: 3.days.ago.change(hour: 8), description: "Navigation implementation")
+TimeEntry.create!(task: tasks[5], user: alice, duration: 360, started_at: 5.days.ago.change(hour: 9), description: "CI/CD pipeline setup")
+TimeEntry.create!(task: tasks[6], user: bob, duration: 240, started_at: 4.days.ago.change(hour: 14), description: "Push notification service")
+TimeEntry.create!(task: tasks[10], user: carol, duration: 600, started_at: 7.days.ago.change(hour: 8), description: "Legacy data export scripts")
+TimeEntry.create!(task: tasks[11], user: alice, duration: 120, started_at: 1.day.ago.change(hour: 13), description: "Data validation queries")
+TimeEntry.create!(task: tasks[15], user: dave, duration: 360, started_at: 2.days.ago.change(hour: 9), description: "Stripe API setup")
 
-puts "Criando matrizes..."
-matrix = projects[0].project_matrices.create!(name: "Matriz RACI")
+puts "Creating matrices (EAP diagram alternative)..."
+matrix = projects[0].project_matrices.create!(name: "RACI Matrix")
 cols = ["Engenharia", "Design", "Produto", "Marketing"]
 rows = ["HTML/CSS", "Componentes JS", "Testes", "Deploy", "SEO"]
 
 cols.each_with_index { |name, i| matrix.matrix_columns.create!(name: name, position: i) }
 rows.each_with_index { |name, i| matrix.matrix_rows.create!(name: name, position: i) }
 
+# Populate cells
 matrix.matrix_rows.each do |row|
   matrix.matrix_columns.each do |col|
     MatrixCell.create!(matrix_column: col, matrix_row: row, value: %w[R A C I].sample)
   end
 end
 
-matrix2 = projects[1].project_matrices.create!(name: "Matriz de Prioridades")
+matrix2 = projects[1].project_matrices.create!(name: "Feature Priority Matrix")
 cols2 = ["Impacto", "Esforço", "Risco", "Prioridade"]
-rows2 = ["Notificações Push", "Modo Escuro", "Modo Offline", "CI/CD", "Performance"]
+rows2 = ["Push Notifications", "Dark Mode", "Offline Mode", "CI/CD", "Performance"]
 
 cols2.each_with_index { |name, i| matrix2.matrix_columns.create!(name: name, position: i) }
 rows2.each_with_index { |name, i| matrix2.matrix_rows.create!(name: name, position: i) }
@@ -323,125 +232,112 @@ matrix2.matrix_rows.each do |row|
   end
 end
 
-puts "Criando tags..."
-tags = %w[frontend backend infraestrutura seguranca documentacao mobile ux performance].map do |name|
+puts "Creating tags..."
+tags = %w[frontend backend infrastructure security documentation].map do |name|
   org.tags.create!(name: name, color: "##{SecureRandom.hex(3)}")
 end
 
-puts "Adicionando tags às tarefas..."
-tasks.sample(15).each do |task|
+puts "Tagging tasks..."
+tasks.sample(10).each do |task|
   task.tags << tags.sample(rand(1..3))
 end
 
-puts "Criando checklists e comentários..."
+puts "Adding checklist items and comments..."
 tasks.each do |task|
   3.times do |i|
-    task.checklist_items.create!(content: ["Pesquisar requisitos", "Implementar solução", "Revisar e testar", "Fazer deploy"][i], completed: [true, false].sample)
+    task.checklist_items.create!(content: ["Research requirements", "Implement solution", "Review and test", "Deploy to production"][i], completed: [true, false].sample)
   end
   users.sample(2).each do |user|
-    task.comments.create!(content: "Comentário sobre #{task.title} por #{user.name}", user: user)
+    task.comments.create!(content: "Comment about #{task.title} from #{user.name}", user: user)
   end
 end
 
-puts "Criando ciclo OKR..."
+puts "Creating OKR cycle..."
 cycle = org.okr_cycles.create!(title: "Q3 2026", start_date: Date.new(2026, 7, 1), end_date: Date.new(2026, 9, 30), status: :active)
 
-puts "Criando objetivos..."
+puts "Creating objectives..."
 objectives = [
-  cycle.objectives.create!(title: "Melhorar qualidade do produto", owner: alice, project: projects[0]),
-  cycle.objectives.create!(title: "Aumentar satisfação do cliente", owner: carlos, project: projects[3]),
-  cycle.objectives.create!(title: "Acelerar velocidade de entrega", owner: fernanda, project: projects[1]),
-  cycle.objectives.create!(title: "Expandir presença digital", owner: pedro, project: projects[6])
+  cycle.objectives.create!(title: "Improve product quality", owner: alice, project: projects[0]),
+  cycle.objectives.create!(title: "Increase customer satisfaction", owner: bob, project: projects[3]),
+  cycle.objectives.create!(title: "Accelerate delivery speed", owner: carol, project: projects[1])
 ]
 
-puts "Criando key results..."
+puts "Creating key results..."
 key_results_data = [
-  { objective: objectives[0], title: "Reduzir taxa de bugs em 50%", target_value: 50, current_value: 35, unit: "%" },
-  { objective: objectives[0], title: "Atingir 95% de cobertura de testes", target_value: 95, current_value: 82, unit: "%" },
-  { objective: objectives[1], title: "Aumentar NPS para 60", target_value: 60, current_value: 45, unit: "pontos" },
-  { objective: objectives[1], title: "Reduzir tickets de suporte em 30%", target_value: 30, current_value: 20, unit: "%" },
-  { objective: objectives[2], title: "Entregar releases semanais", target_value: 12, current_value: 8, unit: "releases" },
-  { objective: objectives[2], title: "Reduzir tempo de ciclo para 2 semanas", target_value: 14, current_value: 18, unit: "dias" },
-  { objective: objectives[3], title: "Lançar em 3 novos estados", target_value: 3, current_value: 1, unit: "estados" },
-  { objective: objectives[3], title: "Atingir 10k pedidos no primeiro mês", target_value: 10_000, current_value: 0, unit: "pedidos" }
+  { objective: objectives[0], title: "Reduce bug rate by 50%", target_value: 50, current_value: 35, unit: "%" },
+  { objective: objectives[0], title: "Achieve 95% test coverage", target_value: 95, current_value: 82, unit: "%" },
+  { objective: objectives[1], title: "Increase NPS score to 60", target_value: 60, current_value: 45, unit: "points" },
+  { objective: objectives[1], title: "Reduce support tickets by 30%", target_value: 30, current_value: 20, unit: "%" },
+  { objective: objectives[2], title: "Deploy weekly releases", target_value: 12, current_value: 8, unit: "releases" },
+  { objective: objectives[2], title: "Reduce cycle time to 2 weeks", target_value: 14, current_value: 18, unit: "days" }
 ]
 
 key_results_data.each { |attrs| KeyResult.create!(attrs) }
 
-puts "Criando strategic canvas..."
+puts "Creating strategic canvas..."
 projects.each do |project|
   StrategicCanvas.create!(
     project: project,
-    problem: "Necessidade de melhorar #{project.name.downcase} para atender às demandas do mercado",
-    goal: "Entregar #{project.name} com excelência e alto padrão de qualidade",
-    value_proposition: "Processos otimizados e melhor experiência do usuário",
-    stakeholders: "Times de Engenharia, Design, Produto e Marketing",
-    team: "#{project.assignee&.name || 'A definir'} (líder), equipe multifuncional",
-    metrics: "Taxa de conclusão, satisfação do usuário, benchmarks de performance",
-    risks: "Restrições de recursos, pressão de prazos, dívida técnica",
-    resources: "Tempo de engenharia, ferramentas de design, infraestrutura cloud",
-    roadmap: "Fase 1: Planejamento, Fase 2: Desenvolvimento, Fase 3: Testes, Fase 4: Lançamento",
-    next_steps: "Reunião de kick-off, distribuir tarefas, configurar quadro do projeto"
+    problem: "Need to improve #{project.name.downcase} to meet evolving market demands",
+    goal: "Successfully deliver #{project.name} with high quality standards",
+    value_proposition: "Streamlined processes and better user experience",
+    stakeholders: "Engineering, Design, Product, Marketing teams",
+    team: "#{project.assignee&.name || 'TBD'} (lead), cross-functional team",
+    metrics: "Completion rate, user satisfaction, performance benchmarks",
+    risks: "Resource constraints, timeline pressure, technical debt",
+    resources: "Engineering time, design tools, cloud infrastructure",
+    roadmap: "Phase 1: Planning, Phase 2: Development, Phase 3: Testing, Phase 4: Launch",
+    next_steps: "Kick-off meeting, assign tasks, set up project board"
   )
 end
 
-puts "Criando KPIs..."
+puts "Creating KPIs..."
 kpi_data = [
-  { name: "NPS do Cliente", description: "Net Promoter Score das pesquisas de satisfação", category: :strategic, frequency: :monthly, target_value: 70, current_value: 52, unit: "pontos", owner: carlos },
-  { name: "Cadência de Releases", description: "Número de releases em produção por mês", category: :operational, frequency: :monthly, target_value: 8, current_value: 5, unit: "releases", owner: fernanda },
-  { name: "Taxa de Correção de Bugs", description: "Percentual de bugs corrigidos dentro do SLA", category: :quality, frequency: :weekly, target_value: 95, current_value: 87, unit: "%", owner: alice, project: projects[0] },
-  { name: "Cobertura de Testes", description: "Percentual de cobertura de código por testes", category: :quality, frequency: :monthly, target_value: 90, current_value: 78, unit: "%", owner: alice, project: projects[0] },
-  { name: "Taxa de Crash Mobile", description: "Taxa de crash do app a cada 1000 sessões", category: :quality, frequency: :weekly, target_value: 0.1, current_value: 0.3, unit: "%", owner: carlos, project: projects[1] },
-  { name: "Progresso da Migração", description: "Percentual de registros migrados para a nuvem", category: :project, frequency: :weekly, target_value: 100, current_value: 65, unit: "%", owner: fernanda, project: projects[2] },
-  { name: "Receita Recorrente Mensal", description: "Acompanhamento do MRR", category: :financial, frequency: :monthly, target_value: 150_000, current_value: 120_000, unit: "R$", owner: alice },
-  { name: "Conversão de Vendas", description: "Taxa de conversão do e-commerce", category: :strategic, frequency: :weekly, target_value: 5, current_value: 2.8, unit: "%", owner: pedro, project: projects[6] }
+  { name: "Customer NPS", description: "Net Promoter Score from customer surveys", category: :strategic, frequency: :monthly, target_value: 70, current_value: 52, unit: "points", owner: bob },
+  { name: "Release Cadence", description: "Number of production releases per month", category: :operational, frequency: :monthly, target_value: 8, current_value: 5, unit: "releases", owner: carol },
+  { name: "Bug Fix Rate", description: "Percentage of reported bugs resolved within SLA", category: :quality, frequency: :weekly, target_value: 95, current_value: 87, unit: "%", owner: alice, project: projects[0] },
+  { name: "Test Coverage", description: "Code test coverage percentage", category: :quality, frequency: :monthly, target_value: 90, current_value: 78, unit: "%", owner: alice, project: projects[0] },
+  { name: "Mobile Crash Rate", description: "App crash rate per 1000 sessions", category: :quality, frequency: :weekly, target_value: 0.1, current_value: 0.3, unit: "%", owner: bob, project: projects[1] },
+  { name: "Data Migration Progress", description: "Percentage of records migrated", category: :project, frequency: :weekly, target_value: 100, current_value: 65, unit: "%", owner: carol, project: projects[2] },
+  { name: "Monthly Recurring Revenue", description: "Track MRR growth", category: :financial, frequency: :monthly, target_value: 150_000, current_value: 120_000, unit: "$", owner: alice }
 ]
 
-kpi_data.each { |attrs| org.kpis.create!(attrs) }
+kpi_data.each do |attrs|
+  org.kpis.create!(attrs)
+end
 
-puts "Criando webhooks..."
+puts "Creating webhooks..."
 webhook = org.webhooks.create!(
-  name: "Notificador Slack",
-  url: "https://hooks.slack.com/services/T00/B00/exemplo",
+  name: "Slack Notifier",
+  url: "https://hooks.slack.com/services/T00/B00/example",
   events: ["task.created", "task.updated", "comment.created"],
   active: true
 )
 webhook.deliveries.create!(status: "success", response: "200 OK")
 webhook.deliveries.create!(status: "success", response: "200 OK")
-webhook.deliveries.create!(status: "failed", response: "500 Erro Interno", error: "Timeout de conexão")
+webhook.deliveries.create!(status: "failed", response: "500 Internal Server Error", error: "Connection timeout")
 
-puts "Criando notificações..."
-alice.notifications.create!(action: "task_assigned", notifiable: tasks[0], actor: carlos, organization: org, created_at: 1.hour.ago)
-alice.notifications.create!(action: "task_commented", notifiable: tasks[1], actor: fernanda, organization: org, created_at: 3.hours.ago)
-carlos.notifications.create!(action: "task_moved", notifiable: tasks[4], actor: alice, organization: org, created_at: 6.hours.ago)
-fernanda.notifications.create!(action: "task_assigned", notifiable: tasks[2], actor: alice, organization: org, created_at: 1.day.ago)
-alice.notifications.create!(action: "task_assigned", notifiable: tasks[3], actor: rafael, organization: org, created_at: 2.days.ago, read: true, read_at: 1.day.ago)
-alice.notifications.create!(action: "task_commented", notifiable: tasks[0], actor: juliana, organization: org, created_at: 3.days.ago, read: true, read_at: 2.days.ago)
-pedro.notifications.create!(action: "task_assigned", notifiable: tasks[25], actor: alice, organization: org, created_at: 30.minutes.ago)
-marina.notifications.create!(action: "task_assigned", notifiable: tasks[26], actor: alice, organization: org, created_at: 1.hour.ago)
+puts "Creating sample notifications..."
+alice.notifications.create!(action: "task_assigned", notifiable: tasks[0], actor: bob, organization: org, created_at: 1.hour.ago)
+alice.notifications.create!(action: "task_commented", notifiable: tasks[1], actor: carol, organization: org, created_at: 3.hours.ago)
+bob.notifications.create!(action: "task_moved", notifiable: tasks[4], actor: alice, organization: org, created_at: 6.hours.ago)
+carol.notifications.create!(action: "task_assigned", notifiable: tasks[2], actor: alice, organization: org, created_at: 1.day.ago)
+alice.notifications.create!(action: "task_assigned", notifiable: tasks[3], actor: dave, organization: org, created_at: 2.days.ago, read: true, read_at: 1.day.ago)
+alice.notifications.create!(action: "task_commented", notifiable: tasks[0], actor: eve, organization: org, created_at: 3.days.ago, read: true, read_at: 2.days.ago)
 
-puts "Criando logs de atividade..."
+puts "Adding activity logs..."
 projects.each do |project|
   ActivityLog.create!(
-    action: "criou o projeto #{project.name}",
+    action: "created project #{project.name}",
     trackable: project, trackable_type: "Project",
     user: project.assignee || alice,
     organization: org, project: project
   )
 end
 
-programas.each do |program|
+tasks.sample(10).each do |task|
   ActivityLog.create!(
-    action: "criou o programa #{program.name}",
-    trackable: program, trackable_type: "Program",
-    user: alice,
-    organization: org, project: nil
-  )
-end
-
-tasks.sample(15).each do |task|
-  ActivityLog.create!(
-    action: "criou a tarefa #{task.title}",
+    action: "created task #{task.title}",
     trackable: task, trackable_type: "Task",
     user: task.assignee || alice,
     organization: org, project: task.project
@@ -449,31 +345,29 @@ tasks.sample(15).each do |task|
 end
 
 puts ""
-puts "=== Seed concluído! ==="
+puts "=== Seed completed! ==="
 puts ""
-puts "Credenciais de acesso:"
+puts "Login credentials:"
 puts "  Email: alice@example.com"
-puts "  Senha: password123"
+puts "  Password: password123"
 puts ""
-puts "Resumo:"
-puts "  Programas: #{Program.count}"
-puts "  Projetos: #{Project.count}"
-puts "  Tarefas: #{Task.count}"
-puts "  Dependências: #{TaskDependency.count}"
-puts "  Apontamentos: #{TimeEntry.count}"
-puts "  Matrizes: #{ProjectMatrix.count}"
-puts "  Células: #{MatrixCell.count}"
-puts "  Tags: #{Tag.count}"
-puts "  Campos personalizados: #{CustomField.count}"
-puts "  Valores de campos: #{CustomFieldValue.count}"
-puts "  Membros de projeto: #{ProjectMember.count}"
-puts "  Comentários: #{Comment.count}"
-puts "  Itens de checklist: #{ChecklistItem.count}"
-puts "  Ciclos OKR: #{OkrCycle.count}"
-puts "  Objetivos: #{Objective.count}"
-puts "  Key Results: #{KeyResult.count}"
-puts "  KPIs: #{Kpi.count}"
-puts "  Strategic Canvas: #{StrategicCanvas.count}"
-puts "  Webhooks: #{Webhook.count}"
-puts "  Notificações: #{Notification.count}"
-puts "  Logs de atividade: #{ActivityLog.count}"
+puts "Projects: #{Project.count}"
+puts "Tasks: #{Task.count}"
+puts "Task dependencies: #{TaskDependency.count}"
+puts "Time entries: #{TimeEntry.count}"
+puts "Project matrices: #{ProjectMatrix.count}"
+puts "Matrix cells: #{MatrixCell.count}"
+puts "Tags: #{Tag.count}"
+puts "Custom fields: #{CustomField.count}"
+puts "Custom field values: #{CustomFieldValue.count}"
+puts "Team members (project): #{ProjectMember.count}"
+puts "Comments: #{Comment.count}"
+puts "Checklist items: #{ChecklistItem.count}"
+puts "OKR cycles: #{OkrCycle.count}"
+puts "Objectives: #{Objective.count}"
+puts "Key results: #{KeyResult.count}"
+puts "KPIs: #{Kpi.count}"
+puts "Strategic canvases: #{StrategicCanvas.count}"
+puts "Webhooks: #{Webhook.count}"
+puts "Notifications: #{Notification.count}"
+puts "Activity logs: #{ActivityLog.count}"
