@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_04_014838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -269,6 +269,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "programs", force: :cascade do |t|
+    t.decimal "budget", precision: 15, scale: 2
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "end_date"
+    t.string "icon"
+    t.string "name", null: false
+    t.bigint "organization_id", null: false
+    t.date "start_date"
+    t.string "status", default: "on_track"
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "name"], name: "index_programs_on_organization_id_and_name", unique: true
+    t.index ["organization_id"], name: "index_programs_on_organization_id"
+  end
+
   create_table "project_matrices", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", default: "", null: false
@@ -306,6 +322,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
     t.string "name", null: false
     t.bigint "organization_id", null: false
     t.integer "priority", default: 0
+    t.bigint "program_id"
     t.decimal "progress", precision: 5, scale: 2, default: "0.0"
     t.decimal "project_investment_estimated", precision: 15, scale: 2, default: "0.0"
     t.decimal "proposal_investment_estimated", precision: 15, scale: 2, default: "0.0"
@@ -319,6 +336,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
     t.index ["assignee_id"], name: "index_projects_on_assignee_id"
     t.index ["manager_id"], name: "index_projects_on_manager_id"
     t.index ["organization_id"], name: "index_projects_on_organization_id"
+    t.index ["program_id"], name: "index_projects_on_program_id"
     t.index ["sponsor_id"], name: "index_projects_on_sponsor_id"
   end
 
@@ -493,10 +511,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_03_141938) do
   add_foreign_key "okr_cycles", "organizations"
   add_foreign_key "organization_memberships", "organizations"
   add_foreign_key "organization_memberships", "users"
+  add_foreign_key "programs", "organizations"
   add_foreign_key "project_matrices", "projects"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "organizations"
+  add_foreign_key "projects", "programs"
   add_foreign_key "projects", "users", column: "assignee_id"
   add_foreign_key "projects", "users", column: "manager_id"
   add_foreign_key "projects", "users", column: "sponsor_id"

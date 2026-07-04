@@ -1,0 +1,128 @@
+<div class="flex items-start justify-between mb-6">
+  <div>
+    <%= link_to organization_programs_path(@organization), class: "text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mb-2 inline-block" do %>
+      ← <%= t("programs.back_to_programs") %>
+    <% end %>
+    <div class="flex items-center gap-3">
+      <span class="w-4 h-4 rounded-full flex-shrink-0" style="background-color: <%= @program.color || "#6366f1" %>"></span>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @program.name %></h1>
+      <span class="<%= project_status_badge_class(@program.status) %>"><%= t("projects.statuses.#{@program.status}") %></span>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <%= link_to edit_organization_program_path(@organization, @program), class: "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-400 dark:hover:bg-gray-700" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      <%= t("actions.edit") %>
+    <% end %>
+  </div>
+</div>
+
+<p class="text-gray-600 mb-6 dark:text-gray-400"><%= @program.description %></p>
+
+<%# Rollup Cards %>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.progress") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @rollup[:progress] %>%</p>
+    <div class="mt-2 h-1.5 bg-gray-200 rounded-full dark:bg-gray-700">
+      <div class="h-1.5 bg-indigo-500 rounded-full" style="width: <%= @rollup[:progress] %>%"></div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.tasks") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @rollup[:tasks_done_count] %><span class="text-lg font-normal text-gray-400">/<%= @rollup[:tasks_count] %></span></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= t("programs.rollup.completed_tasks") %></p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.objectives") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @rollup[:objectives_count] %></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= t("programs.rollup.key_results_count", count: @rollup[:key_results_count]) %></p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.risks") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @rollup[:risks_count] %></p>
+    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400"><%= t("programs.rollup.open_risks", count: @rollup[:risks_open_count]) %></p>
+  </div>
+</div>
+
+<%# Program Overview Stats %>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.projects") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= @rollup[:projects_count] %></p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.budget_estimated") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= number_to_currency(@rollup[:total_budget_estimated], unit: "R$", precision: 2) %></p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.rollup.budget_actual") %></p>
+    <p class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= number_to_currency(@rollup[:total_budget_actual], unit: "R$", precision: 2) %></p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-xs text-gray-500 mb-1 dark:text-gray-400"><%= t("programs.dates") %></p>
+    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+      <% if @program.start_date || @program.end_date %>
+        <%= [@program.start_date&.strftime("%b %d"), @program.end_date&.strftime("%b %d")].compact.join(" - ") %>
+      <% else %>
+        -
+      <% end %>
+    </p>
+  </div>
+</div>
+
+<%# Projects in Program %>
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100"><%= t("programs.projects_title") %></h2>
+</div>
+
+<% if @projects.any? %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-gray-200 dark:border-gray-700 text-left">
+          <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400"><%= t("projects.fields.name") %></th>
+          <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400"><%= t("projects.fields.status") %></th>
+          <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400"><%= t("projects.fields.assignee") %></th>
+          <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400"><%= t("projects.fields.tasks") %></th>
+          <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400"><%= t("projects.progress") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @projects.each do |project| %>
+          <tr class="border-b border-gray-100 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+            <td class="px-4 py-3">
+              <%= link_to [@organization, project], class: "flex items-center gap-2 text-gray-900 dark:text-gray-100" do %>
+                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= project.color || "#6366f1" %>"></span>
+                <span class="font-medium"><%= project.name %></span>
+              <% end %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="<%= project_status_badge_class(project.status) %>"><%= t("projects.statuses.#{project.status}") %></span>
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400"><%= project.assignee&.name || "-" %></td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400"><%= t("projects.done_count_pattern", done: project.tasks.where(status: :done).count, total: project.tasks.count) %></td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <div class="w-20 h-1.5 bg-gray-200 rounded-full dark:bg-gray-700">
+                  <div class="h-1.5 bg-indigo-500 rounded-full" style="width: <%= project.progress %>%"></div>
+                </div>
+                <span class="text-xs text-gray-500 dark:text-gray-400"><%= project.progress %>%</span>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= t("programs.no_projects_body") %></p>
+  </div>
+<% end %>

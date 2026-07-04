@@ -1,0 +1,43 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100"><%= t("programs.title") %></h1>
+  <%= link_to new_organization_program_path(@organization), class: "px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" do %>
+    + <%= t("programs.new") %>
+  <% end %>
+</div>
+
+<% if @programs.any? %>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @programs.each do |program| %>
+      <%= link_to [@organization, program], class: "block bg-white rounded-xl shadow-sm border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-indigo-600" do %>
+        <div class="p-5">
+          <div class="flex items-start justify-between mb-3">
+            <span class="w-3 h-3 rounded-full flex-shrink-0 mt-1" style="background-color: <%= program.color || "#6366f1" %>"></span>
+            <span class="<%= project_status_badge_class(program.status) %>"><%= t("projects.statuses.#{program.status}") %></span>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-1 dark:text-gray-100"><%= program.name %></h3>
+          <p class="text-sm text-gray-500 line-clamp-2 mb-4 dark:text-gray-400"><%= program.description %></p>
+          <div class="flex items-center gap-4 text-xs text-gray-400">
+            <span><%= t("programs.projects_count", count: program.projects.active.count) %></span>
+            <span><%= "#{program.progress}% #{t('projects.progress').downcase}" %></span>
+          </div>
+        </div>
+        <% if program.projects.active.any? %>
+          <div class="px-5 py-3 border-t border-gray-100 bg-gray-50/50 rounded-b-xl dark:border-gray-700 dark:bg-gray-700/30">
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+              <span><%= t("projects.done_count_pattern", done: program.tasks_done_count, total: program.tasks_count) %></span>
+              <span><%= t("programs.objectives_count", count: program.objectives_count) %></span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-center py-16">
+    <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1"><%= t("programs.no_programs") %></h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400"><%= t("programs.no_programs_body") %></p>
+  </div>
+<% end %>
