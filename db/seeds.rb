@@ -47,7 +47,7 @@ puts "Criando campos personalizados..."
 cf_text = org.custom_fields.create!(name: "Justificativa de Prioridade", field_type: "text", required: false)
 cf_risk = org.custom_fields.create!(name: "Nível de Risco", field_type: "select", options: %w[Baixo Médio Alto Crítico], required: true)
 
-puts "Criando portfólios..."
+puts "Criando programas (portfólios)..."
 programas_data = [
   {
     name: "Transformação Digital",
@@ -432,7 +432,7 @@ end
 
 programas.each do |program|
   ActivityLog.create!(
-    action: "criou o portfólio #{program.name}",
+    action: "criou o programa #{program.name}",
     trackable: program, trackable_type: "Program",
     user: alice,
     organization: org, project: nil
