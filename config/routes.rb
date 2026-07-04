@@ -7,7 +7,6 @@ Rails.application.routes.draw do
 
   resources :organizations do
     resource :calendar, only: %i[show], controller: :calendars
-    resources :programs
     resources :invitations, only: %i[new create index]
     resources :tags
     resources :webhooks

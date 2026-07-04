@@ -1,13 +1,5 @@
 <% controller_match = ->(name) { controller_name == name || controller_name == name.singularize } %>
 
-<% if @project.program.present? %>
-  <div class="mb-4">
-    <%= link_to organization_program_path(@organization, @project.program), class: "text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300" do %>
-      ← <%= t("programs.back_to_program") %>: <%= @project.program.name %>
-    <% end %>
-  </div>
-<% end %>
-
 <% tabs = [
   { label: t("nav.overview"), path: organization_project_path(@organization, @project), controllers: ["projects"] },
   { label: t("nav.tasks"), path: organization_project_tasks_path(@organization, @project), controllers: ["tasks"] },

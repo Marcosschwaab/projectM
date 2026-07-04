@@ -3,7 +3,6 @@ class Project < ApplicationRecord
   APPROVAL_ROLES = %w[sponsor manager responsible].freeze
 
   belongs_to :organization
-  belongs_to :program, optional: true
   belongs_to :assignee, class_name: "User", optional: true
   belongs_to :sponsor, class_name: "User", optional: true
   belongs_to :manager, class_name: "User", optional: true

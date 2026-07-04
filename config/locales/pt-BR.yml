@@ -99,7 +99,6 @@ pt-BR:
   nav:
     dashboard: "Dashboard"
     my_tasks: "Minhas Tarefas"
-    programs: "Programas"
     projects: "Projetos"
     okrs: "OKRs"
     kpis: "KPIs"
@@ -142,8 +141,6 @@ pt-BR:
     settings: "Configurações"
     remove: "Remover"
     you: "Você"
-    back_to_programs: "← Voltar para programas"
-    back_to_program: "← Voltar para o programa"
     back_to_projects: "← Voltar para projetos"
     back_to_project: "← Voltar para o projeto"
     back_to_matrices: "← Voltar para matrizes"
@@ -173,10 +170,6 @@ pt-BR:
     unauthorized: "Você não tem permissão para executar esta ação."
     invalid_locale: "Idioma inválido"
     create_organization_first: "Crie uma organização para começar."
-    program:
-      created: "Programa foi criado com sucesso."
-      updated: "Programa foi atualizado com sucesso."
-      destroyed: "Programa foi excluído com sucesso."
     project:
       created: "Projeto foi criado com sucesso."
       updated: "Projeto foi atualizado com sucesso."
@@ -257,47 +250,6 @@ pt-BR:
       created: "Item EAP adicionado."
       updated: "Item EAP atualizado."
       destroyed: "Item EAP excluído."
-
-  programs:
-    title: "Programas"
-    new: "Novo Programa"
-    edit: "Editar Programa"
-    no_programs: "Nenhum programa ainda."
-    no_programs_body: "Comece criando seu primeiro programa."
-    no_projects_body: "Nenhum projeto vinculado a este programa."
-    back_to_programs: "← Voltar para programas"
-    back_to_program: "← Voltar para o programa"
-    dates: "Período"
-    projects_title: "Projetos neste Programa"
-    projects_count:
-      one: "%{count} projeto"
-      other: "%{count} projetos"
-    objectives_count:
-      one: "%{count} objetivo"
-      other: "%{count} objetivos"
-    select_program: "Selecione um programa..."
-    no_program: "Sem programa"
-    rollup:
-      progress: "Progresso do Programa"
-      tasks: "Tarefas"
-      completed_tasks: "tarefas concluídas"
-      objectives: "Objetivos"
-      key_results_count:
-        one: "%{count} resultado-chave"
-        other: "%{count} resultados-chave"
-      risks: "Riscos"
-      open_risks:
-        one: "%{count} aberto"
-        other: "%{count} abertos"
-      projects: "Projetos Ativos"
-      budget_estimated: "Orçamento (Est.)"
-      budget_actual: "Orçamento (Real)"
-    statuses:
-      on_track: "No Prazo"
-      at_risk: "Em Risco"
-      behind: "Atrasado"
-      on_hold: "Pausado"
-      completed: "Concluído"
 
   projects:
     title: "Projetos"

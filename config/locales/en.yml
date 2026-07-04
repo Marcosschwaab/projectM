@@ -108,7 +108,6 @@ en:
   nav:
     dashboard: "Dashboard"
     my_tasks: "My Tasks"
-    programs: "Programs"
     projects: "Projects"
     okrs: "OKRs"
     kpis: "KPIs"
@@ -152,8 +151,6 @@ en:
     settings: "Settings"
     remove: "Remove"
     you: "You"
-    back_to_programs: "← Back to programs"
-    back_to_program: "← Back to program"
     back_to_projects: "← Back to projects"
     back_to_project: "← Back to project"
     back_to_tasks: "← Back to tasks"
@@ -183,10 +180,6 @@ en:
     unauthorized: "You are not authorized to perform this action."
     invalid_locale: "Invalid locale"
     create_organization_first: "Create an organization to get started."
-    program:
-      created: "Program was successfully created."
-      updated: "Program was successfully updated."
-      destroyed: "Program was successfully destroyed."
     project:
       created: "Project was successfully created."
       updated: "Project was successfully updated."
@@ -359,47 +352,6 @@ en:
       status: "Status"
       tasks: "Tasks"
       assignee: "Assignee"
-
-  programs:
-    title: "Programs"
-    new: "New Program"
-    edit: "Edit Program"
-    no_programs: "No programs yet."
-    no_programs_body: "Start by creating your first program."
-    no_projects_body: "No projects linked to this program."
-    back_to_programs: "← Back to programs"
-    back_to_program: "← Back to program"
-    dates: "Dates"
-    projects_title: "Projects in this Program"
-    projects_count:
-      one: "%{count} project"
-      other: "%{count} projects"
-    objectives_count:
-      one: "%{count} objective"
-      other: "%{count} objectives"
-    select_program: "Select a program..."
-    no_program: "No program"
-    rollup:
-      progress: "Program Progress"
-      tasks: "Tasks"
-      completed_tasks: "completed tasks"
-      objectives: "Objectives"
-      key_results_count:
-        one: "%{count} key result"
-        other: "%{count} key results"
-      risks: "Risks"
-      open_risks:
-        one: "%{count} open"
-        other: "%{count} open"
-      projects: "Active Projects"
-      budget_estimated: "Budget (Est.)"
-      budget_actual: "Budget (Actual)"
-    statuses:
-      on_track: "On Track"
-      at_risk: "At Risk"
-      behind: "Behind"
-      on_hold: "On Hold"
-      completed: "Completed"
 
   tasks:
     title: "Tasks"

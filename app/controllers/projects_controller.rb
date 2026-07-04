@@ -99,7 +99,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :description, :priority, :status, :assignee_id, :color, :icon, :start_date, :end_date, :category, :sponsor_id, :manager_id, :program_id, :approval_all_team, :proposal_investment_estimated, :project_investment_estimated, :budget_estimated, :budget_actual, :return_estimated, :return_actual, approval_roles: [], project_member_ids: [], project_manager_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
+    params.require(:project).permit(:name, :description, :priority, :status, :assignee_id, :color, :icon, :start_date, :end_date, :category, :sponsor_id, :manager_id, :approval_all_team, :proposal_investment_estimated, :project_investment_estimated, :budget_estimated, :budget_actual, :return_estimated, :return_actual, approval_roles: [], project_member_ids: [], project_manager_ids: [], custom_field_values_attributes: [:id, :custom_field_id, :value])
   end
 
   def sync_project_members(project)
